@@ -1,0 +1,24 @@
+I learned things.
+Smart devices in the network are not directly connected to the openHAB actually.
+They connect to some backend in the cloud to push their data, and then openHAB uses an API from that backend to access it. So it goes like this:
+iot thingie -> sends data to backend in the cloud ;
+backend -> receives data and stores it
+openhab : configured to use api from the backend in the cloud -> requests data (e.g. GIVE_ME_DATA(nao)) \
+backend -> accepts request and sends back data requested (up to a X number of requests).
+Moreover, the thingie itself may not connect to the local wifi directly: it may connect via bluetooth to a gateway which connects to the wifi.
+Question is:
+Is the data transferred between thingie-gateway, gateway-router, router-backend, or router-openHAB; secure? Locally, it is protected by the encryption of the wifi (e.g. wpa2). router-openHAB seems to be that way also. But how about router-backend? Are the requests sent through http or https? 
+Is there authentication being used? For this, it seems so: for every API the user has to register, and this information is entered into the openHAB configuration. Thus, authentication and authorization for openHAB-backend is guaranteed. 
+
+To look at the traffic of the thingies and openHAB, there are two tools I've tried using:
+- tcpdump: lists all the packets sent to/from a certain host and port. 
+- wireshark: lets you look into the contents of the packets. 
+
+The use of these has been very limited because thingies never communicate with the openhab server directly, they do it through their backend in the cloud. I tried to look at communication of thingie-router, but it is not easy to monitor the network: whether I can or not depends on the wireless card. Without proceeding further on, I can say that this communication is encrypted, since wlan is secured with wpa. Thus, it would not be very useful to spend more time on sniffing these packets. I can try to look at the eclipse smart home documentation to see how this is defined. I could have done that from the start, but I wanted to check it myself. If they do insist that on top of the wlan security they employ something additional, then definitely I will come back to this to see how true it is and how it is done. It is still interesting to see the packets sent between openHAB server and backend. The openHAB frontend can be navigated with http or https, but so far there is no mention of how the communication with the backend is done.
+
+From the beginning of the day, I had three things I wanted to look at:
+- Do threat modelling of openHAB
+- Test IoT vulnerabilities according to the TOP 10 IoT OWASP
+- Analyze the security of communication protocols between openHAB and devices with tcpdump and wireshark
+
+Thus, today I worked mostly on the last point, but it remains to be seen what the documentation says, and how I can check if connection between openHAB and backend is done through http or https.
