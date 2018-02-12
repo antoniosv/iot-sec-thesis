@@ -1,0 +1,86 @@
+I spent the day looking at three things: papers on IoT threats, threat modelling for IoT, and alternatives to openHAB and how they deal with security.
+
+--- Papers --- 
+
+The most important threat for my work in the taxonomy of IoT security is *identity management*, which devolves into authentication, authorization, privacy & access control, and provisioning.
+In another paper, the possible treats in a Wireless Sensor Network were specified:
+- Node replication/impersonation
+- Selective forwarding
+- Replay attacks
+- Sinkhole attack (tamper with packets)
+- Denial of Service attack
+- Eavesdropping of: MAC address, IP address, base station address, SSIDs, clear text passwords
+- Sybil attack (multiple identities to degrade service)
+
+--- Threat modelling ---
+
+The objective of threat modelling is:
+"To understand how an attacker might be able to compromise a system and then make sure appropriate mitigations are in place." Thus, it's useful to identify non-obvious ways to misuse the system.
+
+There are four big steps in threat modelling in general:
+1. Model the application (architecture)
+2. Enumerate the threats
+3. Mitigate the threats 
+4. Validate the mitigations
+
+Understanding the architecture of the application and the data flow within it is essential for good threat modelling.
+
+The core elements that should be taken into account are: processes, data stores, data flow, and external entities.
+
+Note the terms device control and device data. The first refers to the information sent to the smart device which has an impact on its behaviour as result of some action (e.g. lowering temperature in the room). The latter refers to data sent to and from the smart devices (e.g. with another device, gateway, cloud, etc.), and how it should be maintained confidential.
+
+Additionally, there is an interesting threat for storage: tampering with configuration files. This might be relevant for openHAB, where configuration is stored in the machine. Might be good t ocheck if read/write access is regulated by the OS user permissions.
+
+
+--- Alternatives to openHAB: home automation ---
+
+1 Nest (Google?) https://nest.com/privacy/data/
+    Device - Cloud service connection encrypted using AES-128 and TLS. 
+    Nest Protect (CO alarm) uses a proprietary(!) secure protocol similar to TLS.
+    Dropcams and Nest Cams connect to Nest cloud service using 2048 bit RSA keys for (symmetric?) key exchange. They suggest to have achieved an implementation of perfect forward secrecy(!). Data encrypted with AES-128 through TLS.
+    Device-Device communication is through Weave (https://developers.nest.com/weave)
+    Core parts of Weave published as OpenWeave (https://github.com/openweave/openweave-core)
+    Claims: 
+    - Defense in depth with end-to-end application security, independent of underlying network
+    - Tiered trust domains with application-specific groupwise keys
+    Seems to be based on PKI because there is certificate generation.
+With Nest, there are two components: a mobile application and a cloud backend.
+To control and view data from thermostat, for example, first it has to be paired with the cloud backend: through wifi. Then, by touching it (proof of posession) it produces a one-time password which can be entered in the mobile application. Thus, it is authenticated, and only the user of this mobile application can access and control the thermostat. Additionally, this can be controlled remotely through the internet: i.e., application connects to cloud backend which forwards commands to device at home.
+
+2 HomeKit (Apple)
+    HomeKit uses a secure pairing to authenticate with an iDevice.
+    It employs the HomeKit Accessory Protocol (HAP) to enable third-party accessories in the home and Apple products to communicate with each other. It supports IP and Bluetooth LE.
+    Pairing depends on transport protocol: for IP, devices have to be in the same network; for bluetooth LE, pairing is peer-to-peer.
+    There was a security vulnerability exposed in Dec. 2017 which allowed anyone with a MAC address to login as root in that system. https://blogs.computerworld.com/article/3239027/apple-mac/apple-apologizes-issues-mac-login-security-patch.html
+    Security claim:
+    All sessions between HomeKit accessories and Apple products over HAP are end-to-end encrypted and mutually authenticated. (https://developer.apple.com/support/homekit-accessory-protocol/)
+    There is an "authentication coprocessor" that only members enrolled in the MFi program can put into their accessories. A commercial HomeKit accessory must have either an authentication coprocessor, obtain Wi-Fi Alliance certificate, or Bluetooth SIG certification (depending on transport used).
+    
+
+3 openremote (http://www.openremote.com/home-automation-2/)
+    It has three components: online designer software, the controller (hardware), and App/Panel front end. 
+    From the forums: https://openremote.github.io/archive-dotorg/forums/      
+    No authentication comes by default, but it can be enabled through Apache Tomcat's  configuration files.
+    It also offers a REST API which doesn't require authentication at all.
+    There was an effort to allow authentication through PKI and TLS. The controller creates certificates for the authorized users and acts as a CA. This never got integrated into the main branch of development. https://openremote.github.io/archive-dotorg/forums/Security%20in%20OpenRemote.html
+    
+4 the thing system (http://thethingsystem.com/index.html)
+
+
+5 ThingsBoard (https://thingsboard.io/)
+    More general open source IoT platform --- smart farming, grid, telemetry, etc.
+    Security (https://thingsboard.io/docs/reference/architecture/#security):
+    - Encryption: As a system administrator, you are able to configure ThingsBoard to use secure sockets layer for HTTP(s) and MQTT transports. DTLS for CoAP is not supported yet.
+    - Authentication: ThingsBoard is designed to support many types of device credentials. Current release provides support of token based credentials for all protocols and support of X.509 certificate based credentials for MQTT protocol. See MQTT over SSL guide for more details.
+    
+6 Home Assistant (https://home-assistant.io/) 
+    
+
+7 eclipse IoT
+    Many IoT projects, including Eclipse Smart Home https://iot.eclipse.org/projects/
+
+7.1 Eclipse Smart Home
+    Ongoing study 
+
+7.2 openHAB
+    Built on top of Eclipse Smart Home as a "local backend."
