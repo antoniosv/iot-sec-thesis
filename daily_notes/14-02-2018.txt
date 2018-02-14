@@ -1,0 +1,53 @@
+#Also includes work from 13-02-2018.
+-----
+According to OWASP, Threat Risk Modeling is essential to understand existing threats and to find vulnerabilities. This can be done in 5 steps:
+1. Identify security objectives
+2. Survey the application => Identify components, data flows, and trust boundaries.
+3. Decompose it => to identify features & modules with a security impact that needs to be evaluated.
+4. Identify threats
+5. Identify vulnerabilities 
+It must be acknowledged that not all threats can be identified at first glace, and definitely not during the first iteration. Thus, more iterations and the use of additional tools, particularly automated tools, may aid in the identification of threats and vulnerabilities existing in the system.
+-----
+A very convenient tool to identify threats is called "Misuse cases", based on the traditional use cases for identification of user requirements. In this case, there is an additional actor, called attacker or just malicious party, which may perform actions that "threaten" the functionalities that can be done by the legitimate actors. Thus:
+    Misuse case: A sequence of actions, including variants that a system or other entity can perform, interacting with misuers of the entity and causing harm to some stakeholder if the sequence is allowed to complete.
+    Misuser: An actor that initiates misuse cases, either intentionally or inadvertently. 
+Misuse cases in general are used to threaten(!) use cases.
+Morevoer, additional (security) use cases can be used to mitigate misuse cases as countermeasures.
+
+For the current Requirements document for ESH (https://docs.google.com/document/d/1Vja574ycr2f_1nDdhLheEPdqkRlsvHf2lc_byY2ahzc/edit#), I have identified several misuse cases. These are enumerated as follows:
+(pending)
+---- 
+From the previous section, and on addition to the requirements listed in the document, some other security requirements are:
+- Protect credentials in transit (e.g. through HTTPS)
+- Protect session ID (cookie or JSON Web Token) should be protected in transit (e.g. through HTTPS)
+- Authorization check should be done on every HTTP request.
+- User creation should not allow weak passwords.
+- Failed logins should not leak information about existance of user accounts.
+- After a certain number of failed login attempts, user account should be disabled for some time.
+- Upon successful login, a new session ID should be generated.
+- Require re-authentication for sensitive features (e.g. password change). 
+- Put in place granular access control (e.g. RBAC)
+- Separate regular from admin users (e.g. through RBAC) so that only admins are able to modify configuration of ESH.
+- Require transport encryption (TLS) during login phase and thereafter if login was successful.
+
+-----
+Authentication: Cookie based VS Token based
+https://auth0.com/blog/cookies-vs-tokens-definitive-guide/
+
+Since the web is stateless, the server needs to keep track of users who are using a web application. Typically, this is done through a session ID, first given to a user that has not authenticated yet, and then is elevated in permission when the user authenticates. In practice, cookies are used as session IDs, and they are stateful, because the server has to store these cookies and who they belong to. In contrast Token based session IDs (e.g. JSON Web Token) are stateless, since the server does not need to store them. It is composed of several fields, and finally a SIGNATURE, which is typically the result of signing the hash of the aforementioned fields, using the server's private key. The client just sends back this token for every request, and the server can easily verify its validity by using its public key. If verification fails, then the token has been tampered with, and thus the request may be discarded.
+In both scenarios, cookie and token based, offer only means to authenticate with the server, but they offer no confidentiality at all. Therefore, whenever these session IDs are sent between client and server, they should be encrypted (e.g. through TLS).
+----
+After considering the features of openHAB and ESH, I have come up with the following use case:
+- Alice is listening to a song on her AllPlay compatible player t from an internet radio station.
+- Bob is Alice's friend and he wants to listen to the same radio station that Alice is listening to.
+Sequence:
+- Alice has given permission to Bob to access the OH2^A instance.
+- Through OH2^B, Bob authenticates to OH2^A and requests to get access to data from t.
+- OH2^A checks access control permission and authorizes Bob. 
+- OH2^A uses API from t to query backend in the cloud. 
+- Backend returns data requested.
+- OH2^A replies back to Bob with the data requested.
+- Bob pushes the data to OH2^B , which controls AllPlay compatible player t' to play the same music station that Alice was listening to.
+----
+Meeting with ESH team to discuss authentication and authorization requirements document:
+https://calendar.google.com/event?action=TEMPLATE&tmeid=NXZ0cWZqOGZpZ2M4bjM5c2RnazU5aTE2OHIgbHVrYXN6LmR5d2lja2lAbQ&tmsrc=lukasz.dywicki%40gmail.com

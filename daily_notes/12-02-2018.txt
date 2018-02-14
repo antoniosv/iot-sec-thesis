@@ -1,7 +1,7 @@
 I spent the day looking at three things: papers on IoT threats, threat modelling for IoT, and alternatives to openHAB and how they deal with security.
 
 --- Papers --- 
-
+(Stored in ~/Documents/iot/)
 The most important threat for my work in the taxonomy of IoT security is *identity management*, which devolves into authentication, authorization, privacy & access control, and provisioning.
 In another paper, the possible treats in a Wireless Sensor Network were specified:
 - Node replication/impersonation
