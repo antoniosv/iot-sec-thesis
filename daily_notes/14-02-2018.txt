@@ -7,12 +7,17 @@ According to OWASP, Threat Risk Modeling is essential to understand existing thr
 4. Identify threats
 5. Identify vulnerabilities 
 It must be acknowledged that not all threats can be identified at first glace, and definitely not during the first iteration. Thus, more iterations and the use of additional tools, particularly automated tools, may aid in the identification of threats and vulnerabilities existing in the system.
+Source: https://www.owasp.org/index.php/Threat_Risk_Modeling
 -----
 A very convenient tool to identify threats is called "Misuse cases", based on the traditional use cases for identification of user requirements. In this case, there is an additional actor, called attacker or just malicious party, which may perform actions that "threaten" the functionalities that can be done by the legitimate actors. Thus:
     Misuse case: A sequence of actions, including variants that a system or other entity can perform, interacting with misuers of the entity and causing harm to some stakeholder if the sequence is allowed to complete.
     Misuser: An actor that initiates misuse cases, either intentionally or inadvertently. 
 Misuse cases in general are used to threaten(!) use cases.
 Morevoer, additional (security) use cases can be used to mitigate misuse cases as countermeasures.
+
+More info:
+http://perceval.gannon.edu/xu001/teaching/2010spring/GCIS504/termpaper/readingList/bsi2-misuse.pdf
+https://courses.cs.ut.ee/2010/is/uploads/Main/Misuse cases.pdf
 
 For the current Requirements document for ESH (https://docs.google.com/document/d/1Vja574ycr2f_1nDdhLheEPdqkRlsvHf2lc_byY2ahzc/edit#), I have identified several misuse cases. These are enumerated as follows:
 (pending)
