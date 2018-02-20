@@ -1,0 +1,36 @@
+REST API of ESH
+
+It can be used to integrate with other systems: allows read access to items, item states, status updates, and also the sending of commands for items. It also gives access to things, links, sitemaps, etc. In other words, a web application can use this API to communicate with the ESH instance.
+Additionally, there is support for server sent events to subscribe to change notifications for certain resources. https://www.eclipse.org/smarthome/documentation/features/rest.html
+Example: GET /items/{itemname}/state gets the state of an item. Same destination but PUT operation instead updates the state of an item.
+More info on operations: https://www.eclipse.org/smarthome/rest/index.html
+
+------
+Bindings
+
+A binding is an extension to the ESH runtime that integrates an external system like a service, a protocol, or a single device. It translates events from the ESH event bus to the external device and vice versa. For each each Thing, the binding must provide a ThingHandler implementation that is able to do the communication. 
+
+Every different service or device is an individual Thing, and is described by a ThingType (eg. "weather" is a ThingType). Each functionality is described by a Channel (eg. temperature, humidity). The definition of a binding is given by an XML file which describes the binding itself (incl. configuration details). There is a readOnly attribute for each Channel. By default it's set as false, which means the channel acts also as an actuator. Imagine if there is a heating system controlled by this binding, then the channel provides the means to control the temperature of the room. Otherwise, it can be set to true, which means it is only capable of receiving data.
+
+The ThingHandler implementation is responsible for translating ESH commands and states to the external system and vice versa. To handle commands, it defines the handleCommand method, which is called when a command is sent to an item linked to a channel on a Thing. To send a command to the ThingHandler, an HTTP call *may* be executed inside handleCommand method through another method. For example, in the Yahoo weather binding, inside handleCommand there is an updateWeatherData() which executes an HTTP call to the Yahoo weather API. The results obtained are set locally via the updateStateMethod.
+https://www.eclipse.org/smarthome/documentation/development/bindings/how-to.html
+
+This is the query done by the Yahoo Weather binding:
+https://query.yahooapis.com/v1/public/yql?format=json&q=SELECT%20location%20FROM%20weather.forecast%20WHERE%20woeid=845805
+Which apparently uses the HTTPS protocol to securely transmit data.
+
+The implementation that makes the HTTP is located in smarthome/git/smarthome/bundles/io/org.eclipse.smarthome.io.net/src/main/java/org/eclipse/smarthome/io/net/http/HttpUtil.java
+It remains to be seen if it can handle HTTPS requests as well.
+Update: It does! The Jetty HTTPClient class sends https requests to establish TLS sessions. As seen in the HttpUtil.java in ESH:
+private static final HttpClient CLIENT = new HttpClient(new SslContextFactory());
+
+Conclusion: Whether or not the transport is encrypted or not depends on the implementation of each binding. There are two ways data might be eavesdropped: between OH2<->Things, and OH2<->UI. In the first case, it depends on the implementation of the binding. In the second case, it depends on whether the client accesses OH2 through https or http (in their respective set port).
+
+
+Experience with wireshark:
+There were many TLS session packets going around. They either came from the ipv4 or ipv6 interface and established a TLS session with different hosts. One of these was for a maps web service which I hadn't accessed through my browser, so I suspect openHAB did it. It also accessed a host with an ipv6 address, and the strange thing is that, even though they agreed on a ciphersuite, they did not exchange secrets. The server did not provide a certificate. Still, they encrypted (somehow) the payload.
+Update: There was another instance captured by wireshark to this very same address: 2001:bb8:2002:3400:cc6e:af0:7d56:3120 using TLSv1.2. The subject in the certificate implied that it belonged to one of Google's APIs. Own host receives data at port 40048, not 8443 (as configured in openHAB). So this is probably a request done by Google Chrome in the background.
+
+-------
+Bridges
+Whenever there is a gateway in-between the Thing and the access point, a bridge may be used to model this system into openHAB. Recall that a gateway enables communication with other devices that use the same protocol (eg. 5 light bulbs which support the ZigBee protocol and a gateway G for it that understands this protocol). openHAB models G as a bridge and adds it with the proper binding. Commands to get and control the Things (light bulbs) are sent through the bridge, which relays the commands to the Things.
