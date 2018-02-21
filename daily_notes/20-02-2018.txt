@@ -1,0 +1,15 @@
+------------
+Authentication and AuthenticationProvider
+
+There is an implementation of an Authentication API for ESH as documented in https://github.com/eclipse/smarthome/pull/2587. It relies only on JAAS (Java Authentication and Authorization Service). This works as a stand-alone solution for ESH, but when brought to OH2, it gets more complicated because there are additional requirements (like IP range checks). There was no clear idea on how to implement session handling (i.e. cookies/JWT), or how to "transparently hook in a login page". The additional requirements end up having to implement a custom security handler, which requires dependencies on jax-rs osgi connector and jax-rs classes. Due to the complexity of bringing in external libraries, this was not pushed forward. The code used for the implementation of the SecurityHandler is also needed for securing servlets (e.g. the Basic UI) through a custom HttpContext. This custom HttpContext object would implement the "handleSecurity" function, and it provides a service to the JAX-RS resources and servlets.
+
+The basic authentication using JAAS provides a dummy AuthenticationProvider implementation (user: test, pwd test123). It's included into REST layer, so all resources with javax.annotation.security.RolesAllowed gets "protected" (https://github.com/eclipse/smarthome/issues/579#issuecomment-248129066). Again, this implementation failed to be integrated in OH2, and a new solution is being considered.
+
+The preferred approach (https://github.com/eclipse/smarthome/issues/579#issuecomment-272101174) is to keep a concrete implementation out of the core of ESH, and instead only define APIs and wrappers in ESH (where you can plug-in something like Apache Shiro). A good start in this direction is to create an AuthenticationProvider, but also the AbstractSecurityHandler will be designed in a similar way. Solutions can take decisions on the "raw" HttpServletRequest. In this case, ContainerRequestContext might not be necessary (not confirmed), because HttpServletRequest will be present. 
+
+Servlets in ESH register through httpService.registerServlet, where they pass the appropriate HttpContext. The idea is to define an interface AuthenticatedHttpContext and assume an implementation is registered by the solution as an OSGi service. If this is a service that is available to pax-web, then it could also be used for servlets that are added through the white-board pattern.
+! But later on this is suggested to be a bad idea because using HttpContext like this is too intrusive. A servlet filter could be a better idea. For OH specifically, this can be done through pax-web, so it wouldn't require to change any code in ESH.
+According to Lukas:
+"Http context reference will be needed just to bind servlets together with filter to group them into one "webapp" without having single WAR. After that regular Java EE filter should be able to handle multiple paths (servlets)."
+
+-------------

@@ -1,0 +1,10 @@
+openHAB2 and Eclipse Smart Home
+Relationship of both is described in https://kaikreuzer.blogspot.com.ee/2014/06/openhab-20-and-eclipse-smarthome.html
+Before they existed together: as openHAB1, but later on divided the core functionality and called it ESH.
+
+Architecture of openHAB2 
+Tentative components of openHAB2 in its beginnings are depicted in this figure http://2.bp.blogspot.com/-kHV9TBooeHM/VpN2EbUFpTI/AAAAAAAAJNg/BiUa1-e7s1g/s640/distro.png
+
+On the lowest level there is Apache Karaf which is supposed to the OSGi configuration parts. On top of it is Eclipse Equinox (currently unknown why it's useful). And on top of it, the Smart Home, which offers the core functionality of the smart home: architecture of items, channels, bindings, rules, etc. Horizontal dependencies are the HTTP Server (Jetty) and the openHAB2 core. This combination of components makes the OH2 distribution whole and, to it many extensions and add-ons can be plugged in. 
+
+The Karaf allows to have a proper dependency management in place for all add-ons to install. The add-ons can be instaled offline or online (from a remote repository).
