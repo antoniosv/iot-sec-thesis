@@ -8,3 +8,9 @@ Tentative components of openHAB2 in its beginnings are depicted in this figure h
 On the lowest level there is Apache Karaf which is supposed to the OSGi configuration parts. On top of it is Eclipse Equinox (currently unknown why it's useful). And on top of it, the Smart Home, which offers the core functionality of the smart home: architecture of items, channels, bindings, rules, etc. Horizontal dependencies are the HTTP Server (Jetty) and the openHAB2 core. This combination of components makes the OH2 distribution whole and, to it many extensions and add-ons can be plugged in. 
 
 The Karaf allows to have a proper dependency management in place for all add-ons to install. The add-ons can be instaled offline or online (from a remote repository).
+------------------------------
+On the architecture of ESH
+
+Management of the project is with maven: it verifies, compiles, tests and documents the codebase. The architecture of ESH is based on the OSGi core framework specification. The OSGi "paradigm" or pattern allows software components to be added and removed during runtime, without need of rebooting the system. These software components are called bundles. This is useful in ESH because new Things get added, removed or modified during runtime. 
+
+Eclipse Equinox is an implementation of the OSGi framework, i.e. a set of bundles that implement OSGi services and other infrastructure for running OSGi-based systems.
