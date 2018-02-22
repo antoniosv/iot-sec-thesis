@@ -12,5 +12,3 @@ The Karaf allows to have a proper dependency management in place for all add-ons
 On the architecture of ESH
 
 Management of the project is with maven: it verifies, compiles, tests and documents the codebase. The architecture of ESH is based on the OSGi core framework specification. The OSGi "paradigm" or pattern allows software components to be added and removed during runtime, without need of rebooting the system. These software components are called bundles. This is useful in ESH because new Things get added, removed or modified during runtime. 
-
-Eclipse Equinox is an implementation of the OSGi framework, i.e. a set of bundles that implement OSGi services and other infrastructure for running OSGi-based systems.
