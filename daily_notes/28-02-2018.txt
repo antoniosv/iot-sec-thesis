@@ -1,0 +1,151 @@
+JAAS based Authentication API in ESH
+------
+The first attempt to add authentication to openHAB through ESH was made in 2016, finalizing in December of the same year. This approach uses JAAS as a base for the implementation of the authentication provider. It includes no session tracking (e.g. cookies, tokens), and the authentication is done via the REST service layer and SPI provided. Additionally, it defines two roles: user and admin. https://github.com/eclipse/smarthome/pull/2587
+The main problem with this approach is that it couldn't be extended to openHAB. There were some additional requirements for it to work, such as being able to limit the allowed IP ranges, among others. As this approach was not successful, another initiative started, and this one is more general: instead of providing a single authentication provider, ESH will provide the interfaces so that any provider can be plugged in. It is unclear why this approach would solve the problems found in openHAB, but this is the direction the team wishes to take.
+
+To grasp how the second approach would work, it would be good to understand better how the first approach worked. The following will describe the implementation of the first JAAS-based authentication provider.
+------
+Files created:
+
+- In directory smarthome/bundles/core/org.eclipse.smarthome.core/src/main/java/org/eclipse/smarthome/core/auth/
+  1. Authentication.java
+  2. AuthenticationException.java
+  3. AuthenticationProvider.java
+  4. Credentials.java
+  5. Role.java
+  6. UsernamePasswordCredentials.java
+  7. JaasAuthenticationProvider.java
+- In directory smarthome/git/smarthome/bundles/auth/org.eclipse.smarthome.auth.jaas/src/main/java/org/eclipse/smarthome/auth/jaas/internal/
+  1. JaasAuthenticationProvider
+Additionally, classes from javax.security.auth.* are used.
+
+LoginContext() from the JaasAuthenticationProvider class takes a callback, which may originate from NameCallbach or PasswordCallback, and sets its value to the context. Steps: create loginContext, login with it, getAuthentication through the loginContext.
+
+In the Authentication class, each authentication points to some identity (username) and roles. An authentication is given to username after verification of credentials. Fields: String username, Set<String> roles.
+
+The AuthenticationProvider (Interface) class verifies the given credentials and gives back authentication if valid. It defines the method authenticate(Credentials credentials), which returns Authentication.
+
+The Credentials interface holds no definitions.
+
+The class UsernamePasswordCredentials implements the Credentials interface. It has two fields: username and password and implements the two getter methods.
+
+The Role interface class has two constants: ADMIN and USER strings.
+-------------------
+Context about Java EE:
+
+JAX-RS is a java runtime. Providers can be used to extend and customize this java runtime. They can be seen as plug-ins that may change the behavior of the runtime to accomplish some goals. Providers are not resource classes. The JAX-RS specification lists three diff. provider classes. All of them are identified with the @Provider annotation. The three provider types are:
+  - Entity Providers: related to the mapping of data representations (JSON, CSV, XML)
+  - Context Providers: Provide access to the context that the resources can access.
+  - Exception Providers: Control the mapping of Java exceptions to the JAX-RS Response instance.
+
+Annotations are a form of metadata that provide information about a program, but is not part of the program itself.
+
+JAX-WS is an interface between a web service language (e.g. SOAP) and the Java code. The spec. defines how an incoming SOAP message can be used to invoke the corresponding Java method with its respective parameters. It also defines how the return value of the method can be mapped into a SOAP response.
+
+JAX-RS is a spec. that defines a set of Java APIs for the development of web services according to the REST architecture.
+
+A resource is actually a *web resource*, and it is implemented by its corresponding resource class that uses JAX-RS annotations. Requests are handled by resource methods.
+
+A JAX-RS application consists of one or more resources and zero or mroe providers. This application may be published in several ways (e.g. Java SE, Java SE with JAX-WS, Servlet, and via other containers).
+
+Some of the annotations in use to extract some data: @MatrixParam, @QueryParam, @PathPAram, @CookieParam, @HeaderParam, @Context.
+Resource methods are annotated with @GET, @POST, @PUT, @DELETE, @HEAD. The request method designator is annotated with @HttpMethod.
+
+The functionality of the JAX-RS runtime is extended by using provider classes supplied by the application. A provider implements one or more interfaces defined in JAX-RS.
+
+A context is the interface used to interact with the runtime environment. It provides a set of features needed by all applications running in this domain. The environment is typically a container in the java stack. Particularly, there is a security context described in the specification of JAX-R.
+
+Whenever a request is received, a SecurityContext holds information about the security context of this request. The methods of this context may provide access to the current user "principle", information about roles of the requester, whether the the request was received over as ecure channel, and the authentication scheme used. 
+
+More details in the specification of JAX-RS:
+http://download.oracle.com/otn-pub/jcp/jaxrs-1.0-fr-eval-oth-JSpec/jaxrs-1.0-final-spec.pdf?AuthParam=1519815101_19c73250efcd46cee844f9d37db66bbe
+--------------------
+Implementations that make use of these classes:
+
+./bundles/io/org.eclipse.smarthome.io.rest.auth/src/main/java/org/eclipse/smarthome/io/rest/auth/internal/SmartHomePrincipal.java
+
+SmartHomePrincipal implements the Principal interface. It has an Authentication type field and two getters to get username and roles. Principal is provided by java.security.Principal.
+
+-------
+./bundles/io/org.eclipse.smarthome.io.rest.auth/src/main/java/org/eclipse/smarthome/io/rest/auth/AbstractSecurityHandler.java
+
+AbstractSecurityHandler is an abstract class that implements AuthenticationHandler and AuthorizationHandler. Its only field is of the type AuthenticationProvider. Methods implemented:
+  - boolean isUserInRole(Principal user, String role)
+  - Principal authenticate(ContainerRequestContext requestContext)
+  - void setAuthenticationService(AuthenticationProvider authenticationProvider)
+  - void unsetAuthenticationService(AuthenticationProvider authenticationProvider)
+  
+  And creates abstract definition for:
+  - Credentials createCredentials(ContainerRequestContext requestContext)
+
+This abstract class includes some imports worth noting:
+  - com.eclipsesource.jaxrs.provider.security.AuthenticationHandler;
+  - com.eclipsesource.jaxrs.provider.security.AuthorizationHandler;
+  - javax.ws.rs.container.ContainerRequestContext;
+
+
+----
+
+./bundles/io/org.eclipse.smarthome.io.net/src/main/java/org/eclipse/smarthome/io/net/http/HttpUtil.java
+
+Not relevant
+
+./bundles/io/org.eclipse.smarthome.io.rest.auth.basic/src/main/java/org/eclipse/smarthome/io/rest/auth/basic/internal/BasicSecurityHandler.java
+
+This handler is responsible for parsing basic authentication sent over standard http header.
+Child class of AbstractSecurityHandler. By using the HTTP request and extracting the header from it, it creates a pair of credentials: username and password. Returns object of type UsernamePasswordCredentials. Only works for the "basic" type of authentication, i.e., it doesn't recognize OAuth, for example.
+
+./bundles/ui/org.eclipse.smarthome.ui/src/main/java/org/eclipse/smarthome/ui/internal/proxy/AsyncProxyServlet.java
+
+Appends a Basic Authentication header to the HTTP request if user and password are included in the URI. Implemented method is copyRequestHeaders(HttpServletRequest clientRequest, Request proxyRequest), and then passes it to service.maybeAppendAuthHeader(service.uriFromRequest(clientRequest), proxyRequest)
+
+./bundles/ui/org.eclipse.smarthome.ui/src/main/java/org/eclipse/smarthome/ui/internal/proxy/ProxyServletService.java
+
+Implements the void maybeAppendAuthHeader(URI uri, Request request)  method to take user credentials from URI and translate them to the actual HTTP request authentication field.
+
+bundles/io/org.eclipse.smarthome.io.rest.core/OSGI-INF/loginresource.xml
+
+Doesn't exist anymore
+
+./bundles/io/org.eclipse.smarthome.io.rest.sse/src/main/java/org/eclipse/smarthome/io/rest/sse/SseResource.java
+
+Makes use of the annotation: @RolesAllowed({ Role.USER }) to permit users with the role username to access the SseResource methods and fields. SSE Resource pushes events to currently listening clients.
+
+./bundles/io/org.eclipse.smarthome.io.rest.core/src/main/java/org/eclipse/smarthome/io/rest/core/internal/channel/ChannelTypeResource.java
+
+Makes use of annotation @RolesAllowed({ Role.ADMIN })
+
+./bundles/io/org.eclipse.smarthome.io.rest.core/src/main/java/org/eclipse/smarthome/io/rest/core/item/ItemResource.java
+
+Includes the following annotation and method:
+
+    @RolesAllowed({ Role.USER, Role.ADMIN })
+    public Response getItems(String language, String type, String tags, ...)
+		    
+There are many more classes that make use of this annotation in the same manner, and thus there is no need for further mention.
+
+Note on implementation:
+All the previous classes are mostly wrappers to set up the actual authentication logic done in the JaasAuthenticationProvider. E.g.: taking the username and password from http request header, parsing the credentials from the URI, etc. The authentication logic is actually done in the loginContext.login() method. LoginContext comes from javax.security.auth.login.LoginContext().
+
+How to trigger authentication in runtime?
+
+Run ESH with the jax-rs security provider installed into the runtime. It is triggered by visiting http://localhost:8080/rest/things
+At the moment, the provider is not included with the runtime, thus it does not ask for credentials. There used to be an error 403 returned whenever the security provider wasn't installed in the runtime, but it has been fixed. It is unknown if authentication is still in place when installed, or if it was disabled by some configuration.
+
+
+-------
+Personal note:
+
+It seems to me that the requirements document published previously is under a very strong influence of many of these implementation concepts, e.g.: context, providers, resources, servlets, etc. A requirements document should be decoupled from implementation details. Especially so for security aspects.
+
+
+Problems with implementation of the first approach:
+
+Authentication and authorization was implemented successfully on /rest, but it's difficult to wire it to the other components of the application, such as /ui. The reasons for this:
+A) Jetty project reformed security handling and it requires quite long sequence of XML calls to configure it fully without webapp.
+B) It's not possible to configure connector level security directly from jetty or pax web level.
+C) Jetty security is WAR-a-like centric while smarthome modules are JARs and deploy single servlets.
+D) It is not possible to centrally configure a basic security at REST level because http context creation is taken over by eclipse source jaxrs integration.
+E) Pax Web uses its own handlers for dispatching requests thus configuration in XML is not applied to things registered in runtime.
+
+src: https://github.com/eclipse/smarthome/pull/2359#issuecomment-258245231
