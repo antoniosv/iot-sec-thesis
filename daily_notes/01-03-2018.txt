@@ -1,0 +1,54 @@
+-------
+Figuring out the architecture of an OSGi Web Application
+
+-First tutorial at https://javabeat.net/writing-an-osgi-web-application/
+
+Web applications are released as WABs, Web Application Bundles, which is just an OSGified WAR archive.
+
+
+----
+Filters
+A filter is a component of Java Servlet that dynamically intercepts requests and responses to transform or use the information in them for some purpose. Filters don't create responses typically, but provide functions that can be attached to a servlet.
+They are useful because filters encapsulate recurring tasks in reusable units. A common task for the web application is to format data sent back to the client. A filter can transform the response to the required format. This transformation component is portable across containers.
+
+A filter can do the function of authorization: block requests based on user identity.
+
+Filters require a two-part effort: programming them and configuring how they are mapped to servlets when the app is deployed in a web container.
+
+-----
+Fitting authentication into web OSGi architecture
+
+An authentication provider proves the identity of users or system processes. When needed the providers makes the identity information available to various components of a system through "subjects".
+A principal is an identity asssigned to a user or group as a result of authentication.
+
+---
+Useful links
+
+Use two kinds of authentication: form authentication for /ui/* and basic authentication for /rest/*
+https://stackoverflow.com/questions/26592821/configure-authentication-for-servlets-in-osgi
+
+Servlets may be registered in the container in different ways, one of them is the OSGi way. To do basic authentication, it can be done by the means of the HttpContext. Look at Pax Web sample: https://github.com/ops4j/org.ops4j.pax.web/blob/master/samples/authentication/src/main/java/org/ops4j/pax/web/samples/authentication/AuthHttpContext.java
+
+Process for authentication OSGi https://stackoverflow.com/questions/35358571/how-cq-authenticate-each-request
+Authentication is done before the filter processing: as soon as a request arrives, the OSGi HttpService calls handleSecurity of the HttpContext associated with servlet/resource. Then, the handleSecurity calls some kind of Authenticator.authentication. The Authenticator selects an authenticationHandler for the request, and forwards the authenticate call. The authenticationHandler implements extractCredentials() method that reads the credentials from the cookies. It returns an AuthenticationInfo after successful authentication, and if authentication fails, then an anonymous session is acquired, or requestCredentials method is called, which redirects user to a login form. After the execution of handleSecurity is finished, the HttpService can terminate the request (if handleSecurity returned false) or call a service specific to the framework. Then, request level filters can be processed after that.
+
+An example on the usefulness of pax web:
+https://ops4j1.jira.com/wiki/spaces/paxweb/pages/5046927/Examples
+
+
+
+-----
+Extra
+Apache Karaf is an OSGI environment that provices additional things on top of the standard OSGi implementation (like remote SSH access). It can run any OSGi runtime. The advantage of Karaf is that it can plug in any framework, like Felix, Aries and equinox.
+
+----
+Questions:
+
+What's the difference between karaf and pax-web?
+
+Pax Web is basically a bundle set and an OSGi Http Service extension that implements funcionality of the Web Container with extensions for JSP and WAR support. So, it replaces HTTP service implementation, or rather, extends the OSGi Http Service with better servlet support, filters, listeners, error pages and JSPs, and some others to meet the latest spec of the Servlet. It facilitates the installation of WAR bundles, as well as the discovery of web elements published as OSGi services.
+https://github.com/ops4j/org.ops4j.pax.web
+
+Karaf 4.1 uses Pax-Web 6. OH2 uses the current version of Karaf.
+
+
