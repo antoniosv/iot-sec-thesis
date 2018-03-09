@@ -1,3 +1,5 @@
+* OSGi interoduction *
+
 OSGi is a set of specifications that defines a component and service model for Java. The idea comes from the modularity of software: it can be broken up in many small parts as components or bundles. These bundles may interact with each other through some predefined methods, i.e., an API. Thus, OSGi defines how a these components may be able to talk to each other, and for this, each bundles dedices which packages it may offer (exported packages), and may also require funcionalities from other bundles (eefined as imported packages), which are known as dependencies. The main advantage of using this type of architecture is that the components and services can be dynamically installed, activated, de-activated, updated and uninstalled. In very practical terms, a bundle or plug-in is packaged as a jar file with some meta information. This meta information is stored in the META-INF/MANIFEST.MF file.
 
 Some of the fields in the MANIFEST.MF file are:

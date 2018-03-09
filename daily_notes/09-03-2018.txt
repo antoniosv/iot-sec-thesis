@@ -1,0 +1,48 @@
+* Java EE Security *
+Based on https://docs.oracle.com/javaee/7/tutorial/security-intro.htm#BNBWJ
+(relevant reference from Java EE 6 https://docs.oracle.com/javaee/6/tutorial/doc/gjiie.html )
+
+According to the ideal case spec, Web Server verifies credentials and provides session ID or similar inside the session context. Simultaneously, a corresponding session ID (or context) is created on the security context of the "business logic" part of the application (in this particular case, the EJB container).
+
+The business logic (EJB) takes care of *enforcing* access control on the method or resource.
+
+SASL is a framework into which specific authentication mechanisms that specify the contents and semantics of the authentication data can fit.
+Meanwhile,
+JAAS provides a pluggable and extensible framework for programmatic user authentication and authorization.
+
+
+On the "full" security:
+when (application-layer security is) applied to a web services application, in which data often travels across several intermediaries, you would need to use the Java EE security mechanisms along with transport-layer security and message-layer security for a complete security solution.
+
+A container provides two types of security: declarative and programmatic.
+
+When declarative security is not enough to express the security model of an application, the API for programmatic security with EJBContext and HttpServletRequest interfaces may be used. These methods contained in these allow the components to take decisions based on the security role of the caller.
+
+A realm is a security policy domain defined for a web or application server. A realm contains a collection of users, who may or may not be assigned to a group.
+The protected resources on a server can be partitioned into a set of protection spaces, each with its own authentication scheme and/or authorization database containing a collection of users and groups. A realm is a complete database of users and groups identified as valid users of one or more applications and controlled by the same authentication policy.
+
+The file-realm is of interest here!
+
+Some terminology in Java EE:
+
+- A principal is an entity that can be authenticated by an authentication protocol in a security service that is deployed in an enterprise. A principal is identified by using a principal name and authenticated by using authentication data.
+
+- A security policy domain, also known as a security domain or realm, is a scope over which a common security policy is defined and enforced by the security administrator of the security service.
+
+- Security attributes are a set of attributes associated with every principal. The security attributes have many uses: for example, access to protected resources and auditing of users. Security attributes can be associated with a principal by an authentication protocol.
+
+- A credential is an object that contains or references security attributes used to authenticate a principal for Java EE services. A principal acquires a credential upon authentication or from another principal that allows its credential to be used.
+
+For a servlet, you can use the @HttpConstraint annotation within the @ServletSecurity annotation to specify the roles that are allowed to access the servlet.
+Example:
+	@WebServlet(name = "PayrollServlet", urlPatterns = {"/payroll"})
+	@ServletSecurity(
+	@HttpConstraint(transportGuarantee = TransportGuarantee.CONFIDENTIAL,
+	    rolesAllowed = {"DEPT-ADMIN", "DIRECTOR"}))
+	    public class GreetingServlet extends HttpServlet {
+	    
+* On securing Web applications from Java EE *
+https://docs.oracle.com/javaee/7/tutorial/security-webtier.htm
+
+Code in ESH for resources is registered with the Jersey servlet.
+Consider ./org.eclipse.smarthome.io.rest.core/src/main/java/org/eclipse/smarthome/io/rest/core/internal/thing/ThingResource.java

@@ -1,0 +1,47 @@
+*REST API in ESH*
+
+ESH uses the implementation of Jersey for the REST API, according to the JAX-RS specification.
+This API is used in these classes:
+
+./bundles/automation/org.eclipse.smarthome.automation.rest/src/main/java/org/eclipse/smarthome/automation/rest/internal/RuleResource.java
+./bundles/automation/org.eclipse.smarthome.automation.rest/src/main/java/org/eclipse/smarthome/automation/rest/internal/ModuleTypeResource.java
+./bundles/automation/org.eclipse.smarthome.automation.rest/src/main/java/org/eclipse/smarthome/automation/rest/internal/TemplateResource.java
+./bundles/io/org.eclipse.smarthome.io.rest.log/src/main/java/org/eclipse/smarthome/io/rest/log/internal/LogHandler.java
+./bundles/io/org.eclipse.smarthome.io.rest.sse/src/main/java/org/eclipse/smarthome/io/rest/sse/internal/async/BlockingAsyncFeature.java
+./bundles/io/org.eclipse.smarthome.io.rest.sse/src/main/java/org/eclipse/smarthome/io/rest/sse/internal/util/SseUtil.java
+./bundles/io/org.eclipse.smarthome.io.rest.sse/src/main/java/org/eclipse/smarthome/io/rest/sse/SseResource.java
+./bundles/io/org.eclipse.smarthome.io.rest.sitemap/src/main/java/org/eclipse/smarthome/io/rest/sitemap/internal/SitemapResource.java
+./bundles/io/org.eclipse.smarthome.io.rest.core/src/main/java/org/eclipse/smarthome/io/rest/core/internal/channel/ChannelTypeResource.java
+./bundles/io/org.eclipse.smarthome.io.rest.core/src/main/java/org/eclipse/smarthome/io/rest/core/internal/service/ConfigurableServiceResource.java
+./bundles/io/org.eclipse.smarthome.io.rest.core/src/main/java/org/eclipse/smarthome/io/rest/core/internal/thing/ThingTypeResource.java
+./bundles/io/org.eclipse.smarthome.io.rest.core/src/main/java/org/eclipse/smarthome/io/rest/core/internal/thing/ThingResource.java
+./bundles/io/org.eclipse.smarthome.io.rest.core/src/main/java/org/eclipse/smarthome/io/rest/core/internal/link/ItemChannelLinkResource.java
+./bundles/io/org.eclipse.smarthome.io.rest.core/src/main/java/org/eclipse/smarthome/io/rest/core/internal/extensions/ExtensionResource.java
+./bundles/io/org.eclipse.smarthome.io.rest.core/src/main/java/org/eclipse/smarthome/io/rest/core/internal/GsonProvider.java
+./bundles/io/org.eclipse.smarthome.io.rest.core/src/main/java/org/eclipse/smarthome/io/rest/core/internal/binding/BindingResource.java
+./bundles/io/org.eclipse.smarthome.io.rest.core/src/main/java/org/eclipse/smarthome/io/rest/core/internal/persistence/PersistenceResource.java
+./bundles/io/org.eclipse.smarthome.io.rest.core/src/main/java/org/eclipse/smarthome/io/rest/core/internal/discovery/InboxResource.java
+./bundles/io/org.eclipse.smarthome.io.rest.core/src/main/java/org/eclipse/smarthome/io/rest/core/internal/discovery/DiscoveryResource.java
+./bundles/io/org.eclipse.smarthome.io.rest.core/src/main/java/org/eclipse/smarthome/io/rest/core/internal/item/ItemResource.java
+./bundles/io/org.eclipse.smarthome.io.rest/src/main/java/org/eclipse/smarthome/io/rest/JSONResponse.java
+./bundles/io/org.eclipse.smarthome.io.rest.auth.basic/src/main/java/org/eclipse/smarthome/io/rest/auth/basic/internal/BasicSecurityHandler.java
+
+
+In tests:
+./bundles/io/org.eclipse.smarthome.io.rest.sitemap.test/src/test/java/org/eclipse/smarthome/io/rest/sitemap/internal/SitemapResourceTest.java
+./bundles/io/org.eclipse.smarthome.io.rest.core.test/src/test/java/org/eclipse/smarthome/io/rest/core/internal/channel/ChannelTypeResourceTest.java
+./bundles/io/org.eclipse.smarthome.io.rest.core.test/src/test/java/org/eclipse/smarthome/io/rest/core/internal/item/ItemResourceOSGiTest.java
+
+https://dennis-xlc.gitbooks.io/restful-java-with-jax-rs-2-0-2rd-edition/content/en/part1/chapter1/restful_architectural_principles.html
+
+Why use annotations in Java?
+To route client requests to matching Java class methods and declaratively map request data to the parameters of those methods. I.e., from the HTTP request extract the data, and pass them as parameters to the Java methods. The annotations are also used to provide static metadata to create responses.
+
+The REST architecture has addressable resoruces which can be accessed via a URI. It also defines a set of methods to manipulate these resources.
+
+In a RESTful system, endpoints are also referred as resources (and are identified using a URI). In the case of ESH, each servlet is an endpoit, thus a resource, which should have its access controlled.
+
+A JAX-RS service is a Java class that uses JAX-RS annotations to bind and map specific incoming HTTP requests to Java methods that can service these requests.
+
+In JAX-RS, you are also allowed to define a Java interface that contains all your JAX-RS annotation metadata instead of applying all your annotations to your implementation class.
+

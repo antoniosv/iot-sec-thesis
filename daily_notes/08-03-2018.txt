@@ -1,0 +1,36 @@
+* Jersey (JAX-RS) and Basic Authentication *
+
+https://simplapi.wordpress.com/2013/01/24/jersey-jax-rs-implements-a-http-basic-auth-decoder/
+https://simplapi.wordpress.com/2015/09/17/jersey-jax-rs-implements-a-http-basic-auth-decoder-for-2-x-branch/
+https://simplapi.wordpress.com/2015/09/19/jersey-jax-rs-securitycontext-in-action/
+
+Jersey is a framework that implements JAX-RS, and it allows annotations to be used for a REST application in Java.
+HTTP Basic Authentication checks each request and then allows or denies it, according to the credentials (username:password) provided. It also grants or prohibits access to resources according to that authentication. Login is done within the request (with a special HTTP header).
+
+A class that parses the HTTP request to get username and password is needed. Starting from Jersey 2.x, the filter system runs in parallel of the resource code. This means that a resource will have access to a request before the user is added to the request, and thus authorization cannot be enforced. As an alternative, Jersey introduces the PreMatching annotation that means "must run before".
+Example:
+	@Provider
+	@PreMatching
+	public class AuthFilter implements ContainerRequestFilter {
+	// showing relevant parts:
+	   String auth = containerRequest.getHeaderString("authorization");
+	   String[] lap = BasicAuth.decode(auth);
+	   User authentificationResult =  AuthentificationThirdParty.authentification(lap[0], lap[1]);
+		   
+
+* Filters *
+
+Basic Authentication Filter https://gist.github.com/neolitec/8953607
+Main points:
+     - BasicAuthenticationFilter implements Filter
+     - @Overrides doFilter
+     - HttpServletRequest object for HTTP header (incl. Authorization)
+     - HttpServletResponse to output response.
+     - If authentication fails, set response header to "WWW-Authenticate", "Basic realm="protected"", and error 401 with a message.
+     - It does however not set up a login context (request.login(name, pass)).
+
+
+* On Paper UI *
+The web application, Paper UI, includes some module for authentication in:
+
+    ./extensions/ui/org.eclipse.smarthome.ui.paper/node_modules/localtunnel/node_modules/request/lib/auth.js

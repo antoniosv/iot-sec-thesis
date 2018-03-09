@@ -1,0 +1,101 @@
+OSGI architecture in ESH
+
+The unit is a bundle.
+Register a bundle when it's started with: bc.registerService, where bc is a BundleContext. The class implements BundleActivator.
+
+ItemResource implements RESTResource, and it include the implementation of the REST operations, like the getItems method.
+    @GET
+    @RolesAllowed({ Role.USER, Role.ADMIN })
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Get all available items.", response = EnrichedItemDTO.class, responseContainer = "List")
+    @ApiResponses(value = {
+           @ApiResponse(code = 200, message = "OK", response = EnrichedItemDTO.class, responseContainer = "List") })
+    public Response getItems(...) {...}
+
+
+In ESH, core of the rest functionality to access channels, items, bindings, etc., is located in:
+bundles/io/org.eclipse.smarthome.io.rest.core
+
+Misc: DTO stands for Data Transfer Object (serialization) used in some of the classes inside the rest package.
+
+OSGI 4.2 javadoc: https://osgi.org/javadoc/r4v42/index.html
+
+OSGI has a package called org.osgi.service.http which inclludes HttpContext and HttpService.
+HttpContext is an interface that defines methods that the HttpService may call to get information about a registration.
+HttpService allows other bundles in the OSGi environment to dynamically register resources and servlets into the URI namespace of HttpService
+
+Servlet registration into the URI namespace is done through the HttpService interface from the org.osgi.service.http package.
+If I have an osgi runtime, and then I want to add a servlet that prints a hello world at /example, then I register the servlet at that namespace, and if successful, I can open /example and get the hello world. In the same way, resources can be added to the runtime.
+
+HttpContext has three fields: AUTHENTICATION_TYPE, AUTHORIZATION, and REMOTE_USER, all String constants. E.g. AUTHORIZATION IS "org.osgi.service.useradmin.authorization". Two relevant methods: getResource to map a resource name to a URL, and handleSecurity, which takes care of security for a specified request.
+
+*HandleSecurity*
+The Http Service calls this method before servicing a request. Controls whether the request is processed, else return error.
+An authenticated request will have an Authorization header in the request. If so, the method must set the AUTHENTICATION?TYPE request attribute to the type of authentication used (basic, oauth, etc), and the REMOTE_USER request must be set to the name of the remote user by using setAttribute().
+Additionally, if the authenticated user is also authorized to access certain resources, then the method must set the AUTHORIZATION request attribute to the Authorization object obtained from the org.osgi.service.useradmin.UserAdmin service. 
+
+----
+The automation bundle in ESH includes a REST section to communicate with the event bus. The activator implements the BundleActivator, HttpContext and ServiceTrackerCustomizer. It overrides the addingService method, and inside it gets the httpService object:
+        HttpService httpService = (HttpService) context.getService(reference);
+which is then used to register an object (if it hasn't been added yet). The method handleSecurity is overriden in this class, and it just returns true.
+
+The class HttpContextFactoryServiceImpl from package org.eclipse.smarthome.io.net.http.internal overrides handleSecurity, but it just returns true.
+
+------------
+Authenticate RESTful applications
+https://templth.wordpress.com/2015/01/05/implementing-authentication-with-tokens-for-restful-applications/
+
+RESTful applications do not keep track of user state (e.g. a cookie), but authentication and authorization might be needed. Different approaches: basic authentication, advanced token (OAuth2).
+Basic authentication is based on username and password. HTTP request includes a header called Authorization, formatted like this:
+      Authorization: Base64(username:password)
+
+The following GET request uses basic authentication:
+    GET https://api.myapplication.com/{{entityType}}/(...)
+    Authorization: Basic aHR0cHdhdGNoOmY=
+    (...)
+
+This approach is ad because the secret key is always sent in the request, and not encrypted if traffic is not encrypted. Token is always valid (no expiration date for password). Alternatively, one could use a one-time password, but it hurts the usability.
+
+An OAuth2 authentication mechanism is based on the following elements:
+   - A resource to obtain tokens (based on basic credentials)
+   - A resource to refresh tokens when they expire.
+   - An internal authentication handler based on the provided tokens in the header Authorization. <--- maybe this should be implemented by the individual solutions.
+
+The latter is supposed to check the validity of the token by verifying the signature.
+
+To get a token, an HTTP request would look like this:
+
+   POST https://api.myapplication.com/user/accessToken
+   X-MyApplication-API-Key: myApiKey
+   (...)
+   {
+     "username": "my username",
+      "password": "my password",
+      "token_type": "mac"
+   }
+
+If credentials are correct, response will return: access_token, token_type, expires_in, refresh_token, mac_key (if token_type is mac), and mac_algorithm (if token_type is mac).
+
+At least two token types: mac and bearer. With bearer, a token is generated and sent to client. Can be directly used within header Authorization. In the case of a mac token, only the MAC of the token is sent to the client.
+
+For each of these, there are two types: temporary and refresh tokens. The temp. one has an expiration, and thus a refresh token is needed as well later on.
+
+There are many ways to authenticate with a refresh token, and one of them is through OAuth2, and depending on whether it's a bearer or mac, there may be additional steps to follow. The data contained in the response inside the Authorization header helps with the authorization. In the case of a bearer token, a response is formed as:
+
+      GET https://api.myapplication.com/{{entityType}}/(...)
+      X-MyApplication-API-Key: myApiKey
+      Authorization: Bearer vV6xEfVgQZv4ABJ6VZDHlQfCaqKgFZuN
+      (...)
+
+In the case of a mac token, the request must be signed, and the signature included in the request. Thus the additional elements are: id, timestamp, nonce, and mac. A typical request with a mac token looks like this:
+
+   GET https://api.myapplication.com/{{entityType}}/(...)
+   X-MyApplication-API-Key: myApiKey
+   Authorization: Mac id="vV6xEfVgQZv4ABJ6VZDHlQfCaqKgFZuN",
+   ts="1420462794", nonce="274312:dj83hs9s",
+   mac="kDZvddkndxvhGRXZhvuDjEWhGeE="
+   (...)
+
+GOAL:
+IMPLEMENT BEARER TOKEN CREATION.
+
