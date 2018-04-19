@@ -1,0 +1,32 @@
+--------------------
+Rendering the UI
+-------------------
+
+Servlets to render the Basic UI can be found on marthome/git/smarthome/extensions/ui/org.eclipse.smarthome.ui.basic/
+The CmdServlet sends the commands to the event bus of the ESH.
+WebAppServlet serves the html code based on the sitemap model.
+
+
+Idea on authorization:
+Check JWT token, if valid, grant access to the endpoint, i.e., to get or set data. The UI will still "work" even without authentication, but the data won't be there.
+
+
+----------------------------
+Implementing JWT into ESH
+----------------------------
+
+To make use of a 3rd party library into the code, it's enough to put the dependency in the pom.xml file. Then, in the source code, just put the import. For example, in pom.xml:
+
+   <dependencies>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>${version.jjwt}</version>
+        </dependency>
+   <dependencies>
+
+And in the file, e.g. org.agoncal.sample.jaxrs.jwt.rest.UserEndPoint.java:
+    import io.jsonwebtoken.Jwts;
+    import io.jsonwebtoken.SignatureAlgorithm;
+
+Then, any methods from the Jwts and SignatureAlgorithm classes may be used in the UserEndPoint class.

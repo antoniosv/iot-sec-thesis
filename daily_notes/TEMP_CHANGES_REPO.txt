@@ -1,0 +1,8 @@
+openhab2 repo:
+- Runtime configuration now includes these plugins:
+  org.eclipse.core.runtime
+  org.openhab.training.helloosgi
+  org.eclipse.core.contenttype
+  org.eclipse.equinox.app
+  org.eclipse.equinox.preferences
+  org.eclipse.core.jobs

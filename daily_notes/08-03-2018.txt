@@ -1,3 +1,11 @@
+* Reminder on Pax-Web *
+https://ops4j1.jira.com/wiki/spaces/paxweb/overview
+
+OSGi R4 Http Service and Web Applications (OSGi Enterprise Release chapter 128) implementation using Jetty 8.
+Pax Web extends OSGi Http Service with better servlet support, filters, listeners, error pages and JSPs and some others in order to meet the latest versions of Servlet specs.
+Pax Web facilitates an easy installation of WAR bundles as well as discovery of web elements published as OSGi services. All of this beside the, standard, programmatic registration as detailed in the HTTP Service specs.
+
+
 * Jersey (JAX-RS) and Basic Authentication *
 
 https://simplapi.wordpress.com/2013/01/24/jersey-jax-rs-implements-a-http-basic-auth-decoder/
@@ -16,7 +24,25 @@ Example:
 	   String auth = containerRequest.getHeaderString("authorization");
 	   String[] lap = BasicAuth.decode(auth);
 	   User authentificationResult =  AuthentificationThirdParty.authentification(lap[0], lap[1]);
-		   
+
+Looking at more things from JAX-RS as a WAR:
+https://dennis-xlc.gitbooks.io/restful-java-with-jax-rs-2-0-2rd-edition/content/en/part1/chapter15/authentication_and_authorization_in_jax_rs.html
+
+Interesting things:
+   - Intended to use on WAR applications (with web.xml file)
+   - Use configuration mostly to define authentication and authorization.
+   - Optionally may use authorization annotations from the javax.annotation.security package: @RolesAllowed, @DenyAll, @PermitAll, @RunAs
+
+There is, however, a programmatic approach to security, by using the API within javax.ws.rs.core.SecurityContext. This interface defines the following methods:
+
+  public interface SecurityContext {
+   public Principal getUserPrincipal();
+   public boolean isUserInRole(String role);
+   public boolean isSecure();
+   public String getAuthenticationScheme();
+   }
+	    
+A Principal object represents the individual user that is invoking the HTTP request. The method getAuthenticationScheme can return values like BASIC, DIGEST, CLIENT_CERT, and FORM. A SecurityContext instance can be accessed by injecting it into a field, setter method, or resource method parameter using the @Context annotation.
 
 * Filters *
 

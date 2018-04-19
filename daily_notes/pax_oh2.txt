@@ -1,0 +1,13 @@
+Idea: create a filter in openhab2, and register it.
+With it, catch the http request, and print it as log, as a starting point.
+Later on, we can take it a level higher and enforce authentication for servlets and REST endpoints.
+
+Hint: use http whiteboard pattern to register filter. It is supported by pax-web.
+
+So: install pax-web bundles into openhab2 runtime first, and then register filter.
+
+Packages that might be required:
+  org.osgi.service.http.whiteboard
+  org.osgi.service.http.context
+  
+  

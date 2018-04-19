@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <!--
+       Licensed to the Apache Software Foundation (ASF) under one
+       or more contributor license agreements.  See the NOTICE file
+       distributed with this work for additional information
+       regarding copyright ownership.  The ASF licenses this file
+       to you under the Apache License, Version 2.0 (the
+       "License"); you may not use this file except in compliance
+       with the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+       Unless required by applicable law or agreed to in writing,
+       software distributed under the License is distributed on an
+       "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+       KIND, either express or implied.  See the License for the
+       specific language governing permissions and limitations
+       under the License.
+    -->
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.dreamland</groupId>
+    <artifactId>org.dreamland.whitefilter</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>bundle</packaging>
+
+    <name>org.dreamland.whitefilter Bundle</name>
+    <description>
+        org.dreamland.whitefilter OSGi bundle project.
+    </description>
+
+    <properties>
+        <maven-bundle-plugin.version>2.5.4</maven-bundle-plugin.version>
+        <osgi.version>6.0.0</osgi.version>
+	<bundle.symbolicName>org.dreamland.whitefilter</bundle.symbolicName>
+	<bundle.namespace>org.dreamland.whitefilter</bundle.namespace>
+
+	<!-- Dependency versions -->
+	<dependency.slf4j>1.7.12</dependency.slf4j>
+	<dependency.commons-logging.version>1.1.1</dependency.commons-logging.version>
+	<dependency.felix.framework.version>5.6.10</dependency.felix.framework.version>
+	<dependency.osgi.version>6.0.0</dependency.osgi.version>
+	<dependency.paxweb.version>7.0.0</dependency.paxweb.version>
+		
+	<!-- Plugins versions -->
+	<servlet.spec.groupId>javax.servlet</servlet.spec.groupId>
+	<servlet.spec.artifactId>javax.servlet-api</servlet.spec.artifactId>
+	<servlet.spec.version>3.1.0</servlet.spec.version>
+	
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+	    <version>${dependency.osgi.version}</version>				
+            <scope>provided</scope>
+        </dependency>
+	<dependency>
+	  <groupId>org.osgi</groupId>
+	  <artifactId>osgi.cmpn</artifactId>
+	  <version>${dependency.osgi.version}</version>	  
+          <scope>provided</scope>
+	</dependency>
+	<dependency>
+	  <groupId>${servlet.spec.groupId}</groupId>
+	  <artifactId>${servlet.spec.artifactId}</artifactId>
+	  <version>${servlet.spec.version}</version>	  
+	  <scope>provided</scope>
+	</dependency>
+	<dependency>
+	  <groupId>org.ops4j.pax.web</groupId>
+	  <artifactId>pax-web-runtime</artifactId>
+	  <version>${dependency.paxweb.version}</version>
+	  <scope>provided</scope>
+	</dependency>
+	<dependency>
+	  <groupId>org.ops4j.pax.web</groupId>
+	  <artifactId>pax-web-extender-whiteboard</artifactId>
+	  <version>${dependency.paxweb.version}</version>	  
+	  <scope>provided</scope>
+	</dependency>
+	<dependency>
+	  <groupId>org.slf4j</groupId>
+	  <artifactId>slf4j-api</artifactId>
+	  <version>${dependency.slf4j}</version>	  
+	  <scope>provided</scope>
+	</dependency>
+        <dependency>
+          <groupId>org.ops4j.pax.web</groupId>
+          <artifactId>pax-web-api</artifactId>
+	  <version>${dependency.paxweb.version}</version>	  
+        </dependency>	
+    </dependencies>
+
+    <build>
+      <plugins>
+	<plugin>
+	  <groupId>org.apache.maven.plugins</groupId>
+	  <artifactId>maven-compiler-plugin</artifactId>
+	  <configuration>
+	    <source>1.8</source>
+	    <target>1.8</target>
+	  </configuration>
+	</plugin>	
+        <plugin>
+          <groupId>org.apache.felix</groupId>
+          <artifactId>maven-bundle-plugin</artifactId>
+          <version>${maven-bundle-plugin.version}</version>
+          <extensions>true</extensions>
+          <configuration>
+            <instructions>
+              <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
+              <Bundle-Version>${project.version}</Bundle-Version>
+              <Bundle-Activator>org.dreamland.whitefilter.Activator</Bundle-Activator>
+                        <Export-Package>
+                          org.dreamland.whitefilter*;version=${project.version}
+                        </Export-Package>
+                        <Import-Package>
+			  javax.servlet.*; version="2.5",
+                            *
+                        </Import-Package>
+            </instructions>
+          </configuration>
+        </plugin>
+      </plugins>
+    </build>
+
+</project>

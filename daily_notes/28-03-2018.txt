@@ -1,0 +1,18 @@
+--RECAP AND NEXT STEPS--
+
+There is an existing implementation using JAAS to check basic authentication and enforce authorization depending on the annotations used. This effort could not be extended to the OH2, thus another solution is being sought.
+
+The idea is that a request is intercepted before it reaches the servlet that services the request. The interception can be done with a filter or with an intermediate servlet. The request is supposed to contain a JWT. This token is used to verify the authenticity of the request. If it is recognized by the server, then the request proceeds.
+
+Implementing JWT:
+
+On JAAS, embed the JWT in the password field of the MQTT CONNECT packet. Then retrieve the password using the JAAS API. The person who followed this approach used MQTT over WSS. This approach can work with any protocol, not just MQTT.
+https://stackoverflow.com/questions/30937475/jwt-jaas-how-to-get-the-jwt-in-websocket-header
+
+JAAS authentication in a web application:
+https://stackoverflow.com/questions/5252940/newbie-at-jaas-authentication-sign-in-using-a-token-in-the-url-bar
+In a nutshell: it might be easier to use a servlet filter instead of JAAS. In the filter, if authentication is successful, the session object can be populated to indicate success.
+
+Servlet registration
+http://massapi.com/method/org/osgi/service/http/HttpService.registerServlet-3.html
+
