@@ -80,6 +80,11 @@ public class Activator implements BundleActivator {
 	    servletFilteredReg = null;
 	}
 
+	if (httpContextReg != null) {
+	    httpContextReg.unregister();
+	    httpContextReg = null;
+	}	
+
     }
 
 }
