@@ -47,14 +47,14 @@ public class Activator implements BundleActivator {
 
 	// let's try to register first the custom http context that handles security
 	props = new Hashtable<>();
-	props.put(ExtenderConstants.PROPERTY_HTTP_CONTEXT_ID, "forbidden");
+	props.put(ExtenderConstants.PROPERTY_HTTP_CONTEXT_ID, "pollo");
 	httpContextReg = bundleContext.registerService(HttpContext.class, new WhiteboardContext(), props);
 	
 	//register the servlet
 	props = new Hashtable<>();
 	//props.put("alias", "/whitefiltered");
 	props.put(ExtenderConstants.PROPERTY_ALIAS, "/whitefiltered");
-	props.put(ExtenderConstants.PROPERTY_HTTP_CONTEXT_ID, "forbidden");
+	props.put(ExtenderConstants.PROPERTY_HTTP_CONTEXT_ID, "pollo");
 	servletFilteredReg = bundleContext.registerService(Servlet.class, new WhiteboardServlet("/whitefiltered"), props);
 	
 	try {	    

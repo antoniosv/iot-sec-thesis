@@ -18,6 +18,7 @@ package org.dreamland.whitefilter;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Base64;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,10 +35,37 @@ public class WhiteboardContext implements HttpContext {
     private static final Logger LOG = LoggerFactory.getLogger(WhiteboardContext.class);
 
     public boolean handleSecurity(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
-	LOG.info("Forbidden access!");
-	response.addHeader("WWW-Authenticate", "Basic realm=\"Test Realm\"");
-	return false;	
+	if(request.getHeader("Authorization") == null) {
+	    LOG.info("Forbidden access!");
+	    response.addHeader("WWW-Authenticate", "Basic realm=\"Test Realm\"");
+	    response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+	    return false;
+	}
+	if(authenticated(request)) {
+	    return true;
+	} else {
+	    LOG.info("Forbidden access!");
+	    response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+	    return false;
+	}	    	
     }
+
+    protected boolean authenticated(HttpServletRequest request) {
+	request.setAttribute(AUTHENTICATION_TYPE, HttpServletRequest.BASIC_AUTH);
+
+	String authzHeader = request.getHeader("Authorization");
+	String usernameAndPassword = new String(Base64.getDecoder().decode(authzHeader.substring(6).getBytes()));
+	int userNameIndex = usernameAndPassword.indexOf(":");
+	String username = usernameAndPassword.substring(0, userNameIndex);
+	String password = usernameAndPassword.substring(userNameIndex + 1);
+
+	boolean success = ((username.equals("poi") && password.equals("poi")));
+	if(success) {
+	    request.setAttribute(REMOTE_USER, "boy");
+	}
+	return success;
+    }
+    
 
     public URL getResource(final String name) {
 	throw new IllegalStateException("Can't access this");
