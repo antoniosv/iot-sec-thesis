@@ -39,17 +39,25 @@ public class Activator implements BundleActivator {
 
     private ServiceRegistration<Servlet> servletFilteredReg;
     private ServiceRegistration<Filter> filterReg;
+    private ServiceRegistration<HttpContext> httpContextReg;
     
-
     public void start(BundleContext bundleContext) {
         System.out.println("alo polisia");
 	Dictionary<String, String> props;
 
-	try {
-	    // first register the servlet
-	    props = new Hashtable<>();
-	    props.put("alias", "/whitefiltered");
-	    servletFilteredReg = bundleContext.registerService(Servlet.class, new WhiteboardServlet("/whitefiltered"), props);
+	// let's try to register first the custom http context that handles security
+	props = new Hashtable<>();
+	props.put(ExtenderConstants.PROPERTY_HTTP_CONTEXT_ID, "forbidden");
+	httpContextReg = bundleContext.registerService(HttpContext.class, new WhiteboardContext(), props);
+	
+	//register the servlet
+	props = new Hashtable<>();
+	//props.put("alias", "/whitefiltered");
+	props.put(ExtenderConstants.PROPERTY_ALIAS, "/whitefiltered");
+	props.put(ExtenderConstants.PROPERTY_HTTP_CONTEXT_ID, "forbidden");
+	servletFilteredReg = bundleContext.registerService(Servlet.class, new WhiteboardServlet("/whitefiltered"), props);
+	
+	try {	    
 	    // and then register the filter
 	    props = new Hashtable<>();
 	    props.put(ExtenderConstants.PROPERTY_URL_PATTERNS, "whitefiltered/*");
