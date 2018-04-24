@@ -52,19 +52,20 @@ public class Activator implements BundleActivator {
 	
 	//register the servlet
 	props = new Hashtable<>();
-	//props.put("alias", "/whitefiltered");
 	props.put(ExtenderConstants.PROPERTY_ALIAS, "/whitefiltered");
+	// this links the http context with the servlet:
 	props.put(ExtenderConstants.PROPERTY_HTTP_CONTEXT_ID, "pollo");
 	servletFilteredReg = bundleContext.registerService(Servlet.class, new WhiteboardServlet("/whitefiltered"), props);
-	
-	try {	    
-	    // and then register the filter
-	    props = new Hashtable<>();
-	    props.put(ExtenderConstants.PROPERTY_URL_PATTERNS, "whitefiltered/*");
-	    filterReg = bundleContext.registerService(Filter.class, new WhiteboardFilter(), props);	    
-	} catch(NoClassDefFoundError ignore) {
-	    LOG.warn("Cannot start filter example (javax.servlet version?): " + ignore.getMessage());
-	}
+
+	// we don't need filters
+	// try {	    
+	//     // and then register the filter
+	//     props = new Hashtable<>();
+	//     props.put(ExtenderConstants.PROPERTY_URL_PATTERNS, "whitefiltered/*");
+	//     filterReg = bundleContext.registerService(Filter.class, new WhiteboardFilter(), props);	    
+	// } catch(NoClassDefFoundError ignore) {
+	//     LOG.warn("Cannot start filter example (javax.servlet version?): " + ignore.getMessage());
+	// }
     }
 
     public void stop(BundleContext context) {

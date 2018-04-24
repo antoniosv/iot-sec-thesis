@@ -19,6 +19,14 @@ package org.dreamland.whitefilter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Base64;
+import java.text.ParseException;
+
+import java.security.interfaces.*;
+import javax.crypto.*;
+import java.security.*;
+
+import com.nimbusds.jose.*;
+import com.nimbusds.jose.crypto.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,7 +49,7 @@ public class WhiteboardContext implements HttpContext {
 	    response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 	    return false;
 	}
-	if(authenticated(request)) {
+	if(basicAuthenticated(request)) {
 	    return true;
 	} else {
 	    LOG.info("Forbidden access!");
@@ -50,7 +58,45 @@ public class WhiteboardContext implements HttpContext {
 	}	    	
     }
 
-    protected boolean authenticated(HttpServletRequest request) {
+    protected boolean jwtAuthenticated(HttpServletRequest request) throws JOSEException{
+    	KeyPairGenerator keyGenerator = null;
+    	try {
+    	keyGenerator = KeyPairGenerator.getInstance("RSA");
+    	keyGenerator.initialize(1024);
+    	} catch(NoSuchAlgorithmException e) {
+    	    // skip
+    	}
+
+    	RSAPublicKey publicKey = null; 
+    	RSAPrivateKey privateKey = null;
+    	try {	    
+    	    KeyPair kp = keyGenerator.genKeyPair();
+    	    publicKey = (RSAPublicKey)kp.getPublic();
+    	    privateKey = (RSAPrivateKey)kp.getPrivate();	    
+    	} catch(Exception e) {
+    	    //skip
+    	}
+
+    	JWSSigner signer = new RSASSASigner(privateKey);
+
+    	JWSObject jwsObject = new JWSObject(
+    					    new JWSHeader.Builder(JWSAlgorithm.RS256).keyID("123").build(),
+    					    new Payload("Alo polisia"));
+
+    	jwsObject.sign(signer);
+	
+    	String s = jwsObject.serialize();
+    	try {
+    	jwsObject = JWSObject.parse(s);
+    	} catch(ParseException e) {}
+    	JWSVerifier verifier = new RSASSAVerifier(publicKey);
+
+    	LOG.info("Payload: " + jwsObject.getPayload().toString());
+	
+    	return false;
+    }
+
+    protected boolean basicAuthenticated(HttpServletRequest request) {
 	request.setAttribute(AUTHENTICATION_TYPE, HttpServletRequest.BASIC_AUTH);
 
 	String authzHeader = request.getHeader("Authorization");
