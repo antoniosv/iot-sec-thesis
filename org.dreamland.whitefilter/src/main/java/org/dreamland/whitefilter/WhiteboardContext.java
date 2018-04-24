@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Base64;
 import java.text.ParseException;
+import java.util.StringTokenizer;
 
 import java.security.interfaces.*;
 import javax.crypto.*;
@@ -41,59 +42,86 @@ import org.slf4j.LoggerFactory;
 public class WhiteboardContext implements HttpContext {
 
     private static final Logger LOG = LoggerFactory.getLogger(WhiteboardContext.class);
+    private static KeyPair kp = null;
 
-    public boolean handleSecurity(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
+    public boolean handleSecurity(final HttpServletRequest request, final HttpServletResponse response) throws IOException {		
 	if(request.getHeader("Authorization") == null) {
 	    LOG.info("Forbidden access!");
 	    response.addHeader("WWW-Authenticate", "Basic realm=\"Test Realm\"");
 	    response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 	    return false;
 	}
-	if(basicAuthenticated(request)) {
-	    return true;
-	} else {
-	    LOG.info("Forbidden access!");
-	    response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-	    return false;
-	}	    	
+	try {
+	    if(jwtAuthenticated(request)) {
+		return true;		
+	    } else {
+		LOG.info("Forbidden access!");
+		response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+		return false;
+	    }
+	} catch(JOSEException e) {
+	    // skip
+	}
+	return false;
     }
 
-    protected boolean jwtAuthenticated(HttpServletRequest request) throws JOSEException{
-    	KeyPairGenerator keyGenerator = null;
-    	try {
-    	keyGenerator = KeyPairGenerator.getInstance("RSA");
-    	keyGenerator.initialize(1024);
-    	} catch(NoSuchAlgorithmException e) {
-    	    // skip
-    	}
+    protected KeyPair getKeyPair() {
+	if(kp == null) {
+	    try {
+	    KeyPairGenerator keyGenerator = null;
+	    keyGenerator = KeyPairGenerator.getInstance("RSA");
+	    keyGenerator.initialize(1024);
+	    kp = keyGenerator.genKeyPair();
+	    } catch(NoSuchAlgorithmException e) {}
+	}
+	return kp;
+    }
 
-    	RSAPublicKey publicKey = null; 
-    	RSAPrivateKey privateKey = null;
-    	try {	    
-    	    KeyPair kp = keyGenerator.genKeyPair();
-    	    publicKey = (RSAPublicKey)kp.getPublic();
-    	    privateKey = (RSAPrivateKey)kp.getPrivate();	    
-    	} catch(Exception e) {
-    	    //skip
-    	}
+    protected String generateJwt(String username, String claim) throws JOSEException {
+	RSAPublicKey publicKey = (RSAPublicKey)getKeyPair().getPublic();
+	RSAPrivateKey privateKey = (RSAPrivateKey)getKeyPair().getPrivate();
+	JWSSigner signer = new RSASSASigner(privateKey);
 
-    	JWSSigner signer = new RSASSASigner(privateKey);
-
-    	JWSObject jwsObject = new JWSObject(
+	// what's the key ID?
+	JWSObject jwsObject = new JWSObject(
     					    new JWSHeader.Builder(JWSAlgorithm.RS256).keyID("123").build(),
-    					    new Payload("Alo polisia"));
-
+    					    new Payload(username));
     	jwsObject.sign(signer);
+    	String token = jwsObject.serialize();	
+	return token;
 	
-    	String s = jwsObject.serialize();
-    	try {
-    	jwsObject = JWSObject.parse(s);
-    	} catch(ParseException e) {}
-    	JWSVerifier verifier = new RSASSAVerifier(publicKey);
+    }
 
-    	LOG.info("Payload: " + jwsObject.getPayload().toString());
+    protected boolean verifyJwt(String token) throws JOSEException{
+    	RSAPublicKey publicKey = (RSAPublicKey)getKeyPair().getPublic();
+	JWSObject jwsObject = null;
 	
-    	return false;
+	try {
+	    jwsObject = JWSObject.parse(token);
+	} catch(ParseException e) {}
+
+	JWSVerifier verifier = new RSASSAVerifier(publicKey);
+	boolean valid = jwsObject.verify(verifier);	
+	return valid;
+    }
+
+    protected boolean jwtAuthenticated(HttpServletRequest request) throws JOSEException {
+	String token = "";
+	String authHeader = request.getHeader("Authorization");
+
+	if (authHeader == null) {
+	    return false;
+	}
+
+	StringTokenizer tokenizer = new StringTokenizer(authHeader, " ");
+	String authType = tokenizer.nextToken();
+	if ("Bearer".equalsIgnoreCase(authType)) {
+	    token = tokenizer.nextToken();
+	}
+	
+    	//LOG.info("Payload: " + jwsObject.getPayload().toString());
+	
+    	return verifyJwt(token);
     }
 
     protected boolean basicAuthenticated(HttpServletRequest request) {
