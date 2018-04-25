@@ -43,19 +43,36 @@ public class WhiteboardContext implements HttpContext {
 
     private static final Logger LOG = LoggerFactory.getLogger(WhiteboardContext.class);
     private static KeyPair kp = null;
+    private static int counter = 0; // this experiment shows that the variable doesn't get set to 0 on every http request. this would be shared among servlets
 
-    public boolean handleSecurity(final HttpServletRequest request, final HttpServletResponse response) throws IOException {		
+    public boolean handleSecurity(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
+	try {
+	    String temp_token = generateJwt("poi","admin");
+	    if(verifyJwt(temp_token)) {
+		LOG.info("self-verification works");
+		LOG.info("token: " + temp_token);
+	    } } catch(JOSEException e) {}
+	//LOG.info("Counter: " + counter++);
 	if(request.getHeader("Authorization") == null) {
-	    LOG.info("Forbidden access!");
-	    response.addHeader("WWW-Authenticate", "Basic realm=\"Test Realm\"");
+	    // this should redirect to a login form
+	    LOG.info("No header -- Forbidden access!");
+	    response.addHeader("WWW-Authenticate", "Bearer realm=\"JWT Realm\"");
 	    response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 	    return false;
 	}
 	try {
+	    //LOG.info("AuthzHeader: " + request.getHeader("Authorization"));
+	    // check if JWT is valid 
 	    if(jwtAuthenticated(request)) {
-		return true;		
+		return true;
+		// do basic authentication
+	    } else if(basicAuthenticated(request)){
+		// no credentials received :(
+		// create JWT and send it
+		// finally allow? access
+		return true;
 	    } else {
-		LOG.info("Forbidden access!");
+		LOG.info("Wrong credentials -- Forbidden access!");
 		response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 		return false;
 	    }
@@ -95,33 +112,42 @@ public class WhiteboardContext implements HttpContext {
     protected boolean verifyJwt(String token) throws JOSEException{
     	RSAPublicKey publicKey = (RSAPublicKey)getKeyPair().getPublic();
 	JWSObject jwsObject = null;
-	
+	       
 	try {
 	    jwsObject = JWSObject.parse(token);
 	} catch(ParseException e) {}
 
 	JWSVerifier verifier = new RSASSAVerifier(publicKey);
-	boolean valid = jwsObject.verify(verifier);	
+	boolean valid = jwsObject.verify(verifier);
+	LOG.info("Token Payload: " + jwsObject.getPayload().toString());
 	return valid;
     }
 
     protected boolean jwtAuthenticated(HttpServletRequest request) throws JOSEException {
 	String token = "";
+	boolean verified;
 	String authHeader = request.getHeader("Authorization");
-
+	
 	if (authHeader == null) {
 	    return false;
 	}
-
 	StringTokenizer tokenizer = new StringTokenizer(authHeader, " ");
 	String authType = tokenizer.nextToken();
+	if ("Basic".equalsIgnoreCase(authType)) {
+	    return false;
+	}
 	if ("Bearer".equalsIgnoreCase(authType)) {
 	    token = tokenizer.nextToken();
 	}
+
+	LOG.info("raw token: " + token);
+
+	// missing: check if token is valid
+
 	
     	//LOG.info("Payload: " + jwsObject.getPayload().toString());
-	
-    	return verifyJwt(token);
+	verified = verifyJwt(token);
+    	return verified;
     }
 
     protected boolean basicAuthenticated(HttpServletRequest request) {
