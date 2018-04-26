@@ -48,6 +48,7 @@ public class WhiteboardContext implements HttpContext {
     public boolean handleSecurity(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
 	//	LOG.info("cookie:" + request.getHeader("cookie"));
 	//LOG.info("Counter: " + counter++);
+	String freshToken = "";
 	if(request.getHeader("Authorization") == null && request.getHeader("Cookie") == null) {
 	    // this should redirect to a login form
 	    LOG.info("No header -- Forbidden access!");
@@ -56,17 +57,27 @@ public class WhiteboardContext implements HttpContext {
 	    return false;
 	}
 	try {
-	    if(jwtAuthenticated(request)) {
-		return true;		
-	    } else if(basicAuthenticated(request)){
-		LOG.info("trying basic auth now...");
-		String freshToken = "";
+	    // try form authentication first
+	    if(formAuthenticated(request)) {
+		freshToken = "";
 		try {
 		    freshToken = generateJwt("baidi","admin");
 		    if(verifyJwt(freshToken)) {
 			LOG.info("token: " + freshToken);
+			response.addHeader("Set-Cookie", freshToken);
+		    } } catch(JOSEException e) {}		
+	    }
+	    else if(jwtAuthenticated(request)) {
+		return true;		
+	    } else if(basicAuthenticated(request)){
+		LOG.info("trying basic auth now...");
+		freshToken = "";
+		try {
+		    freshToken = generateJwt("baidi","admin");
+		    if(verifyJwt(freshToken)) {
+			LOG.info("token: " + freshToken);
+			response.addHeader("Set-Cookie", freshToken);
 		    } } catch(JOSEException e) {}
-		response.addHeader("Set-Cookie", freshToken);
 		return true;
 	    } else {
 		LOG.info("Wrong credentials -- Forbidden access!");
@@ -110,18 +121,24 @@ public class WhiteboardContext implements HttpContext {
 	boolean valid = false;
 	RSAPublicKey publicKey = (RSAPublicKey)getKeyPair().getPublic();
 	JWSObject jwsObject = null;
-	       
-	try {
-	    jwsObject = JWSObject.parse(token);
-	} catch(ParseException e) { LOG.info("problem parsing token"); }
-	
+
+	if(token != null && !token.isEmpty()) {
+	    try {
+		jwsObject = JWSObject.parse(token);
+	    } catch(ParseException e) { LOG.info("problem parsing token: " + token); }
+	}
+	LOG.info("Before verifier");
 	JWSVerifier verifier = new RSASSAVerifier(publicKey);
-	// this is giving an exception when it doesn't verify
-	//valid = jwsObject.verify(verifier);
-	// dummy check for payload
-	valid = jwsObject.getPayload().toString().equals("baidi");
-	LOG.info("Token Payload: " + jwsObject.getPayload().toString());
+	if(jwsObject != null) {
+	    valid = jwsObject.verify(verifier);
+	    LOG.info("Token Payload: " + jwsObject.getPayload().toString());
+	}	
+	// valid = jwsObject.getPayload().toString().equals("baidi");
 	return valid;
+    }
+
+    protected boolean formAuthenticated(HttpServletRequest request) throws JOSEException {
+	return false;
     }
 
     protected boolean jwtAuthenticated(HttpServletRequest request) throws JOSEException {
@@ -129,25 +146,29 @@ public class WhiteboardContext implements HttpContext {
 	boolean verified;
 	String authHeader = request.getHeader("Authorization");
 	String cookie = request.getHeader("Cookie");
+
+	LOG.info("trying to do jwt auth...");
 	
 	if (authHeader == null && cookie == null) {
 	    return false;
 	}
 
-	if(authHeader != null) {
+	if (cookie != null) {
+	    token = cookie;
+	} else if(authHeader != null) {
 	    StringTokenizer tokenizer = new StringTokenizer(authHeader, " ");
 	    String authType = tokenizer.nextToken();
-	    if ("Basic".equalsIgnoreCase(authType)) {
-		return false;
-	    }
 	    if ("Bearer".equalsIgnoreCase(authType)) {
 		token = tokenizer.nextToken();
 	    }
-	} else if (cookie != null) {
-	    token = cookie;
-	}
+	}  
 	LOG.info("raw token: " + token);
 	verified = verifyJwt(token);
+	if(verified) {
+	    LOG.info("JWT Authentication successful");	    
+	} else {
+	    LOG.info("something didn't work in the jwt authentication");
+	}
     	return verified;
     }
 
@@ -159,15 +180,21 @@ public class WhiteboardContext implements HttpContext {
 	return username;
     }
 
-    protected boolean basicAuthenticated(HttpServletRequest request) {
+    protected boolean basicAuthenticated(HttpServletRequest request) {	
 	request.setAttribute(AUTHENTICATION_TYPE, HttpServletRequest.BASIC_AUTH);
 
-	String authzHeader = request.getHeader("Authorization");
-	if (authzHeader == null) {
+	String authHeader = request.getHeader("Authorization");
+	if (authHeader == null) {
 	    return false;
 	}
-	LOG.info("Authz header: " +  authzHeader);
-	String usernameAndPassword = new String(Base64.getDecoder().decode(authzHeader.substring(6).getBytes()));
+	StringTokenizer tokenizer = new StringTokenizer(authHeader, " ");
+	String authType = tokenizer.nextToken();
+	if (!"Basic".equalsIgnoreCase(authType)) {
+	    return false;
+	}
+	
+	//	LOG.info("Authz header: " +  authHeader);
+	String usernameAndPassword = new String(Base64.getDecoder().decode(authHeader.substring(6).getBytes()));
 	int userNameIndex = usernameAndPassword.indexOf(":");
 	String username = usernameAndPassword.substring(0, userNameIndex);
 	String password = usernameAndPassword.substring(userNameIndex + 1);
@@ -177,6 +204,12 @@ public class WhiteboardContext implements HttpContext {
 	    request.setAttribute(REMOTE_USER, "boy");
 	}
 	return success;
+    }
+
+    private boolean dbAuthenticate(String username, String password) throws Exception {
+	// calculate password hash
+	// query to database or file to check if username&password are valid	
+	return false;
     }
     
 
