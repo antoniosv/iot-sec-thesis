@@ -348,9 +348,29 @@ study.}
 \newpage
 \section{Introduction}
 
+The Internet of Things, commonly referred as IoT, is a dynamic and heterogenous environment where \emph{sensing} devices may interact with each other for some particular purpose. The devices range from radio identification devices (RFID), infrared sensors, global positioning systems; to smart watches, smartphones, smart televisions, etc. The most important aspect for these devices is that they can gather some kind of data from the real world, and that are capable of transmitting it to another point. Usually, the devices may interact without human interventation, also known as Machine-to-Machine communication. Due to the wide diversity of capabilities among sensing devices, interoperability is a common challenge, especially due to vendor lock-in and obscure interfaces. Still, it is desirable that the devices can transparently communicate among themselves in a local scope, e.g. inside a wireless sensor network (WSN), and in some cases, even to an exteral scope, e.g. through the Internet. Typically, these devices do not directly communicate with each other, but do so through a gateway, which serves as a communication medium. Additionally, the gateway is also responsible for making the necessary translations between protocols if the devices need to send or receive data through the Internet.
+
+The actual devices employed and the nature of the data gathered depend on the specific application for the IoT. These applications may be categorized into smart home, smart grid, smart city, smart transportation, and so on. Regardless of the application, data has to be gathered from the real world and transmitted to another point. Considering the diversity of devices and applications, it is no trivial task to unify or to support interoperability between devices, especially if they make use of different protocols for communication. Indeed, interoperability, device naming in a network, finding other devices, are just some examples of the difficulties that may be found when instantiating an IoT application. Given this amount of issues present in the architecture and development of IoT applications, it is no surprise that much of the focus given both in research and industry has been towards the functional requirements. Non-functional requirements such as performance, user experience, security, among others, have been left as an afterthought.
+
+\TODO{look for reference on law about privacy}
+Due to recent developments on laws pertaining data security and privacy, more emphasis has given to the security of information systems. Thus, incorporating security into a software product is no longer a courtesy, but a duty toward the users. Data encryption, authentication, authorization mechanisms, non-repudiation, are just some of the possible measures that should be taken into account when designing a secure system, and the IoT is no exception to this. In this context, the privacy and confidentiality of the data gathered by the sensing devices come to mind. Depending on the nature of this data, the privacy might be essential to maintain, especially during transit to other devices or points in the network.
+
+The smart home is one of the many applications for the IoT. A refrigerator that sends an message to your phone when it no longer has any milk. An air conditioner that turns on whenever the it learns that the outside temperature is rising above thirty Celsius degrees. A speaker that plays music whenever you start cooking. These are just some of the possible scenarios that may occur inside a home with \emph{sensing} devices that are capable of interacting with each other. This is no longer a vision for the future or a secluded experiment. There are already several existing solutions that attempt to bring together all these devices for bigger purpose. One such existing solution is the openHAB2 software stack.
+
+OpenHAB2 (OH2) is such a product that focuses on interoperability among all kinds of devices from different vendors. It does accomplishes the interaction through logical modules called \emph{bindings}. For example, a smart television from Samsung may not be able to interact with other devices out of box, but it may be able to do so if the appropriate binding is developed for the openHAB2 environment. OpenHAB2, as it name implies, is an open-source software that serves as \emph{hub} that brings together a diverse range of devices through the use of bindings. A binding makes a link to a Thing that may be of either physical or logical nature. For instance, a light switch is undoubtedly a physical Thing, and its state of being turned on or off is the data it can make available. Consider however, a weather service from the Internet that provides weather information such as temperature, humidity, and precipitation probability. This provider of data is undoubtedly not of physical nature, but still fits properly into the model of a smart home. Thus, a binding may incorporate such a weather service as a Thing in the logical sense.
+
+\TODO{Do I need reference here?}
+Ironically, openHAB2 has been often been labeled as \emph{Intranet of Things}, precisely because it is intended to be used in a private network, without access from external sources that traverse through, e.g. the Internet. In short, openHAB2 cannot be accessed from the Internet, and the main reason for this is that there is no authorization mechanism in place for alllowing or forbidding access for users. Thus, any individual that can access the openHAB2 instance is capable of doing any changes and viewing any piece of data, without any lock in place. Therefore, the damage is controlled by making the instance accessible only from inside the private network. Thus, the security is as strong as the security of network. An intruder gaining access to the network implies in gaining access to all of the openHAB2 capabilities, breaching the privacy and confidentiality of the data in use. 
+
+\TODO{check things needed to make an application open to the internet}
+
+
+\TODO{IoT Applications: smarthome, etc}
+
 \TODO{What is it in simple terms (title)?}
-\TODO{Why should anyone care?}
-\TODO{What was my contribution?} 
+\TODO{Problem Statement}
+\TODO{Why should anyone care? (E.g. security)}
+\TODO{What was my contribution? (E.g. authentication/authorization)} 
 \TODO{What you are doing in each section (a sentence or two per section)}
 
 Tip: if it's hard for you to start writing, then try to split it to smaller parts, e.g. if the title is ``Type Inference for a Cryptographic Protocol Prover Tool'' then the ``What is it'' can be divided into ``what is type inference'', ``what is cryptographic protocol'' and ``what is the prover tool''. These three can also be split to smaller parts etc.
@@ -359,9 +379,10 @@ Tip: if it's hard for you to start writing, then try to split it to smaller part
 
 
 \newpage
-\section{Title of Section 2} 
+\section{State of the art} 
 \TODO{Short description of what this section is about}
 
+\TODO{Existing smart home solutions and comparison in securiy}
 
 \subsection{Title of Subsection 1}
 
@@ -387,7 +408,28 @@ Tip: You can also use paragraphs, e.g.
 \paragraph{Type rules for rational numbers.} Some text here too...
 
 
+\section{Architecture of Eclipse SmartHome and openHAB2}
 
+\subsection{ESH}
+
+\subsection{OH2}
+
+\section{Methodology}
+\TODO Describe how we got to the point of implementing auth.
+
+\subsection{Security of OH2}
+\TODO{Analysis of bindings}
+The core of the security analysis in openHAB2 is how the data is being sent between devices, the openHAB2 instance, and the external web service. There are two ways in which the smart devices make their information available. .... local and through external apis...
+
+\TODO talk about https
+
+\TODO talk about security of a binding is for that thing only
+
+\subsection{Implementation of Authentication}
+
+\subsection{Proposed Authorization Scheme}
+
+\section{Evaluation}
 
 \subsection{How to use references} \label{sec:using_ref}
 
