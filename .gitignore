@@ -4,3 +4,13 @@
 *~
 packets_capture
 org.dreamland.whitefilter/target
+.log
+.aux
+.bbl
+.blg
+.d
+.fls
+.fdb_latexmk
+.out
+.tdo
+.toc
