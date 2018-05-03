@@ -105,8 +105,8 @@
 % Packages for defining colourful text together with some colours
 \usepackage{color}
 \usepackage{xcolor} 
-%\definecolor{dkgreen}{rgb}{0,0.6,0}
-%\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
 \definecolor{mauve}{rgb}{0.58,0,0.82}
 
 
@@ -349,22 +349,22 @@ study.}
 \section{Introduction}
 
 \TODO{(ref) references}
-
-SECOND ATTEMPT
+\TODO{Motivation on going from state of the art to OH2}
 %% \TODO{What is it in simple terms (title)?}
 %% \TODO{Problem Statement}
 %% \TODO{Why should anyone care? (E.g. security)}
 %% \TODO{What was my contribution? (E.g. authentication/authorization)} 
 %% \TODO{What you are doing in each section (a sentence or two per section)}
 
-Tip: if it's hard for you to start writing, then try to split it to smaller parts, e.g. if the title is ``Type Inference for a Cryptographic Protocol Prover Tool'' then the ``What is it'' can be divided into ``what is type inference'', ``what is cryptographic protocol'' and ``what is the prover tool''. These three can also be split to smaller parts etc.
+%Tip: if it's hard for you to start writing, then try to split it to smaller parts, e.g. if the title is ``Type Inference for a Cryptographic Protocol Prover Tool'' then the ``What is it'' can be divided into ``what is type inference'', ``what is cryptographic protocol'' and ``what is the prover tool''. These three can also be split to smaller parts etc.
 
----------------------------
-openHAB is an automation software that brings together and operates \emph{Things} for the purpose of building a smart home environment. Smart home, a subset of the Internet of Things paradigm, is gaining popularity not only as a futuristic toy, but as a real intelligent environment that can be put in use today. \emph{Things}, which will be detailed later, form the basic unit in a smart home environment. Things capture data from the environment and transmit it to another point. Security is defined in \cite{certiCrypt} as having ``protection against adversaries'', i.e., those would, intentionally or not, cause harm. In this context, security refers actually to \emph{information security}, defined in the same source as a layer of security that aims to protect the confidentiality, integrity, and availability of information resources that may be in storage, processing or transmision. Thus, this work introduces the notion of reviewing, evaluating, and possibly improving the existing (information) security present in the openHAB automation software for the smart home.
+%---------------------------
+
+openHAB is an automation software that brings together and operates \emph{Things} for the purpose of building a smart home environment. Smart home, a subset of the Internet of Things paradigm, is gaining popularity not only as a futuristic toy, but as a real intelligent environment that can be put in use today. \emph{Things}, which will be detailed later, form the basic unit in a smart home environment. Things capture data from the environment and transmit it to another point. Security is defined in ~\cite{whitman2011principles} as having ``protection against adversaries'', i.e., those would, intentionally or not, cause harm. In this context, security refers actually to \emph{information security}, defined in the same source as a layer of security that aims to protect the confidentiality, integrity, and availability of information resources that may be in storage, processing or transmision. Thus, this work introduces the notion of reviewing, evaluating, and possibly improving the existing (information) security present in the openHAB automation software for the smart home.
 
 The security of the openHAB software, in terms of data protection and privacy preservation, is currently undefined, as there are no direct sources that address these topics. It is desirable to have an overview on what kind of security mechanisms are present and enforced in openHAB, as well as which vulnerabilities might have an impact on its use and future adoption. Morevoer, as an open-source project, there is no clear indication that the security is being actively looked into for this project, or if it is feasible to do so.
 
-It is known that security breaches may have a significant economic impact on a firm, as described by \cite{certiCrypt}. Data loss or theft, tampering, and unauthorized operations are just some of the possible ocurrences led by the lack of proper security mechanisms in place. In the case of openHAB, a smart home application, it is not quite quantifiable how expensive it results to have a security breach occur at any level. The consequences may go from user discomfort to identity theft, or worse.
+It is known that security breaches may have a significant economic impact on a firm, as described by \cite{GOEL}. Data loss or theft, tampering, and unauthorized operations are just some of the possible ocurrences led by the lack of proper security mechanisms in place. In the case of openHAB, a smart home application, it is not quite quantifiable how expensive it results to have a security breach occur at any level. The consequences may go from user discomfort to identity theft, or worse.
 
 Applications for the Internet of Things are still very recent, and still not much is not known about the possibilities it will bring. This has led to ongoing efforts, such as openHAB, to focus mostly on the system functionalities, rather than the user experience, security, or many other non-functional requirements. Ideally, there should be a framework that can be used to evaluate the security of IoT applications. At the time, this has not been established due to the vast differences in the architectures and implementations. Indeed, as the environment grows more complex, so does the attack surface areas and possible vulnerabilities.
 
@@ -375,7 +375,11 @@ The contribution of this work are mainly two: an overview of the state of the ar
 This work is divided in ... sections. Section 2....
 
 
----------------------------
+%---------------------------
+
+\newpage
+\section{State of the art} 
+
 
 The Internet of Things, commonly referred as IoT, is a dynamic and heterogenous environment where \emph{sensing} devices may interact with each other for some particular purpose. The devices range from radio identification devices (RFID), infrared sensors, global positioning systems; to smart watches, smartphones, smart televisions, etc. The most important aspect for these devices is that they can gather some kind of data from the real world, and that are capable of transmitting it to another point. Usually, the devices may interact without human interventation, also known as Machine-to-Machine communication. Due to the wide diversity of capabilities among sensing devices, interoperability is a common challenge, especially due to vendor lock-in and obscure interfaces. Still, it is desirable that the devices can transparently communicate among themselves in a local scope, e.g. inside a wireless sensor network (WSN), and in some cases, even to an exteral scope, e.g. through the Internet. Typically, these devices do not directly communicate with each other, but do so through a gateway, which serves as a communication medium. Additionally, the gateway is also responsible for making the necessary translations between protocols if the devices need to send or receive data through the Internet.
 
@@ -438,15 +442,56 @@ Tip: You can also use paragraphs, e.g.
 \subsection{OH2}
 
 \section{Methodology}
-\TODO Describe how we got to the point of implementing auth.
+\TODO{Describe how we got to the point of implementing auth.}
+As a first step towards analyzing the security of IoT models, architectures, and applications, a study on the state of the art was conducted. From it, various security mechanisms came to light, which served as the foundation toward data confidentiality, peer authentication, non-repudiation, etc. However, the studied proposals tended to oversimplify and deviate from the issues present in existing solutions. This observation made it clear that there was a disconnect from publications and from the products. Most products, however, do not make public the internal workings, and tend to make their own architectural decisions instead of following standards for, e.g. encoding data transmitted between things. Among the existing solutions for a smart environment, the openHAB smart home software was chosen as a case study in terms of security. The decision was made for various reasons: firstly, it is open-source, and thus it is possible to conduct white-box tests, secondly, it is vendor-agnostic, and finally, because of the active participation of the community in this project.
+
+
 
 \subsection{Security of OH2}
 \TODO{Analysis of bindings}
-The core of the security analysis in openHAB2 is how the data is being sent between devices, the openHAB2 instance, and the external web service. There are two ways in which the smart devices make their information available. .... local and through external apis...
+A binding is the logical piece of the system that links a \emph{thing} to openHAB. Through the User Interface or REST API calls, a user is able to view, and possibly modify the channels, i.e. values, of the things connected to the system. Temperature and humidity values, state of light switches, currently playing media, etc., are some examples of these channels. In the case of the least complex adversary, it may be assumed that it is possible to eavesdrop the incoming and outgoing data packets through the network. Thus, the first effort was to see how the data is moving around the system. Through the use of Wireshark and tcpdump, it was observed that the transit of data ocurred in two possible ways: through the cloud, or through the openHAB instance. Some devices, such as light switches, do not require to communicate with a server in the Internet to set or unset the state of the switch. As this may be done internally, the binding provides the means to operate the thing directly through the User Interface of openHAB. The other case involves devices which need to communicate to a remote server through the Internet to push its data. The binding, in this case, connects to the remote server through the use of proprietary API, and gets the data required from it. This is more evident in a logical thing, such as a weather service. The binding for the weather service connects to the server through an API to query data about temperature, humidity, etc., of a particular location.
 
-\TODO talk about https
+Delegating the data to a remote server was the first obstacle in the analysis of the security in openHAB. Because of simplifications in the literature about IoT, it is typically assumed that for the architecture of IoT applications \TODO{REFERENCE} there is no connection to the Internet to accomplish a task that may be performed locally. However, due to different vendors and a variety of devices, the actual solution tends to depend on a remote connection. For this reason, the security frameworks \TODO{reference} in the literature do not quite fit in this scenario. This does not cause worse security implications, however; the analysis should be more flexible in that case.
 
-\TODO talk about security of a binding is for that thing only
+Internal communication between things and the openHAB instance is typically done under a wireless network that encrypted with AES, for example. In that case, an eavesdropperis Ever is only able to get the transmitted data if it can break AES, which is computationally infeasible for a sensible amount of time for even a 128-bit key. Thus, data confidentiality in this scenario depends entirely on the security of the wireless network where the openHAB instance and the thing reside. Evidently, if Eve gains access to this private network, all intercepted communication is plainly visible to Eve.
+
+The other scenario, in addition to eavesdropping of data traveling between thing and router, is also vulnerable during transmission of data through the Internet. Thus, an eavesdropper Eve that does not have access to the private network may still find a way to learn the data after it has left the router and into the Internet. Coming back to the example of the weather service, a binding may be programmed to get current temperature and humidity every 10 minutes. The request leaves the openHAB instance directly into the router, and then it travels through distinct points in the Internet. The remote server accepts the request if valid, and returns a response with the appropriate values in a format such as JSON or XML. If this request is not encrypted (e.g., through TLS), then eavesdropper Eve may easily learn the data sent back.
+
+The last scenario hints at the implication of guaranteeing secure communication between things, the openHAB instance, and the remote servers. Indeed, if the request performed by a binding is pointed at a location through HTTPS, then the request will perform the TLS protocol, encrypting the communication. The main question in this case is then, is it guaranteed that the request will point to an HTTPS location? The answer to this could only be found by looking at the source code of the bindings present in openHAB. When analyzing the source code, it becomes evident that the URL chosen to direct the request is decided at the time the binding was written. This implies that the security of each binding is independent from each other. If a binding points to a plain HTTP URL, then it is only that binding that is subject to effective eavesdropping, and it would not affect other bindings added to the system.
+
+\begin{figure} [htb]
+\begin{lstlisting}
+  public class Connection {
+    private final String iCloudApiURL = "https://fmipmobile.icloud.com/fmipservice/device/";
+    private final String iCloudAPIRequestDataCommand = "/initClient";
+    private final Gson gson = new GsonBuilder().create();
+    private final String dataRequest = gson.toJson(ICloudDataRequest.defaultInstance());
+    
+    private final byte[] authorization;
+    private URL iCloudDataRequestURL;
+    
+    public Connection(String appleId, String password) throws MalformedURLException {
+      iCloudDataRequestURL = new URL(iCloudApiURL + appleId + iCloudAPIRequestDataCommand);
+    } 
+    
+    public String requestDeviceStatusJSON() throws IOException {
+      HttpsURLConnection connection = connect(iCloudDataRequestURL);
+      String response = postRequest(connection, dataRequest);
+      connection.disconnect();    
+      return response;
+    }
+  }
+\end{lstlisting}
+\caption{HTTP connection for iCloud binding.}
+\label{lst:https_binding}
+\end{figure}
+
+Code snippet~\ref{lst:https_binding} is an example of a binding, in this case for iCloud. This binding is meant to establish a connection to the iCloud services, for example, to learn the status of a device. The method \texttt{requestDeviceStatus} is responsible for establishing the connection and returning the result as a JSON structure in a String variable. In the context of security, the important thing to note is that the connection is established through the use of the \texttt{HttpsURLConnection} class, which supports https-specific features, such as the encrypted communication through the TLS protocol. In this case, it is expected that the communication will be encrypted and an eavesdropper will not be able to read the plain data. Indeed, through the use Wireshark it was confirmed that the packets sent between the openHAB instance and the remote server were using the TLS protocol to communicate.
+
+\TODO{REFERENCE}
+As hinted, the use of HTTPS in bindings is of great importance due to the underlying Transport Layer Security protocol, also known plainly as TLS. According to the specification by the IETF, TLS provides communications security over the internet, and it is designed to prevent eavesdropping, tampering, or message forgery. The specifics of the protocol are of no importance in this work, thus it suffices to stress the fact that relying on it will guarantee the confidentiality and integrity of the data sent between the openHAB instance and remote servers. 
+
+\TODO{talk about security of a binding is for that thing only}
 
 \subsection{Implementation of Authentication}
 
@@ -478,7 +523,7 @@ References themselves can be part of a LaTeX source file. For that you need to d
 The first command determines whether the references are numbered by letter-number combinations or by cryptic numbers. It is more common to use \texttt{alpha} style. The second command determines the file containing the bibliographic entries. The file should end with \texttt{bib} extension. Each reference there is in specific form. The simplest way to avoid all technicalities is to use graphical frontend  Jabref (\url{http://jabref.sourceforge.net/}) to manage references. Another alternative is to use DBLP database of references and copy BibTeX entries directly form there.   
     
    
-The following paragraph shows how references can be used. Game-based proving is a way to analyse security of a cryptographic protocol~\cite{GameB_1, GameB_2}. There are automatic provers, such as {CertiCrypt\-}~\cite{certicrypt} and ProVerif~\cite{proVerif}.
+The following paragraph shows how references can be used. Game-based proving is a way to analyse security of a cryptographic protocol~\cite{GameB_1, GameB_2}. There are automatic provers, such as {CertiCrypt\-}~\cite{dummy} and ProVerif~\cite{proVerif}.
 
 
 
@@ -706,7 +751,7 @@ Tip: We can use minipage to create a frame around some important information.
   (checked 15.05.2012)
 \bibitem{GameB_1} GameB1
 \bibitem{GameB_2} GameB2
-\bibitem{certiCrypt} certiCrypt
+\bibitem{dummy} dummy
 \bibitem{kamm12} kamm12
 \end{thebibliography}
 \end{comment}
