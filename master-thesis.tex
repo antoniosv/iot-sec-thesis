@@ -498,7 +498,7 @@ According to the openHAB documentation, secure remote access is a problem that h
 
 Relying purely on the channel makes it impossible to make the openHAB instance \emph{open} to the Internet, as it is considered to  be a public and insecure medium. Note, however, that enforcing some kind of access control policy does not suffice to deem it safe against adversaries to open the instance to the Internet. The expected use for openHAB at the moment, however, takes the appearance of ``Intranet of Things'', as it cannot be accessed from the outside. A more interesting scenario would be to have two instances of openHAB communicating with each other to complement their functions with the data gathered separately.
 
-%talk about where to implement security: ESH
+At a first glance, one would think that authentication and access control should be implemented and be responsibility of the end product, i.e. openHAB. It turns out, however, that as a core feature that involves restricting access to REST end points and servlet extensions, it is more apropriate to fit the authentication and authorization logic inside the Eclipse SmartHome core. As previously stated in section (REFERENCE), the Eclipse SmartHome is a subset of the openHAB distribution that holds the core functionalities of automation of sensing devices. Thus, access control, and inherently, authentication, became to be a focus in the Eclipse SmartHome community. 
 
 \subsection{Community Discussion on Role-Based Access Control}
 \TODO{https://github.com/eclipse/smarthome/issues/579}
@@ -538,7 +538,8 @@ From this experience, it was decided it would be desirable to have a way to \emp
 \subsection{Proposed Authorization Scheme}
 \TODO{Mention what will be "secured": servlets, REST endpoints, to view and to modify, etc}
 \section{Evaluation}
-
+\newpage
+\section{Extra}
 \subsection{How to use references} \label{sec:using_ref}
 
 \paragraph{Cross-references to figures, tables and other document elements.}
