@@ -359,6 +359,17 @@ study.}
 %Tip: if it's hard for you to start writing, then try to split it to smaller parts, e.g. if the title is ``Type Inference for a Cryptographic Protocol Prover Tool'' then the ``What is it'' can be divided into ``what is type inference'', ``what is cryptographic protocol'' and ``what is the prover tool''. These three can also be split to smaller parts etc.
 
 %---------------------------
+\TODO{Add subsections or headings: problem statement, contributions, future work}
+
+\subsection{Problem Statement}
+
+\subsection{Motivation}
+
+\subsection{Hypothesis}
+
+\subsection{Objectives}
+
+\subsection{Structure}
 
 openHAB is an automation software that brings together and operates \emph{Things} for the purpose of building a smart home environment. Smart home, a subset of the Internet of Things paradigm, is gaining popularity not only as a futuristic toy, but as a real intelligent environment that can be put in use today. \emph{Things}, which will be detailed later, form the basic unit in a smart home environment. Things capture data from the environment and transmit it to another point. Security is defined in ~\cite{whitman2011principles} as having ``protection against adversaries'', i.e., those would, intentionally or not, cause harm. In this context, security refers actually to \emph{information security}, defined in the same source as a layer of security that aims to protect the confidentiality, integrity, and availability of information resources that may be in storage, processing or transmision. Thus, this work introduces the notion of reviewing, evaluating, and possibly improving the existing (information) security present in the openHAB automation software for the smart home.
 
@@ -380,6 +391,11 @@ This work is divided in ... sections. Section 2....
 \newpage
 \section{State of the art} 
 
+%% \paragraph{Type rules for integers.} Some text ...
+
+%% \paragraph{Type rules for rational numbers.} Some text here too...
+\TODO{Short description of what this section is about}
+\TODO{Existing smart home solutions and comparison in securiy}
 
 The Internet of Things, commonly referred as IoT, is a dynamic and heterogenous environment where \emph{sensing} devices may interact with each other for some particular purpose. The devices range from radio identification devices (RFID), infrared sensors, global positioning systems; to smart watches, smartphones, smart televisions, etc. The most important aspect for these devices is that they can gather some kind of data from the real world, and that are capable of transmitting it to another point. Usually, the devices may interact without human interventation, also known as Machine-to-Machine communication. Due to the wide diversity of capabilities among sensing devices, interoperability is a common challenge, especially due to vendor lock-in and obscure interfaces. Still, it is desirable that the devices can transparently communicate among themselves in a local scope, e.g. inside a wireless sensor network (WSN), and in some cases, even to an exteral scope, e.g. through the Internet. Typically, these devices do not directly communicate with each other, but do so through a gateway, which serves as a communication medium. Additionally, the gateway is also responsible for making the necessary translations between protocols if the devices need to send or receive data through the Internet.
 
@@ -404,44 +420,40 @@ Ironically, openHAB2 has been often been labeled as \emph{Intranet of Things}, p
 
 \TODO{IoT Applications: smarthome, etc}
 
+\subsection{Information Security}
 
-\newpage
-\section{State of the art} 
+Some text...
+
+\subsubsection{Confidentiality and Privacy}
+
+Some text...
+
+\subsubsection{Authentication}
+
+Some text...
+
+\subsubsection{Access control}
+
+
+\subsection{Internet of Things} 
+
+\subsubsection{Smarthome applications}
+
+\subsection{Smarthome automation solutions}
+
+\subsection{Architecture of Eclipse SmartHome and openHAB2}
+
+\subsubsection{ESH}
+
+\subsubsection{OH2}
+
+\clearpage
+\section{Related Work}
 \TODO{Short description of what this section is about}
 
-\TODO{Existing smart home solutions and comparison in securiy}
-
-\subsection{Title of Subsection 1}
-
-Some text...
-
-\subsubsection{Title of Subsubsection 1}
-
-Some text...
-
-\subsubsection{Title of Subsubsection 2}
-
-Some text...
-
-
-
-\subsection{Title of Subsection 2} 
-
-Rule: If you divide the text into subsections (or subsubsections) then there has to be at least two of them, otherwise do not create any. 
-
-Tip: You can also use paragraphs, e.g.
-\paragraph{Type rules for integers.} Some text ...
-
-\paragraph{Type rules for rational numbers.} Some text here too...
-
-
-\section{Architecture of Eclipse SmartHome and openHAB2}
-
-\subsection{ESH}
-
-\subsection{OH2}
-
+\clearpage
 \section{Methodology}
+\TODO{Short description of what this section is about}
 \TODO{Describe how we got to the point of implementing auth.}
 As a first step towards analyzing the security of IoT models, architectures, and applications, a study on the state of the art was conducted. From it, various security mechanisms came to light, which served as the foundation toward data confidentiality, peer authentication, non-repudiation, etc. However, the studied proposals tended to oversimplify and deviate from the issues present in existing solutions. This observation made it clear that there was a disconnect from publications and from the products. Most products, however, do not make public the internal workings, and tend to make their own architectural decisions instead of following standards for, e.g. encoding data transmitted between things. Among the existing solutions for a smart environment, the openHAB smart home software was chosen as a case study in terms of security. The decision was made for various reasons: firstly, it is open-source, and thus it is possible to conduct white-box tests, secondly, it is vendor-agnostic, and finally, because of the active participation of the community in this project.
 
@@ -529,7 +541,29 @@ A common problem with the new authentication API was that there was no way to tu
 
 From this experience, it was decided it would be desirable to have a way to \emph{turn off} access control completely, in the case that the user does not have the means to authenticate and manage permissions. At first glance, this is a very counter-intuitive feature to have, as any adversary could push toward disabling security, instead of having to break it through more advanced methods. 
 
+As a product of the discussion at the time, the Eclipse Smarthome community created a document to define the requirements and use cases to cover for the security, particularly, covering authentication and authorization (REFERENCE). An important distinction in this document was the emphasis made on the variety of \emph{resources}, and the constraints they are bounded by. Resources do not only encompass \emph{things} connected to the system, but also automation rules, third-party add-ons, UI sitemaps, system settings, etc. The document delved into the management of the resources present in the system, rather than the actual security mechanisms that had to be employed. 
+
 \subsection{Misuse Cases}
+
+In an attempt to identify which were the the aspects that more resembled requirements with respect to security, rather than management of resources, \emph{misuse cases} were written according to the state of the Eclipse Smarthome at the time. Thus, the provided requirements document included the \emph{use cases} that served as a basis to identify the \emph{misuse cases}. 
+
+Miuse cases, as the name suggests, is meant to cause the opposite consequence of a typical use case. That is, instead of designing the system to cover a certain functionality, the intention is to pinpoint which functionalities or \emph{actions} should not be permitted in the ideal system (REFERENCE). A misuse case diagram shows mis-actors, i.e. adversaries, initiating misuse cases to cause some anomaly by taking advantage of legitimate use cases.
+
+Often, it is not obvious to detect misuse cases, as there are many angles and attack vectors that may go unnoticed to everyone but the adversary. Thus, it becomes more of a ``brainstorming'' exercise to attempt to detect possible threats, and an initial response to mitigate them. In this case, misuse cases were written to find out which threats could be posed by adversaries, and how these could be mitigated.
+
+Figure \ref{misuse_cases} shows on one side the use cases extracted from the requirements document created from the community. Next to these, some identified misuse cases are shown to be initiated by mis-actors. The threat level of these misuse cases is not specified, as it is not entirely clear what assets have the most priority, or how easily these weaknesses could be exploited. Finally, for each of these misuse cases, a mitigation strategy is presented accordingly. It is important to stress that the purpose is not to show how these threats can be instantiated into a vulnerability, or the actual details of the mitigation strategy. The idea of misuse cases is to have some kind of initial base to lead the discussion on security and further analyze it. Unfortunately, the Eclipse Smarthome community was not very interested in following up the discussion in this perspective, but preferred to focus on the more technical, hands-on, implementation of access control mechanisms to \emph{secure} resources from the automation environment.
+
+\begin{figure} [ht] 
+\begin{center}
+\includegraphics[width=\textwidth]{esh_misuse_cases}
+\caption{The title of the Figure.}
+\label{fig:misuse_cases}
+\end{center}
+\end{figure}
+
+Meeting on 15.02.2018
+
+\subsection{Best Practices for token-based authentication}
 
 \subsection{Architectural Implications of Authentication}
 
@@ -537,7 +571,11 @@ From this experience, it was decided it would be desirable to have a way to \emp
 
 \subsection{Proposed Authorization Scheme}
 \TODO{Mention what will be "secured": servlets, REST endpoints, to view and to modify, etc}
+
+\newpage
 \section{Evaluation}
+\TODO{Short description of what this section is about}
+
 \newpage
 \section{Extra}
 \subsection{How to use references} \label{sec:using_ref}
@@ -565,7 +603,6 @@ The first command determines whether the references are numbered by letter-numbe
     
    
 The following paragraph shows how references can be used. Game-based proving is a way to analyse security of a cryptographic protocol~\cite{GameB_1, GameB_2}. There are automatic provers, such as {CertiCrypt\-}~\cite{dummy} and ProVerif~\cite{proVerif}.
-
 
 
 \newpage
