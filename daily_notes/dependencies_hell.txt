@@ -1,0 +1,24 @@
+Some quick things to check when doing imports:
+
+- Get the correct package name
+- Include package name in MANIFEST.MF file
+- In ESH particularly, don't put the dependency into the pom.xml
+- Try to make a lib/ directory in the bundle, and then reference to it in the build.properties file also in the bundle as:
+source.. = src/
+output.. = target/classes/
+bin.includes = META-INF/,\
+               .,\
+	       lib/nimbus-jose-jwt-5.8.jar,\
+	       lib/jose4j-0.5.5.jar
+- Also include the Bundle-Classpath field into the MANIFEST.MF
+- Put the 3rd party library packages into Export-Package, not Import-Package, like:
+Export-Package: org.jose4j.base64url;version="0.5.5",
+ org.jose4j.jwt;version="0.5.5",
+ org.jose4j.jwt.consumer;version="0.5.5",
+ org.jose4j.keys;version="0.5.5"
+From Lukasz:
+you don't have to delcare dependency on lib via Import-Package directive in manifest, it is there for your module.
+If you would like to expose nimus to other modules then you need to add Export-Package so other modules can use Import-Package
+----
+- Try to put jars into the esh/targetplatform/third-party/ to see if that helps
+- In other osgi applications, there are two ways: let maven handle dependencies (put the info on pom.xml) on compile and runtime, or make the maven-apache plugin include the dependencies into the final jar (as in the org.dreamland.whitefilter application)
