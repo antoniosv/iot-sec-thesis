@@ -587,6 +587,7 @@ Figure \ref{fig:misuse_cases} shows on one side the use cases extracted from the
 On 15th February, 2018, a videocall meeting was held by the interested parties in the community with the purpose of clarifying the requirements gathered in the document mentioned in the subsection \ref{ssec:discussion}, and set priorities accordingly. Part of the discussion also meant to discuss how previously attempted solutions might be of use for the future implemention of authentication and access control. Among the most relevant agreed points was the use of JSON Web Tokens (JWT) to accomplish stateless authentication. The main reason for this decision was to reduce the effort needed to manage user sesions in the backend. It was also decided that the specifics of the access control mechanisms would be decided at a later point in time, since the most important priority was solving authentication. Therefore, further effort in this work focused on the implementation of a JWT-based authentication compatible with the Eclipse SmartHome architecture, and thus, compatible also with the openHAB software stack.
 
 Typically, all kinds of token-based authentication follow these steps (REFERENCE):
+\TODO{Structure as an algorithm}
 \begin{enumerate}
 \item The client sends its credentials (e.g. username, password, fingerprint) to the server.
 \item The server attmpts to authenticate: if valid, it generates a token that includes expiration time.
@@ -599,6 +600,7 @@ Typically, all kinds of token-based authentication follow these steps (REFERENCE
 
 The JSON Web Token (JWT) holds some peculiarities to other existing kinds of tokens. The primary difference is that this token includes a digital signature by the party that created it, e.g., the server. Thus, some adaptations would have to be applied to this procedure. Consider, for example, the limitations in the user interface in Eclipse SmartHome to provide web forms to put the credentials. For this reason, credentials are sent first through \emph{basic authentication}, since the web browser takes care of asking for the credentials. Therefore, the proposed authentication mechanism is as follows:
 
+\TODO{Structure as an algorithm}
 \begin{enumerate}
 \item The client sends credentials through basic-authentication pop up form.
 \item The server extracts credentials and, if these match a existing user, generate a JSON Web Token (JWT), appending to it the username and any additional fields, including expiration time and the server's digital signature of the JWT digest. Server sends the JWT to the client.
@@ -607,7 +609,7 @@ The JSON Web Token (JWT) holds some peculiarities to other existing kinds of tok
 \item If the JWT is expired, the server requests credentials through basic-authentication, and if these are valid, it generates and serves a valid JWT.
 \end{enumerate}
 
-What may immediately stand out in this proposal, in contrast with the typical procedure is the embedding of the username as part of the JWT fields. Typically, a username is not considered to be \emph{confidential} and, although it normally isn't made public, it gives the adversary no significant advantage on stealing a user's data. Moreover, for the sake of maintaining forward securtiy, a JWT is only renewed if the valid credentials are presented again. An adversary may, in some manner, retrieve an expired legitimate token. If this expired token would be presented to the server, then the server could present the adversary with a fresh token. Finally, the most important distinction is the use of digital signatures within the token. Indeed, if an adversary tried to impersonate a legitimate user through guessing usernames, it would not work, as the signature would not verify on the server's end. The security of the signature is as strong as the security of the signature, which may be RSA-2048, for instance.
+What may immediately stand out in this proposal, in contrast with the typical procedure is the embedding of the username as part of the JWT fields. Typically, a username is not considered to be \emph{confidential} and, although it normally isn't made public, it gives the adversary no significant advantage on stealing a user's data. In fact, if only resource access control is the goal, then the username does not need to be included. It would be sufficient to include the claims regarding the permissions on access to resources, since the validity of the token is relying on the signature. Moreover, for the sake of maintaining forward securtiy, a JWT is only renewed if the valid credentials are presented again. An adversary may, in some manner, retrieve an expired legitimate token. If this expired token would be presented to the server, then the server could present the adversary with a fresh token. Finally, the most important distinction is the use of digital signatures within the token. Indeed, if an adversary tried to impersonate a legitimate user through guessing usernames, it would not work, as the signature would not verify on the server's end. The security of the signature is as strong as the security of the signature, which may be RSA-2048, for instance.
 
 The aforementioned procedure was designed with the assumption that, at all times, an HTTPS connection is present and thus, communication is protected through the TLS protocol. Otherwise, credentials and JWTs could be intercepted at any time by an adversary. 
 
@@ -623,7 +625,7 @@ As part of the OSGi version 6 specification, filters may be registered to any re
 
 As development of the Eclipse Smarthome halted, a new direction involving traditional servlet security was considered for this work. As part of servlet registration to the OSGi runtime, an entity called \texttt{HttpContext} has to be provided. This entity provides the means to intercept HTTP requests before they reach the servlet, and thus it becomes the point where authentication and authorization may be implemented. Originally, this approach was discarded because the REST endpoints did not support the use of \texttt{HttpContext} alongside its registration. The key in this case is that both groups of servlets, the traditional and the REST servlet, run under different application contexts. What this means is that, even if a traditional servlet handles authentication properly, this information would not be propagated to the REST endpoints, and thus authorization mechanisms would not be enforced. In the months of March and April, however, part of the community started an effort to combine, or rather, to \emph{share} the provided \texttt{HttpContext} among servlets and REST endpoints.
 
-Figure \ref{fig:esh_auth_arch} shows at a very high level the underlying architecture of the Eclipse SmartHome runtime. At the lowest level, the Jetty HTTP server and servlet engine is running. On top of it, there are several servlets running separately. Part of these servlets may be associated as being \emph{traditional}, while a particular servlet, the REST servlet, runs under different conditions. The REST servlet is used to serve resources, such as things, items, channels, etc. The Chart and Icon servlets, are of the traditional kind and thus, run under the same shared application context. Meanwhile, the REST servlet is shown to run under an isolated application context. Thus, the solution worked on by the community is to bridge both contexts and therefore have a commonly shared \texttt{HttpContext}. Green boxes represent a possible solution to the problem, whereas the red box is an attempted solution by the community, which had many problems when ported into the actual openHAB product.
+Figure \ref{fig:esh_auth_arch} shows at a very high level the underlying architecture of the Eclipse SmartHome runtime. At the lowest level, the Jetty HTTP server and servlet engine is running. On top of it, there are several servlets running separately. Part of these servlets may be associated as being \emph{traditional}, while a particular servlet, the REST servlet, runs under different conditions. The REST servlet is used to serve resources, such as things, items, channels, etc. The Chart and Icon servlets, are of the traditional kind and thus, run under the same shared application context. Meanwhile, the REST servlet is shown to run under an isolated application context. Thus, the solution worked on by the community is to bridge both contexts and therefore have a commonly shared \texttt{HttpContext}. Yellow boxes represent the entities or resources that should have its access restricted according to a specified policy. Green boxes represent the possible solution to the problem, whereas the red boxes are the attempted solutions in previous years. Particularly, ``JAX-RS Custom ContainerContext'' was an attempted solution by the community, which had many problems when ported into the actual openHAB product. An alternative solution to it, the ``JAX-RS Custom Filter'' was originally planned to be implemented for this work, but the notion was discarded after understanding the limitations of this kind of filter, since it would not enforce authorization for the rest of the servlets (e.g. Icon servlet). 
 
 \begin{figure} [ht] 
 \begin{center}
@@ -633,16 +635,93 @@ Figure \ref{fig:esh_auth_arch} shows at a very high level the underlying archite
 \end{center}
 \end{figure}
 
-\TODO{include figures (2)  about authenticators and other resources}
+Initial results by the community (REFERENCE) showed that it was indeed possible to make the \texttt{HttpContext} shared by the components that needed access control. Taking these results into account, work in the direction of a \emph{custom} \texttt{HttpContext} started. For this, the merged \texttt{HttpContext} will require the existence of an authenticator, i.e. a module that performs the authentication logic, and thereafter the module that performs authorization. Figure \ref{fig:esh_arch_authenticator} shows how the authenticator is merely a black box that may choose to perform a certain kind of authetnication according to the circumstance. The decision is based on the received HTTP request: depending on whether if has an authorization header, and if it does, which kind of authentication it intends to perform, or otherwise if there is a session identifier (cookie) present. Implementation details for the basic and JWT authenticators are introduced in subsection \ref{ssec:impl}. Form authentication is left as future work. 
 
-Initial results by the community (REFERENCE) showed that it was indeed possible to make the \texttt{HttpContext} shared by the components that needed access control. Taking these results into account, work in the direction of a \emph{custom} \texttt{HttpContext} started. Implementation details are introduced in the next subsection.
+\begin{figure} [ht] 
+\begin{center}
+\includegraphics[width=0.8\textwidth]{esh_arch_authenticator}
+\caption{Addition of authenticators into the architecture.}
+\label{fig:esh_arch_authenticator}
+\end{center}
+\end{figure}
 
-\subsection{Implementation of Authentication}
-As an interface class of the \texttt{Http Service} OSGi feature, \texttt{HttpContext} includes a method \texttt{handleSecurity} which, as the name implies, handles the security for the specified request to the servlet. 
+After the process of authentication, what follows is authorization. The authorization itself depends on the access control policies decided for the particular resources. This work focuses on authentication, and thus does not include the implementation of a particular access control policy. However, a proposal for access control is made in subsection \ref{ssec:autho}.
 
-\TODO{Sequence diagram on authentication}
+\subsection{Implementation of Authenticators}
+\label{ssec:impl}
+
+To model the sequence of events ocurring during the intended authentication procedure, a sequence diagram was written and is shown in figure \ref{fig:esh_auth_sequence}. This is showing the most compelling scenario: where the client interacts the first time with a servlet to get access to a resource. Clearly, as no credentials are provided at this time, the servlet requests basic authentication, and from there it generates a JSON Web Token (JWT). This token is used in any subsequent requests by the client. Note that the authorization policy is not included into this sequence of events. Thus, authorization becomes a binary aspect: if credentials are valid, then access is granted to the resource, regardless of its nature. Due to simplification, this diagram is only considering the use of valid credentials. In the actual implementation, invalid credentials result in a ``Forbidden Access'' response. 
+
+\begin{figure} [ht] 
+\begin{center}
+\includegraphics[width=0.8\textwidth]{esh_auth_sequence}
+\caption{Authentication sequence diagram.}
+\label{fig:esh_auth_sequence}
+\end{center}
+\end{figure}
+
+The implementation of the authenticators was made into the \texttt{auth} bundle of the Eclipse SmartHome OSGi architecture. Due to the hierarchical nature of this project, many details will be omitted.  The core of the authenticator is located as part of the \texttt{CustomHttpContext} code located in this bundle.
+
+As an interface class of the \texttt{Http Service} OSGi feature, \texttt{HttpContext} includes a method \texttt{handleSecurity} which, as the name implies, handles the security for the specified request to the servlet. As long as the servlet is registered with the custom \texttt{HttpContext}, every request into the servlet will go through the \texttt{handleSecurity} method.
+
+\TODO{FIX HYPHEN ISSUES AND REF TO CODE SNIPPET INSTEAD OF FIG}
+\begin{figure} [htb]
+  \begin{lstlisting}
+class CustomHttpContext implements HttpContext {   
+ boolean handleSecurity(request,response) {
+  if(request.getHeader("Authorization") == null \
+       && request.getHeader("Cookie") == null) {
+    response.addHeader("WWW-Authenticate", \
+	"Basic realm=\"Test Realm\"");
+    response.sendError(HttpServletResponse.SC_UNAUTHORIZED;
+    return false;
+  }	    
+  if(jwtAuthenticated(request)) {
+    return true;		
+  } else if(basicAuthenticated(request)){
+    username = getUsername(request);
+    freshToken = generateJwt(username);
+    response.addHeader("Set-Cookie", freshToken);
+    return true;
+  } else {
+    response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+    return false;
+  }
+ }
+}
+\end{lstlisting}
+\caption{Core implementation of \texttt{CustomHttpContext}.}
+\label{lst:core_impl}
+\end{figure}
+
+The simplified code snippet shows the core part of the \texttt{HttpContext} that intercepts requests and performs authentication from the provided HTTP header. As shown in the code snippet, after the JWT has been generated, it is given to the client as a \emph{cookie}. This way, no logic has to be implemented to manage the token in the client side (e.g. through local storage using HTML5). In subsequent requests, the cookie is presented to the server, and from it, the token is extracted and verified.
+
+To handle the creation and verification of JWT, a third library library, Nimbus, was used (REFERENCE). This library even provides more complex features such as encryption of the JWT via a symmetric key encryption, but these are not currently considered for this work. As part of the basic structure of the JWT, a signature of the host is included at the end of the claims (e.g., username, permissions). For the proof of concept, an RSA-1024 key is generated as a singleton during runtime. Using the singleton pattern ensures that multiple private keys do not exist simultaneously, which could cause conflicts during signature verification. The freshly created RSA key is then used to both generate and sign the JWT, as shown in the simplified code snippet \ref{lst:rsa}.
+
+\begin{figure} [htb]
+\begin{lstlisting}
+  protected String generateJwt(String username, String claim) {
+    RSAPublicKey publicKey = (RSAPublicKey)getKeyPair().getPublic();
+    RSAPrivateKey privKey = (RSAPrivateKey)getKeyPair().getPrivate();
+    JWSObject jwsObject = new JWSObject(
+    new JWSHeader.Builder(JWSAlgorithm.RS256).keyID("123").build(),
+    new Payload(username));
+    jwsObject.sign(new RSASSASigner(privKey));
+    return jwsObject.serialize();	
+  }    
+\end{lstlisting}
+\caption{Generation and signing of JWT.}
+\label{lst:rsa}
+\end{figure}
+
+Code for the verification of the JWT is omitted as it follows a very similar logic to JWT generation and signing, but in reverse order. This implies de-serializing the JWT, loading the RSA public key into some object, verifying JWT using said object, and finally extracting username and claims. In the implementation, the username need not be extracted, as it is guaranteed that the claims are valid, given that the signature is valid.
+
+As mentioned, the RSA key is generated at runtime once. Originally, this was meant to merely be a placeholder for a pre-existing RSA key that is present in the distribution of openHAB for SSH access. This pre-existing RSA key is stored in a file \texttt{keys.properties} under the \texttt{etc/} directory of the installation path of openHAB. However, it turned out that some problems emerged from this idea. First, the pre-existing RSA key was disabled, i.e. commented, as a security precaution. Secondly, the key is only generated as part of running the Karaf container inside the openHAB distribution. As Karaf is not included within the Eclipse SmartHome distribution, there is no pre-existing key. For the first problem, it would be enough to have the openHAB administrator generate a fresh key pair and store the public and private keys. However, this is not exactly user-friendly, and thus becomes a problem in terms of security usability.  A possible solution to the second problem is to leave key generation to the \texttt{auth} bundle and store it in some file in the local filesystem. When the bundle is activated it will first look for the file before attempting to generate a new RSA key. As the discussion within the community has not gotten to this point, the implementation has maintained the idea of storing the RSA key in memory during runtime. It should not cause problems and, in case that the bundle is restarted, then due to invalid JWTs, credentials will be requested again.
+
+The rest of the implementation follows the authentication logic for the basic and token-based types. The code is currently maintained as a fork of the Eclipse SmartHome project (REFERENCE).
   
 \subsection{Proposed Authorization Scheme}
+\label{ssec:autho}
 \TODO{Mention what will be "secured": servlets, REST endpoints, to view and to modify, etc}
 
 \newpage
