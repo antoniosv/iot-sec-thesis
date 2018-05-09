@@ -359,6 +359,9 @@ study.}
 %Tip: if it's hard for you to start writing, then try to split it to smaller parts, e.g. if the title is ``Type Inference for a Cryptographic Protocol Prover Tool'' then the ``What is it'' can be divided into ``what is type inference'', ``what is cryptographic protocol'' and ``what is the prover tool''. These three can also be split to smaller parts etc.
 
 %---------------------------
+
+% Actually, a study [2] about the future of digital trust released by orange has shown that 78% of consumers think that it is hard to trust companies when it comes to use their personal data. (REFERENCE)
+
 \subsection{Problem Statement}
 
 \subsection{Motivation}
@@ -428,15 +431,33 @@ Some text...
 
 Some text...
 
+\subsubsection{Access Control}
+
+Should be tamper-proof... Kept in a small part of the system... 
 \subsubsection{Authentication}
 
-Some text...
+\subsubsection{Authorization}
 
-\subsubsection{Authorization and Access Control}
+Security policy,
+Security model,
+Security mechanism
+
+
+Policies grouped into
+Discretionary (DAC)
+Mandatory (MAC)
+Role-based (RBAC)
+Attribute-based (ABAC)
+Usage Control (UCON)
+Capability-based (CapBAC)
 
 \paragraph{JSON Web Token}. JWT....
 
 \paragraph{Role Based Access Control}. RBAC...
+
+\subsection{Attacks}
+
+eavesdropping, the man-in-the middle, key control attack, and replay attacks.
 
 \subsection{OSGi Architecture}
 
@@ -720,12 +741,51 @@ As mentioned, the RSA key is generated at runtime once. Originally, this was mea
 
 The rest of the implementation follows the authentication logic for the basic and token-based types. The code is currently maintained as a fork of the Eclipse SmartHome project (REFERENCE).
   
-\subsection{Proposed Authorization Scheme}
+\subsection{Proposed Authorization Model}
 \label{ssec:autho}
 \TODO{Mention what will be "secured": servlets, REST endpoints, to view and to modify, etc}
+As part of the access control mechanism, authorization is split up in several phases: defining a security policy, selecting an authorization model, implementing the model, and enforcing the policy (REFERENCE). As a smart home automation software, it is not trivial to define a security policy that covers all cases, due to the dynamic and varied-purpose devices present. The implementation of any authorization model emcompasses engineerning work tightly related to the OSGi architecture of the system, and thus, is left out of the scope of this work. However, by having knowledge of the resources that need to be restricted through access control, e.g. things, items, channels, system settings, an authorization model can be proposed independently of the authorization policy and implementation. Then, when a specific policy is decided by the Eclipse SmartHome community, the model will not change drastically, and thus, implementation can follow. 
+
+For a smart home application, the focus of an authorization model should lean towards privacy-preservation and usability (REFERENCE). Considering that most end users of the openHAB are not tech-savvy, some options for an authorization model are instantly discarded. Some models are considered to be complex to manage and set up, such as the Attribute-Based Acess Control (ABAC), Usage Control (UCON), and the Access Control Matrix and List (ACM, ACL).
+
+According to the requirements document written by the Eclipse Smart Home community, fine-grained access control is desired (REFERENCE). This is, an end user should be allowed to manage Things individually for each registered user, along with permissions regarding the sitemaps (User Interface templates), system settings, among others. An excellent fine-grained authorization model is the Attribute-Based Access Control. This model, however leaves a lot to be desired in terms of usability due to the management of every single permission as attributes for every user. This kind of management might end up in user pains, opting users to disable access control for the sake of comfort. 
+
+Initially, it was considered to make direct use of the Role-Based Access Control (RBAC) authorization model. However, this kind of model works best when there are functional differences between the users of the system. In the case of openHAB, all users are typically members of the same household or temporal guests. In that sense, it does not make much sense to have a functional separation between users. However, it is reasonable to assume that some members of the household may not have the same rights as others. For example, a guest could be allowed to turn on/off the light switch, but may not be allowed to freely open the front door anytime. Likewise, permissions might not be equally split even among the permanent residents.
+
+It was observed that the difference between users depend not on roles, but rather on the capabilities owned by each subject. The Capability-Based Access Control (CapBAC) overlaps with the idea of dynamically managing capabilities by granting some kind of token that describes these capabilities (REFERENCE). At first, it seems that this idea better fits with the needed authorization model for openHAB due to the flexibility to define permissions according to the capabilities of an entity. This notion is disolved when the implications of CapBAC are further analyzed, however. The authorization that CapBAC seeks to enforce is continous, that is, authorization is checked befure, during, and afterward access to a resource is requested. This particularity is meant to serve for the dynamic nature of the general IoT environment. However, for openHAB, a smart home application, the dynamic nature of smart devices is bounded by the the application itself: a single household.
+
+An authorization model that makes use of the concept of roles as in the RBAC model and that focuses on capabilities, is described as follows. Consider a set of activities or tasks that may be performed on the Eclipse SmartHome, and consequently, the openHAB distribution. These tasks may vary from viewing or changing the status of a device connected to the system, to accessing certain parts of the sitemaps that serve as the user interface templates. These tasks may be grouped together as capability sets. For instance, the capability set ``speakers-playback'' may include actions such as modifying the speakers volume and even stopping or changing the track currently playing. Meanwhile, the capability set ``speakers-quiet'' may allow access to viewing the track currently playing and decreasing the speakers volume, for example. Consider a collection of different capability sets designed in advance for every \emph{type} of Thing, usually encompassed by a \emph{binding} in the Eclipse SmartHome. Finally, every user may be assigned a different collection of capability sets, thus making the permissions apparent and transparent. In that sense, a set of capabilities is akin to the concept of role in the RBAC model, and every user is assigned one or more roles, according to the actions permitted to them.
+
+Table \ref{tbl:autho_cap} shows a sample assignment of capability sets to some users. Every user is expected to have at least one capability set, which may inherently encompass a number of permissions for the system. Table \ref{tbl:autho_op} offers an example that details the operations that access would be permitted for a particular capability set. For instance, a user with the \emph{things-all} capability set would have access to the REST resource that returns a JSON of all existing Things, as well as access to the method that allows registering a new Thing to the ecosystem. Thus, the proposed authorization model inspired by both the RBAC and CapBAC is a sound solution for the access management needs required of the Eclipse SmartHome and openHAB automation ecosystem. 
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{|l|l|}
+    \hline
+    \multicolumn{1}{|c|}{\textbf{User}} & \multicolumn{1}{c|}{\textbf{Capability Sets}}            \\ \hline
+    Marian                              & (speakers-quiet, lights-on, doors-close, sitemaps-paper) \\ \hline
+    Erika                               & (speakers-playback, lights-all, doors-all, sitemaps-all) \\ \hline
+  \end{tabular}
+  \caption{Sample relation of user and capability sets}
+  \label{tbl:autho_cap}
+\end{table}
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{ll}
+    \hline
+    \multicolumn{1}{|c|}{\textbf{Capability Set}} & \multicolumn{1}{c|}{\textbf{Involved Operations}}                                                                                                                                                                                      \\ \hline
+    \multicolumn{1}{|l|}{speakers-playback}   & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}yamahareceiver.internal.state.\\NavigationControlState.getCurrentItemName()\\ ZoneControlState.volume\end{tabular}} \\ \hline
+    \multicolumn{1}{|l|}{things-all}          & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}rest.core.internal.thing.ThingResource.getAll()\\ rest.core.internal.thing.ThingResource.create()\end{tabular}}                       \\ \hline
+    &
+  \end{tabular}
+  \caption{Sample listings of operations involved for each capability set}
+  \label{tbl:autho_op}
+\end{table}
 
 \newpage
 \section{Evaluation}
+
 \TODO{Short description of what this section is about}
 
 \newpage
