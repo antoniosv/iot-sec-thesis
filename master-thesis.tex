@@ -286,7 +286,7 @@ From a theoretical viewpoint, the result is only a small advancement in rigorous
 \noindent\textbf{Keywords:}\\
 \TODO{List of keywords}
 %Layout, formatting, template
-
+\TODO{CERCS code}
 \vspace*{1ex}
 
 \noindent\textbf{CERCS:}\TODO{CERCS code and name:~\url{https://www.etis.ee/Portal/Classifiers/Details/d3717f7b-bec8-4cd9-8ea4-c89cd56ca46e}}
@@ -350,55 +350,99 @@ study.}
 
 \TODO{(ref) references}
 \TODO{Motivation on going from state of the art to OH2}
-%% \TODO{What is it in simple terms (title)?}
-%% \TODO{Problem Statement}
-%% \TODO{Why should anyone care? (E.g. security)}
-%% \TODO{What was my contribution? (E.g. authentication/authorization)} 
-%% \TODO{What you are doing in each section (a sentence or two per section)}
 
-%Tip: if it's hard for you to start writing, then try to split it to smaller parts, e.g. if the title is ``Type Inference for a Cryptographic Protocol Prover Tool'' then the ``What is it'' can be divided into ``what is type inference'', ``what is cryptographic protocol'' and ``what is the prover tool''. These three can also be split to smaller parts etc.
+We currently exist in an age where our lives are slowly being invaded by objects that are capable becoming aware of their physical context. These are not simple physicalobjects anymore, but rather context-aware sensing devices, and their capababilities may greatly improve our lives in a variety of situations. Smartphones, smart watches, automatic doors with facial recognition, self-driving cars, are some of the objects that have been slowly transitioning into context-aware devices. As we are in constant contact with some of these devices, our environment becomes a pervasive one. However, with so much information about ourselves and our lifestyle flowing between these devices and the cloud, what guarantee is there that our privacy is being protected?
 
-%---------------------------
+Living in a context-aware home is no longer a futuristic vision. Automatic security systems with face recognition, scheduled meals prepared by e.g. a smart rice cooker, coffee maker; smart refrigerator that notices when ingredients have expired, among others, are just some sample smart appliances that might be used in a smart home. And returning to the idea of privacy protection: would a regular resident of a smart home be happy that his food choices, for example, are being disclosed to e.g., their neighbors? Usually, we expect that people are able to maintain their privacy in their own homes. Thus, openly managing such amounts of information starts to become a problem, rather than an advantage. In fact, a study disclosed by Orange about the future of digital trust has shown that 78\% of consumers think that it is hard to trust companies when it comes to use their personal data (REFERENCE). This hints that security might be an important aspect of the systems that employ these context-aware devices. 
 
-% Actually, a study [2] about the future of digital trust released by orange has shown that 78% of consumers think that it is hard to trust companies when it comes to use their personal data. (REFERENCE)
+Among all the different scenarios and applications that could made a reality with these context-aware devices, the \emph{smart home} is of particular interest. openHAB is an automation software that brings together and operates \emph{Things} for the purpose of building a smart home environment. Smart home, a subset of the Internet of Things paradigm, is gaining popularity not only as a futuristic toy, but as a real intelligent environment that can be put in use today. \emph{Things}, which will be detailed later, form the basic unit in a smart home environment. Things capture data from the environment and transmit it to another point. Security is defined in ~\cite{whitman2011principles} as having ``protection against adversaries'', i.e., those would, intentionally or not, cause harm. In this context, security refers actually to \emph{information security}, defined in the same source as a layer of security that aims to protect the confidentiality, integrity, and availability of information resources that may be in storage, processing or transmision. Thus, this work introduces the notion of reviewing, evaluating, and possibly improving the existing (information) security present in the openHAB automation software for the smart home.
 
 \subsection{Problem Statement}
 
+The security of the openHAB software, in terms of data protection and privacy preservation, is currently undefined, as there are no direct sources that address these topics. It is desirable to have an overview on what kind of security mechanisms are present and enforced in openHAB, as well as which vulnerabilities might have an impact on its use and future adoption. Morevoer, as an open-source project, there is no clear indication that the security is being actively looked into for this project, or if it is feasible to do so. Furthermore, there is evidence that the openHAB smart home automation project does not define an access control policy, nor does it implement an authorization model to prevent information from being leaked to unauthorized parties. 
+
 \subsection{Motivation}
 
-\subsection{Hypothesis}
-
-\subsection{Contributions}
-
-\subsection{Structure}
-
-\TODO{Replace openHAB2 with openHAB}
-
-openHAB is an automation software that brings together and operates \emph{Things} for the purpose of building a smart home environment. Smart home, a subset of the Internet of Things paradigm, is gaining popularity not only as a futuristic toy, but as a real intelligent environment that can be put in use today. \emph{Things}, which will be detailed later, form the basic unit in a smart home environment. Things capture data from the environment and transmit it to another point. Security is defined in ~\cite{whitman2011principles} as having ``protection against adversaries'', i.e., those would, intentionally or not, cause harm. In this context, security refers actually to \emph{information security}, defined in the same source as a layer of security that aims to protect the confidentiality, integrity, and availability of information resources that may be in storage, processing or transmision. Thus, this work introduces the notion of reviewing, evaluating, and possibly improving the existing (information) security present in the openHAB automation software for the smart home.
-
-The security of the openHAB software, in terms of data protection and privacy preservation, is currently undefined, as there are no direct sources that address these topics. It is desirable to have an overview on what kind of security mechanisms are present and enforced in openHAB, as well as which vulnerabilities might have an impact on its use and future adoption. Morevoer, as an open-source project, there is no clear indication that the security is being actively looked into for this project, or if it is feasible to do so.
-
-It is known that security breaches may have a significant economic impact on a firm, as described by \cite{GOEL}. Data loss or theft, tampering, and unauthorized operations are just some of the possible ocurrences led by the lack of proper security mechanisms in place. In the case of openHAB, a smart home application, it is not quite quantifiable how expensive it results to have a security breach occur at any level. The consequences may go from user discomfort to identity theft, or worse.
+It is known that security breaches may have a significant economic impact on a firm, as described by~\cite{GOEL}. Data loss or theft, tampering, and unauthorized operations are just some of the possible ocurrences led by the lack of proper security mechanisms in place. In the case of openHAB, a smart home application, it is not quite quantifiable how expensive it results to have a security breach occur at any level. The consequences may go from user discomfort to identity theft, or worse.
 
 Applications for the Internet of Things are still very recent, and still not much is not known about the possibilities it will bring. This has led to ongoing efforts, such as openHAB, to focus mostly on the system functionalities, rather than the user experience, security, or many other non-functional requirements. Ideally, there should be a framework that can be used to evaluate the security of IoT applications. At the time, this has not been established due to the vast differences in the architectures and implementations. Indeed, as the environment grows more complex, so does the attack surface areas and possible vulnerabilities.
 
 Not knowing the extent of how \emph{secure} openHAB or any other application of IoT is deters its adoption, and raises concerns about existing instances. Security by obscurity has never been the a reasonable attempt to protect information assets from adversaries. And indeed, as an open-source project, any party can freely view the code to try to find hidden vulnerabilities. For this reason, some effort could be spared for reviewing the security of existing models for Internet of Things, including concrete applications, such as openHAB.
 
-The contribution of this work are mainly two: an overview of the state of the art sesecurity in Internet of Things, and the implementation of a token-based authentication mechanism for openHAB. As part of the second part of the contribution, a fine-grained access control scheme is proposed for authorization of resources of the smart home environment. 
+\subsection{Hypothesis}
 
-This work is divided in ... sections. Section 2....
+By analyzing the architecture and communication processes in the openHAB automation software it is possible to create an overview of the current securtiy mechanisms adopted into the system. Additionally, the implementation of an authentication mechanism is feasible despite the limitations of the openHAB software architecture.
 
+\subsection{Contributions}
+
+This work presents three main contributions. First, an overview of the existing literature on the security in the Internet of Things is presented in section~\ref{sec:art}. Second, the implementation of a JSON Web Token-based authenticator for the Eclipse SmartHome that is detailed in subsection~\ref{ssec:impl}. Finally, a somewhat-grained and usable authorization model for access control of the resources in openHAB is detailed in subsection~\ref{ssec:autho}.
+
+\subsection{Structure}
+
+This work is divided in several sections. Section~\ref{sec:art} introduces some key concepts in terms of security and the OSGi architecture, and later delves into the state of the art on the security in the Internet of Things. Section~\ref{sec:related} briefly introduces some works loosely related to the contributions made in this work. Section~\ref{sec:method} describes in great detail the methodology to implement a JSON Web Token-based authenticator and to propose an authorization model suitable for the openHAB smart home application. Section~\ref{sec:eval} evaluates and discusses the authenticator implementation and authorization model proposal. Finally, section~\ref{sec:conclusion} presents the general conclusions obtained from this work, and briefly describes the future work to build upon the contributions presented.
 
 %---------------------------
 
 \newpage
-\section{Background and State of the Art} 
-
-%% \paragraph{Type rules for integers.} Some text ...
-
-%% \paragraph{Type rules for rational numbers.} Some text here too...
+\section{Background and Literature Review} 
+\label{sec:art}
+\TODO{Literature Review or State of the Art}
+% \paragraph{Type rules for integers.} Some text ...
 \TODO{Short description of what this section is about}
 \TODO{Existing smart home solutions and comparison in securiy}
+
+The purpose of this section is to briefly give some technical background on the concepts that will be recurrently used in this work, and to describe the existing literature on the security in the Internet of Things. The technical concepts introduced as part of the background are derived from various independent areas, namely: information security, network architecture, cloud computing, and the OSGi architecture for Java EE.
+
+\subsection{Information Security}
+
+Information security is the quality or ability to protect the confidentiality, integrity, authenticity, and availability of assets in an information system at any stage: be that storage, processing, or transmission~\cite{whitman2011principles}.
+
+Adversaries, malicious entities that attempt against the security of the information assets, are considered to be present at all times when modeling security. Flaws in design, architectural, and implementation of an information system may lead to the existance of security vulnerabilities, and the actions of an adversary that make use of these vulnerabilities represent security threats. The changing nature of the technology makes it difficult to identify security threats, causing diverse and complex challenges to protect the information and systems that process, transport, and store it~\cite{whitman2003}.
+
+\subsubsection{Confidentiality and Privacy}
+
+A piece of information has \emph{confidentiality} when it is never disclosed to unauthorized parties. When confidentiality is guaranteed, the information is exposed only when the party that requested it has been granted the rights to view it~\cite{whitman2011principles}.
+
+Information privacy, although very similar to the concept of confidentiality, focuses on the use and governance of personal data, while confidentiality sets the mechanisms to ensure that only those allowed will have access to the information~\cite{heckman}. Confidentiality can be viewed as a component of privacy, and an overall weaker assumption on information security. In short, information is confidential if it is not disclosed to unauthorized parties, and private if the the identity of the the individuals with some connection to the information is not revealed.
+
+\subsubsection{Access Control}
+
+Should be tamper-proof... Kept in a small part of the system... 
+\subsubsection{Authentication}
+
+\paragraph{Basic Authentication}. ...
+
+\paragraph{JSON Web Token}. JWT....
+
+Session ID(cookies), stateless...
+
+\subsubsection{Authorization}
+
+\begin{description}
+\item[Security policy]
+\item[Security model]
+\item[Security mechanism]
+\end{description}
+
+Access control policies grouped into:
+\paragraph{Discretionary (DAC)}
+\paragraph{Mandatory (MAC)}
+\paragraph{Role-based (RBAC)}
+\paragraph{Attribute-based (ABAC)}
+\paragraph{Usage Control (UCON)}
+\paragraph{Capability-based (CapBAC)}
+
+\subsection{Attacks}
+
+eavesdropping, the man-in-the middle, key control attack, and replay attacks.
+
+\subsection{OSGi Architecture}
+
+\subsubsection{Http Service}
+
+\subsection{HTTP, REST}
+
+\subsection{Internet of Things} 
 
 The Internet of Things, commonly referred as IoT, is a dynamic and heterogenous environment where \emph{sensing} devices may interact with each other for some particular purpose. The devices range from radio identification devices (RFID), infrared sensors, global positioning systems; to smart watches, smartphones, smart televisions, etc. The most important aspect for these devices is that they can gather some kind of data from the real world, and that are capable of transmitting it to another point. Usually, the devices may interact without human interventation, also known as Machine-to-Machine communication. Due to the wide diversity of capabilities among sensing devices, interoperability is a common challenge, especially due to vendor lock-in and obscure interfaces. Still, it is desirable that the devices can transparently communicate among themselves in a local scope, e.g. inside a wireless sensor network (WSN), and in some cases, even to an exteral scope, e.g. through the Internet. Typically, these devices do not directly communicate with each other, but do so through a gateway, which serves as a communication medium. Additionally, the gateway is also responsible for making the necessary translations between protocols if the devices need to send or receive data through the Internet.
 
@@ -416,56 +460,12 @@ The smart home is one of the many applications for the IoT. A refrigerator that 
 OpenHAB (OH) is such a product that focuses on interoperability among all kinds of devices from different vendors. It does accomplishes the interaction through logical modules called \emph{bindings}. For example, a smart television from Samsung may not be able to interact with other devices out of box, but it may be able to do so if the appropriate binding is developed for the openHAB environment. OpenHAB, as it name implies, is an open-source software that serves as \emph{hub} that brings together a diverse range of devices through the use of bindings. A binding makes a link to a Thing that may be of either physical or logical nature. For instance, a light switch is undoubtedly a physical Thing, and its state of being turned on or off is the data it can make available. Consider however, a weather service from the Internet that provides weather information such as temperature, humidity, and precipitation probability. This provider of data is undoubtedly not of physical nature, but still fits properly into the model of a smart home. Thus, a binding may incorporate such a weather service as a Thing in the logical sense.
 
 \TODO{Do I need reference here?}
-Ironically, openHAB has been often been labeled as \emph{Intranet of Things}, precisely because it is intended to be used in a private network, without access from external sources that traverse through, e.g. the Internet. In short, openHAB2 cannot be accessed from the Internet, and the main reason for this is that there is no authorization mechanism in place for alllowing or forbidding access for users. Thus, any individual that can access the openHAB2 instance is capable of doing any changes and viewing any piece of data, without any lock in place. Therefore, the damage is controlled by making the instance accessible only from inside the private network. Thus, the security is as strong as the security of network. An intruder gaining access to the network implies in gaining access to all of the openHAB2 capabilities, breaching the privacy and confidentiality of the data in use. 
+Ironically, openHAB has been often been labeled as \emph{Intranet of Things}, precisely because it is intended to be used in a private network, without access from external sources that traverse through, e.g. the Internet. In short, openHAB cannot be accessed from the Internet, and the main reason for this is that there is no authorization mechanism in place for alllowing or forbidding access for users. Thus, any individual that can access the openHAB instance is capable of doing any changes and viewing any piece of data, without any lock in place. Therefore, the damage is controlled by making the instance accessible only from inside the private network. Thus, the security is as strong as the security of network. An intruder gaining access to the network implies in gaining access to all of the openHAB capabilities, breaching the privacy and confidentiality of the data in use. 
 
 \TODO{check things needed to make an application open to the internet}
 
 
 \TODO{IoT Applications: smarthome, etc}
-
-\subsection{Information Security}
-
-Some text...
-
-\subsubsection{Confidentiality and Privacy}
-
-Some text...
-
-\subsubsection{Access Control}
-
-Should be tamper-proof... Kept in a small part of the system... 
-\subsubsection{Authentication}
-
-\subsubsection{Authorization}
-
-Security policy,
-Security model,
-Security mechanism
-
-
-Policies grouped into
-Discretionary (DAC)
-Mandatory (MAC)
-Role-based (RBAC)
-Attribute-based (ABAC)
-Usage Control (UCON)
-Capability-based (CapBAC)
-
-\paragraph{JSON Web Token}. JWT....
-
-\paragraph{Role Based Access Control}. RBAC...
-
-\subsection{Attacks}
-
-eavesdropping, the man-in-the middle, key control attack, and replay attacks.
-
-\subsection{OSGi Architecture}
-
-\subsubsection{Http Service}
-
-\subsection{HTTP, REST}
-
-\subsection{Internet of Things} 
 
 \subsubsection{Smarthome Applications}
 
@@ -478,7 +478,7 @@ eavesdropping, the man-in-the middle, key control attack, and replay attacks.
 \subsubsection{the thing system}
 \subsubsection{Home Assistant}
 
-\subsection{Architecture of Eclipse SmartHome and openHAB2}
+\subsection{Architecture of Eclipse SmartHome and openHAB}
 
 \subsubsection{openHAB}
 \paragraph{Version differences}
@@ -488,15 +488,17 @@ eavesdropping, the man-in-the middle, key control attack, and replay attacks.
 \paragraph{Bundle abstraction}
 \paragraph{Tools}
 
-\clearpage
+\newpage
 \section{Related Work}
+\label{sec:related}
 \TODO{Short description of what this section is about}
 
-\clearpage
+\newpage
 \section{Methodology}
+\label{sec:method}
 \TODO{Short description of what this section is about}
 \TODO{Describe how we got to the point of implementing auth.}
-As a first step towards analyzing the security of IoT models, architectures, and applications, a study on the state of the art was conducted. From it, various security mechanisms came to light, which served as the foundation toward data confidentiality, peer authentication, non-repudiation, etc. However, the studied proposals tended to oversimplify and deviate from the issues present in existing solutions. This observation made it clear that there was a disconnect from publications and from the products. Most products, however, do not make public the internal workings, and tend to make their own architectural decisions instead of following standards for, e.g. encoding data transmitted between things. Among the existing solutions for a smart environment, the openHAB smart home software was chosen as a case study in terms of security. The decision was made for various reasons: firstly, it is open-source, and thus it is possible to conduct white-box tests, secondly, it is vendor-agnostic, and finally, because of the active participation of the community in this project.
+As a first step towards analyzing the security of IoT models, architectures, and applications, a study on the state of the art was conducted. From reviewed literature, various security mechanisms came to light, which served as the foundation toward data confidentiality, peer authentication, non-repudiation, etc. However, the studied proposals tended to oversimplify and deviate from the issues present in existing solutions. This observation made it clear that there was a disconnect from publications and from the products. Most products, however, do not make public the internal workings, and tend to make their own architectural decisions instead of following standards for, e.g. encoding data transmitted between things. Among the existing solutions for a smart environment, the openHAB smart home software was chosen as a case study in terms of security. The decision was made for various reasons: firstly, it is open-source, and thus it is possible to conduct white-box tests, secondly, it is vendor-agnostic, and finally, because of the active participation of the community in this project.
 
 \subsection{Security of openHAB}
 \TODO{Analysis of bindings}
@@ -783,10 +785,19 @@ Table \ref{tbl:autho_cap} shows a sample assignment of capability sets to some u
   \label{tbl:autho_op}
 \end{table}
 
+The proposed authorization model fulfills the purpose noted at the beginning of this subsection: satisfying security usability and somewhat-grained access control. Through the assignation of capability sets, an end user is capable of setting the permissions without causing significant pains. Additionally, through the definition of the operations involved in a capability set, the developer of a particular binding or component of Eclipse SmartHome or openHAB is able to implement the access control policy.
+
 \newpage
 \section{Evaluation}
-
+\label{sec:eval}
 \TODO{Short description of what this section is about}
+
+\newpage
+\section{Conclusion}
+\label{sec:conclusion}
+\TODO{what did you do?} 
+\TODO{What are the results?}
+\TODO{future work?}
 
 \newpage
 \section{Extra}
@@ -800,7 +811,6 @@ LaTeX  internally numbers all kind of objects that have sequence numbers:
 \item equations, equation arrays.
 \end{itemize}
 To reference them automatically, you have to generate a label using \texttt{$\backslash$label\{some-name\}} just after the object that has the number inside. Usually, labels of different objects are split into different namespaces by adding dedicated prefix, such as \texttt{sec:}, \texttt{fig:}. To use the corresponding reference, you must use command \texttt{$\backslash$ref} or \texttt{$\backslash$eqref}. For instance, we can reference this subsection by calling Section~\ref{sec:using_ref}. Note that there should be a nonbreakable space \texttt{\~} between the name of the object and the reference so that they would not appear on different lines (does not work in Estonian).          
-
 
 
 \paragraph{Citations.}
@@ -1008,15 +1018,6 @@ Tip: We can use minipage to create a frame around some important information.
 \caption{Arithmetic operations in \proveit revisited.}
 \label{fig:aritmOp_revisit}
 \end{figure}
-
-
-
-\clearpage
-\section{Conclusion}
-
-\TODO{what did you do?} 
-\TODO{What are the results?}
-\TODO{future work?}
 
 \newpage
 
