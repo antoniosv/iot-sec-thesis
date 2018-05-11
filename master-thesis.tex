@@ -349,9 +349,8 @@ study.}
 \section{Introduction}
 
 \TODO{(ref) references}
-\TODO{Motivation on going from state of the art to OH2}
 
-We currently exist in an age where our lives are slowly being invaded by objects that are capable becoming aware of their physical context. These are not simple physicalobjects anymore, but rather context-aware sensing devices, and their capababilities may greatly improve our lives in a variety of situations. Smartphones, smart watches, automatic doors with facial recognition, self-driving cars, are some of the objects that have been slowly transitioning into context-aware devices. As we are in constant contact with some of these devices, our environment becomes a pervasive one. However, with so much information about ourselves and our lifestyle flowing between these devices and the cloud, what guarantee is there that our privacy is being protected?
+We currently exist in an age where our lives are slowly being invaded by objects that are capable becoming aware of their physical context. These are not simple physical objects anymore, but rather context-aware sensing devices, and their capababilities may greatly improve our lives in a variety of situations. Smartphones, smart watches, automatic doors with facial recognition, self-driving cars, are some of the objects that have been slowly transitioning into context-aware devices. As we are in constant contact with some of these devices, our environment becomes a pervasive one. However, with so much information about ourselves and our lifestyle flowing between these devices and the cloud, what guarantee is there that our privacy is being protected?
 
 Living in a context-aware home is no longer a futuristic vision. Automatic security systems with face recognition, scheduled meals prepared by e.g. a smart rice cooker, coffee maker; smart refrigerator that notices when ingredients have expired, among others, are just some sample smart appliances that might be used in a smart home. And returning to the idea of privacy protection: would a regular resident of a smart home be happy that his food choices, for example, are being disclosed to e.g., their neighbors? Usually, we expect that people are able to maintain their privacy in their own homes. Thus, openly managing such amounts of information starts to become a problem, rather than an advantage. In fact, a study disclosed by Orange about the future of digital trust has shown that 78\% of consumers think that it is hard to trust companies when it comes to use their personal data (REFERENCE). This hints that security might be an important aspect of the systems that employ these context-aware devices. 
 
@@ -460,15 +459,31 @@ Depending on the security policy requirements, a different authorization model m
 
 \subsection{OSGi Architecture}
 
-Usually called an architecture, the OSGi framework provides a general-purpose, secure, and managed Java framework that supports the deployment of bundles~\cite{osgi_core}. A bundle is the extensible application unit in the OSGi framework. In short, OSGi-based applications are made up of bundles, and each of these may expose their internal business logic so that other bundles make use of it. 
+Usually called an architecture, the OSGi framework provides a general-purpose, secure, and managed Java framework that supports the deployment of bundles~\cite{osgi_core}. A bundle is the extensible application unit in the OSGi framework. In short, OSGi-based applications are made up of bundles, and each of these may expose their internal business logic so that other bundles make use of it. A runtime implementation is capable of dynamically downloading, adding and removing bundles as necessary. Each bundle has an identifier which includes its version, so it becomes possible to have different versions of the same bundle running at the same time. 
 
-There are several implementations of the OSGi specification, such as Eclipse Equinox, Apache Felix, Eclipse Concierge, and Knopflerfish. Equinox is the reference implementation of OSGi and it is used in many big projects, including Eclipse SmartHome and openHAB. Although current implementation of Equinox is already on release 6, the Eclipse SmartHome strictly follows the 4.2 release as runtime.
+There are several implementations of the OSGi specification, such as Eclipse Equinox, Apache Felix, Eclipse Concierge, and Knopflerfish. Equinox is the reference implementation of OSGi and it is used in many big projects, including Eclipse SmartHome and openHAB. Note that for the Eclipse SmartHome, the runtime is bounded by the OSGi Release 4.2. 
 
-\subsubsection{HTTP Service}
+\subsubsection{Bundles}
 
-\paragraph{Servlet Resources}
+In typical Java applications, the modular unit of a system is considered to be a class. In the OSGi framework, the unit of modularization is a bundle, which may be comprised of many classes and other resources, such as configuration files or simply static files. The bundle itself is typically deployed as a JAR file with additional files, like a Manifest file. Through the use of headers in this file, a bundle can define which Java packages can be shared to other bundles, and which which packages will be imported from other bundles. Particularly, the \texttt{Export-Package} header is used to share packages, while the \texttt{Import-Package} header is used to reuse functionality from external bundles.
 
-\paragraph{REST Resources}
+One of the most relevant headers in the Manifest file is the \texttt{Bundle-ActivationPolicy}. This header informs the OSGi runtime when this bundle should be activated. To save memory, for instance, it might be decided to activate a bundle only when it is required by some other bundle. Otherwise, it might be preferred to always start the bundle right after the OSGi is initialized. 
+
+From the downloading of a bundle until it is executed and possibly stopped there are some intermediate states. First, a downloaded bundle that is added to the runtime is in the \texttt{Installed} state. Automatically, it attempts to change its status to \texttt{Resolved} if no problems occur. If there is a problem with the bundle, it will stay in that state. Otherwise, it will change to \texttt{Starting}, and from it follow to the \texttt{Active} state. At this point, the logic from the bundle activator starts running, which can be something as simple as printing something in the console, or as complex as registering a service to the OSGi runtime. Finally, if the bundle is stopped or removed, it changes to \texttt{Stopping} before going back to \texttt{Resolved}.
+
+\subsubsection{Servlet Registration}
+
+A servlet is special Java class used to extend a web server by providing dynamic web content~\cite{servlet}. It can be used to serve static HTML pages or files, or may also serve dynamic content depending on the state of the system and user input.
+
+Traditional web applications in Java require a container, such as Tomcat or Jetty, where the servlet is published, so that it can be accessed through HTTP. Java servlets make use of an application deployment descriptor, more widely known as the \texttt{web.xml} file. This configuration file specifies to which URL it is mapped to. Thus, when a \texttt{GET} request arrives at that URL, for instance, it is redirected to the correct method.
+
+In the OSGi framework however, this deployement descriptor, i.e. \texttt{web.xml} does not exist. Just as a bundle has to be registered to the runtime, the servlet, and its respective HTTP response methods have to be registered to it. Two mechanisms to perform this registration are Http Service and Http Whiteboard.
+
+\paragraph{Http Service}
+
+\paragraph{Http Whiteboard}
+
+\subsubsection{REST and JAX-RS Connector}
 
 \subsection{Internet of Things}
 
@@ -481,11 +496,11 @@ Given this amount of issues present in the architecture and development of IoT a
 \TODO{look for reference on law about privacy}
 Due to recent developments on laws pertaining data security and privacy, more emphasis has given to the security of information systems. Thus, incorporating security into a software product is no longer a courtesy, but a duty toward the users. Data encryption, authentication, authorization mechanisms, non-repudiation, are just some of the possible measures that should be taken into account when designing a secure system, and the IoT is no exception to this. In this context, the privacy and confidentiality of the data gathered by the sensing devices come to mind. Depending on the nature of this data, the privacy might be essential to maintain, especially during transit to other devices or points in the network.
 
+\subsubsection{Security Challenges in IoT}
 
 \subsubsection{Threats and attack vectors}
 
 eavesdropping, the man-in-the middle, key control attack, and replay attacks.
-
 
 \TODO{IoT Applications: smarthome, etc}
 
@@ -536,7 +551,7 @@ As a first step towards analyzing the security of IoT models, architectures, and
 \TODO{is it necessary to add screenshots of tcpdump or wireshark?}
 A binding is the logical piece of the system that links a \emph{thing} to openHAB. Through the User Interface or REST API calls, a user is able to view, and possibly modify the channels, i.e. values, of the things connected to the system. Temperature and humidity values, state of light switches, currently playing media, etc., are some examples of these channels. In the case of the least complex adversary, it may be assumed that it is possible to eavesdrop the incoming and outgoing data packets through the network. Thus, the first effort was to see how the data is moving around the system. Through the use of Wireshark and tcpdump, it was observed that the transit of data ocurred in two possible ways: through the cloud, or through the openHAB instance. Some devices, such as light switches, do not require to communicate with a server in the Internet to set or unset the state of the switch. As this may be done internally, the binding provides the means to operate the thing directly through the User Interface of openHAB. The other case involves devices which need to communicate to a remote server through the Internet to push its data. The binding, in this case, connects to the remote server through the use of proprietary API, and gets the data required from it. This is more evident in a logical thing, such as a weather service. The binding for the weather service connects to the server through an API to query data about temperature, humidity, etc., of a particular location.
 
-Delegating the data to a remote server was the first obstacle in the analysis of the security in openHAB. Because of simplifications in the literature about IoT, it is typically assumed that for the architecture of IoT applications \TODO{REFERENCE} there is no connection to the Internet to accomplish a task that may be performed locally. However, due to different vendors and a variety of devices, the actual solution tends to depend on a remote connection. For this reason, the security frameworks \TODO{reference} in the literature do not quite fit in this scenario. This does not cause worse security implications, however; the analysis should be more flexible in that case.
+Delegating the data to a remote server was the first obstacle in the analysis of the security in openHAB. Because of simplifications in the literature about IoT, it is typically assumed that for the architecture of IoT applications (REFERENCE) there is no connection to the Internet to accomplish a task that may be performed locally. However, due to different vendors and a variety of devices, the actual solution tends to depend on a remote connection. For this reason, the security frameworks (REFERENCE) in the literature do not quite fit in this scenario. This does not cause worse security implications, however; the analysis should be more flexible in that case.
 
 Internal communication between things and the openHAB instance is typically done under a wireless network that encrypted with AES, for example. In that case, an eavesdropperis Ever is only able to get the transmitted data if it can break AES, which is computationally infeasible for a sensible amount of time for even a 128-bit key. Thus, data confidentiality in this scenario depends entirely on the security of the wireless network where the openHAB instance and the thing reside. Evidently, if Eve gains access to this private network, all intercepted communication is plainly visible to Eve.
 
@@ -573,8 +588,7 @@ The last scenario hints at the implication of guaranteeing secure communication 
 
 Code snippet~\ref{lst:https_binding} is an example of a binding, in this case for iCloud. This binding is meant to establish a connection to the iCloud services, for example, to learn the status of a device. The method \texttt{requestDeviceStatus} is responsible for establishing the connection and returning the result as a JSON structure in a String variable. In the context of security, the important thing to note is that the connection is established through the use of the \texttt{HttpsURLConnection} class, which supports https-specific features, such as the encrypted communication through the TLS protocol. In this case, it is expected that the communication will be encrypted and an eavesdropper will not be able to read the plain data. Indeed, through the use Wireshark it was confirmed that the packets sent between the openHAB instance and the remote server were using the TLS protocol to communicate.
 
-\TODO{REFERENCE}
-As hinted, the use of HTTPS in bindings is of great importance due to the underlying Transport Layer Security protocol, also known plainly as TLS. According to the specification by the IETF, TLS provides communications security over the internet, and it is designed to prevent eavesdropping, tampering, or message forgery. The specifics of the protocol are of no importance in this work, thus it suffices to stress the fact that relying on it will guarantee the confidentiality and integrity of the data sent between the openHAB instance and remote servers.
+As hinted, the use of HTTPS in bindings is of great importance due to the underlying Transport Layer Security protocol, also known plainly as TLS. According to the specification by the IETF, TLS provides communications security over the internet, and it is designed to prevent eavesdropping, tampering, or message forgery (REFERENCE). The specifics of the protocol are of no importance in this work, thus it suffices to stress the fact that relying on it will guarantee the confidentiality and integrity of the data sent between the openHAB instance and remote servers.
 
 \subsection{openHAB: Intranet of Things}
 
@@ -1094,6 +1108,7 @@ Tip: We can use minipage to create a frame around some important information.
 \section*{I. Glossary}
 \addcontentsline{toc}{subsection}{I. Glossary}
 Bearer token. The digest of the user credentials to be used in an authentication process.
+Manifest. Configuration file for OSGi bundles that define the bundle's unique identification, packages imported from other bundles, and packages to make available to other bundles.
 \newpage
 
 %=== Licence in English
