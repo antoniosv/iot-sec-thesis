@@ -391,11 +391,11 @@ This work is divided in several sections. Section~\ref{sec:art} introduces some 
 \TODO{Short description of what this section is about}
 \TODO{Existing smart home solutions and comparison in securiy}
 
-The purpose of this section is to briefly give some technical background on the concepts that will be recurrently used in this work, and to describe the existing literature on the security in the Internet of Things. The technical concepts introduced as part of the background are derived from various independent areas, namely: information security, network architecture, cloud computing, and the OSGi architecture for Java EE.
+The purpose of this section is to briefly give some technical background on the concepts that will be recurrently used in this work, and to describe the existing literature on the security in the Internet of Things. The technical concepts introduced as part of the background are derived from various independent areas, namely: information security, network architecture, cloud computing, and the OSGi architecture for Java EE. The OSGi architecture is a fundamental part of Eclipse SmartHome automation software, which part of this work is based on, and thus it is included as part of this section.
 
 \subsection{Information Security}
 
-Information security is the quality or ability to protect the confidentiality, integrity, authenticity, and availability of assets in an information system at any stage: be that storage, processing, or transmission~\cite{whitman2011principles}.
+Information security is the quality or ability to protect the confidentiality, integrity, authenticity, and availability of data and resources of an information system at any stage: in storage, processing, or during transmission~\cite{whitman2011principles}.
 
 Adversaries, malicious entities that attempt against the security of the information assets, are considered to be present at all times when modeling security. Flaws in design, architectural, and implementation of an information system may lead to the existance of security vulnerabilities, and the actions of an adversary that make use of these vulnerabilities represent security threats. The changing nature of the technology makes it difficult to identify security threats, causing diverse and complex challenges to protect the information and systems that process, transport, and store it~\cite{whitman2003}.
 
@@ -407,42 +407,68 @@ Information privacy, although very similar to the concept of confidentiality, fo
 
 \subsubsection{Access Control}
 
-Should be tamper-proof... Kept in a small part of the system... 
-\subsubsection{Authentication}
+The definition of information security involved the protection against unauthorized disclosure, improper modifications, and at the same time, ensuring access to the authorized parties. The process of \emph{enforcing} protection so that access to a system data and resources is controlled according to a security policy is known as \emph{access control}~\cite{access_02}. In other words, access control is the execution of the definition of who has access to what, when, and in which conditions.
 
-\paragraph{Basic Authentication}. ...
-
-\paragraph{JSON Web Token}. JWT....
-
-Session ID(cookies), stateless...
-
-\subsubsection{Authorization}
+There are three main parts to an access control system, namely: security policy, security model, and security mechanism~\cite{access_02}. These components are described as follows:
 
 \begin{description}
-\item[Security policy]
-\item[Security model]
-\item[Security mechanism]
+\item[Security policy] High-level rules that define which resources and data should be regulated and to what degree. 
+\item[Authorization model] Abstract representation of the security policy in terms of the rules and resources present in a computer system.
+\item[Authorization mechanism] Software and hardware implementation of the functions that enforce the security policy through the abstraction provided by the authorization model. 
 \end{description}
 
-Access control policies grouped into:
-\paragraph{Discretionary (DAC)}
-\paragraph{Mandatory (MAC)}
-\paragraph{Role-based (RBAC)}
-\paragraph{Attribute-based (ABAC)}
-\paragraph{Usage Control (UCON)}
-\paragraph{Capability-based (CapBAC)}
+The security policy can be seen as the foundation for an access control system, and not much technical knowledge is required at this stage. The access to resources and data for a particular security policy is specified through the establishment of an access control model. However, the model itself does not execute the policy, and for that, enforcement is needed. Enforcement takes the form of the implementation of technical security mechanisms, such as credentials, digital signatures, encryption, access control lists, firewalls, etc.~\cite{access_01}.
 
-\subsection{Attacks}
+The access control mechanism, i.e., the implementation of an authorization model, should be tamper-proof (impossible to alter), non-bypassable, kept in a single part of the system, and small enough to permit the use of rigorous verification methods~\cite{access_02}.
 
-eavesdropping, the man-in-the middle, key control attack, and replay attacks.
+\subsubsection{Authentication}
+
+Before any authorization mechanism can be enforced, the identity of the user requesting a resource or piece of data should be confirmed. Only after the identity has been verified can the authorization mechanism decide if the individual should be granted access or not. A user can identified by three different means: by something they know, by what they are, or by what they have~\cite{stallings_01}. These different approaches to authentication are briefly introduced as follows:
+
+\begin{description}
+\item[Password authentication] The user provides an ID along with a password, which the system uses to verify if a matching user exists. Typically, the digest of a password is stored on the system. 
+\item[Biometric authentication] Based on an individual's unique physical characteristics, such as fingerprints, hand geometry, facial characteristics, retinal and iris patterns, voiceprint, etc. 
+\item[Token authentication] A physical object that the user posseses for authentication. For example, memory cards, electronic identity cards, and smart cards. Token authentication later mentioned in this work does not refer to this type of physical token.
+\end{description}
+
+The pieces of identifying data are known as credentials, and typically part, or all of it, should not be made public to avoid illegimate users from impersonating legimate users. 
+
+\subsubsection{Authentication in the Web}
+
+Password authentication is typically used in web-based systems due to the ease of use, but it inherently carries several risks. For one, it is possible for an adversary to guess a password, especially if this is chosen to be a word that can be found in a dictionary. Other popular choices: birthdays, city names, popular artist names, etc., make up a set of weak passwords.
+
+In the Internet, the Hypertext Transfer Protocol (HTTP) is used to exchange data between a client and a server. The definition of HTTP consists of four particular steps: connection, request, response, and disconnection~\cite{RFC2616}. In particular, an HTTP request includes \emph{headers}, which are relevant values for the entity serving the request. Among these headers, e.g., \texttt{From}, \texttt{Accept}, \texttt{Accept-Encoding}, there is one of significant interest in this work: the \texttt{Authorization} header. This header contains authorization, or rather, \emph{authentication} information. The value enclosed within the authorization header are credentials or something similar. There are various formats allowed for this header, and the \texttt{basic} and \texttt{bearer} are two of them. In particular, the JSON Web Token (JWT) follows the bearer schema.
+
+\paragraph{Basic Authentication.} The most simple format to enclose credentials into the HTTP request. The format inside the header is simply \texttt{username:password}, with a colon between both strings. If the server requests authorization of type basic, the web browser is typically capable of automatically requesting this to the user through a prompt form. 
+
+\paragraph{JSON Web Token (JWT).} Compact and self-contained mechanism for transmitting securely information as a token with a JSON structure. A JSON Web Token is composed of three parts: header, payload, and signature. The payload includes one or more claims about the user and their identity. To preserve the authenticity and integrity of the payload, a digital signature from the token issuer is attached. The header simply includes details about the nature of the token and the algorithm used for the signature~\cite{RFC7519}. Among the distinct types of tokens, the JWT follows the schema for a \emph{bearer} token. 
+
+\subsubsection{Authorization models}
+
+As part of an access control system, an authorization model is the abstraction that interprets a real world security policy into well-defined and unambiguous rules that are enforceable by a computer system~\cite{access_01}. By doing this abstraction, the complexity is reduced and thus leads to better understanding for the implementation of the security policy. 
+
+Depending on the security policy requirements, a different authorization model may be applied. These requirements range from confidentiality and integrity to reliability and usability. Some of the most popular authorization models are briefly described below:
+
+\begin{description}
+\item[Discretionary Access Control (DAC)] Instatiated using an Access Control Matrix, each column describes a list of resources or objects that may be accessed, and the row represents the users. The value in the intersection defines if the user has access to the resource.
+\item[Mandatory Access Control (MAC)] Regulations on resources are mandated by a central authority, and one such form is the multilevel security policy. In contrast to DAC, this model distinguishes between processes and users to control indirect accesses.
+\item[Role-based Access Control (RBAC)] The security policy matches naturally to the structure of the organization that the users are part of. In this model, the identity of the user is not as relevant as the role of the user within the organization.
+\item[Attribute-based Access Control (ABAC)] Access to a resource in ABAC is given depending on the attributes presented by the subject. If the attributes given by the subject fulfill the access control requirements of the resource, then access is granted. Inherently, access control is more granular in ABAC than in RBAC.
+\item[Usage Control (UCON)] Designed for heterogenous environment such as Internet of Things, the UCON authorization model provides continuous authorization at different stages: before, during, and after access to a resource. If the permissions to a subject change at any of these stages, then access is revoked. 
+\item[Capability-based Access Control (CapBAC)] Based on the concept that an entity may hold some token, ticket or key as a capability, which may be used to grant access to a resource. 
+\end{description}
 
 \subsection{OSGi Architecture}
 
-\subsubsection{Http Service}
+bun bun bundles...~\cite{osgi_core}. 
 
-\subsection{HTTP, REST}
+\subsubsection{HTTP Service}
 
-\subsection{Internet of Things} 
+\paragraph{Servlet Resources}
+
+\paragraph{REST Resources}
+
+\subsection{Internet of Things}
 
 The Internet of Things, commonly referred as IoT, is a dynamic and heterogenous environment where \emph{sensing} devices may interact with each other for some particular purpose. The devices range from radio identification devices (RFID), infrared sensors, global positioning systems; to smart watches, smartphones, smart televisions, etc. The most important aspect for these devices is that they can gather some kind of data from the real world, and that are capable of transmitting it to another point. Usually, the devices may interact without human interventation, also known as Machine-to-Machine communication. Due to the wide diversity of capabilities among sensing devices, interoperability is a common challenge, especially due to vendor lock-in and obscure interfaces. Still, it is desirable that the devices can transparently communicate among themselves in a local scope, e.g. inside a wireless sensor network (WSN), and in some cases, even to an exteral scope, e.g. through the Internet. Typically, these devices do not directly communicate with each other, but do so through a gateway, which serves as a communication medium. Additionally, the gateway is also responsible for making the necessary translations between protocols if the devices need to send or receive data through the Internet.
 
@@ -450,10 +476,18 @@ The actual devices employed and the nature of the data gathered depend on the sp
 
 Given this amount of issues present in the architecture and development of IoT applications, it is no surprise that much of the focus given both in research and industry has been towards the functional requirements. Non-functional requirements such as performance, user experience, security, among others, have been left as an afterthought.
 
-
-
 \TODO{look for reference on law about privacy}
 Due to recent developments on laws pertaining data security and privacy, more emphasis has given to the security of information systems. Thus, incorporating security into a software product is no longer a courtesy, but a duty toward the users. Data encryption, authentication, authorization mechanisms, non-repudiation, are just some of the possible measures that should be taken into account when designing a secure system, and the IoT is no exception to this. In this context, the privacy and confidentiality of the data gathered by the sensing devices come to mind. Depending on the nature of this data, the privacy might be essential to maintain, especially during transit to other devices or points in the network.
+
+
+\subsubsection{Threats and attack vectors}
+
+eavesdropping, the man-in-the middle, key control attack, and replay attacks.
+
+
+\TODO{IoT Applications: smarthome, etc}
+
+\subsubsection{Smarthome Applications}
 
 The smart home is one of the many applications for the IoT. A refrigerator that sends an message to your phone when it no longer has any milk. An air conditioner that turns on whenever the it learns that the outside temperature is rising above thirty Celsius degrees. A speaker that plays music whenever you start cooking. These are just some of the possible scenarios that may occur inside a home with \emph{sensing} devices that are capable of interacting with each other. This is no longer a vision for the future or a secluded experiment. There are already several existing solutions that attempt to bring together all these devices for bigger purpose. One such existing solution is the openHAB software stack.
 
@@ -464,19 +498,6 @@ Ironically, openHAB has been often been labeled as \emph{Intranet of Things}, pr
 
 \TODO{check things needed to make an application open to the internet}
 
-
-\TODO{IoT Applications: smarthome, etc}
-
-\subsubsection{Smarthome Applications}
-
-\subsection{Smarthome Automation Solutions}
-
-\subsubsection{NEST}
-\subsubsection{HomeKit}
-\subsubsection{openRemote}
-\subsubsection{Thingsboard}
-\subsubsection{the thing system}
-\subsubsection{Home Assistant}
 
 \subsection{Architecture of Eclipse SmartHome and openHAB}
 
@@ -493,6 +514,15 @@ Ironically, openHAB has been often been labeled as \emph{Intranet of Things}, pr
 \label{sec:related}
 \TODO{Short description of what this section is about}
 
+\subsection{NEST}
+\subsection{HomeKit}
+\subsection{openRemote}
+\subsection{Thingsboard}
+\subsection{the thing system}
+\subsection{Home Assistant}
+
+\subsection{Discussion}
+
 \newpage
 \section{Methodology}
 \label{sec:method}
@@ -501,7 +531,7 @@ Ironically, openHAB has been often been labeled as \emph{Intranet of Things}, pr
 As a first step towards analyzing the security of IoT models, architectures, and applications, a study on the state of the art was conducted. From reviewed literature, various security mechanisms came to light, which served as the foundation toward data confidentiality, peer authentication, non-repudiation, etc. However, the studied proposals tended to oversimplify and deviate from the issues present in existing solutions. This observation made it clear that there was a disconnect from publications and from the products. Most products, however, do not make public the internal workings, and tend to make their own architectural decisions instead of following standards for, e.g. encoding data transmitted between things. Among the existing solutions for a smart environment, the openHAB smart home software was chosen as a case study in terms of security. The decision was made for various reasons: firstly, it is open-source, and thus it is possible to conduct white-box tests, secondly, it is vendor-agnostic, and finally, because of the active participation of the community in this project.
 
 \subsection{Security of openHAB}
-\TODO{Analysis of bindings}
+\TODO{is it necessary to add screenshots of tcpdump or wireshark?}
 A binding is the logical piece of the system that links a \emph{thing} to openHAB. Through the User Interface or REST API calls, a user is able to view, and possibly modify the channels, i.e. values, of the things connected to the system. Temperature and humidity values, state of light switches, currently playing media, etc., are some examples of these channels. In the case of the least complex adversary, it may be assumed that it is possible to eavesdrop the incoming and outgoing data packets through the network. Thus, the first effort was to see how the data is moving around the system. Through the use of Wireshark and tcpdump, it was observed that the transit of data ocurred in two possible ways: through the cloud, or through the openHAB instance. Some devices, such as light switches, do not require to communicate with a server in the Internet to set or unset the state of the switch. As this may be done internally, the binding provides the means to operate the thing directly through the User Interface of openHAB. The other case involves devices which need to communicate to a remote server through the Internet to push its data. The binding, in this case, connects to the remote server through the use of proprietary API, and gets the data required from it. This is more evident in a logical thing, such as a weather service. The binding for the weather service connects to the server through an API to query data about temperature, humidity, etc., of a particular location.
 
 Delegating the data to a remote server was the first obstacle in the analysis of the security in openHAB. Because of simplifications in the literature about IoT, it is typically assumed that for the architecture of IoT applications \TODO{REFERENCE} there is no connection to the Internet to accomplish a task that may be performed locally. However, due to different vendors and a variety of devices, the actual solution tends to depend on a remote connection. For this reason, the security frameworks \TODO{reference} in the literature do not quite fit in this scenario. This does not cause worse security implications, however; the analysis should be more flexible in that case.
@@ -1061,7 +1091,7 @@ Tip: We can use minipage to create a frame around some important information.
 
 \section*{I. Glossary}
 \addcontentsline{toc}{subsection}{I. Glossary}
-
+Bearer token. The digest of the user credentials to be used in an authentication process.
 \newpage
 
 %=== Licence in English
