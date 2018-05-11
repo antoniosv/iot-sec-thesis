@@ -460,7 +460,9 @@ Depending on the security policy requirements, a different authorization model m
 
 \subsection{OSGi Architecture}
 
-bun bun bundles...~\cite{osgi_core}. 
+Usually called an architecture, the OSGi framework provides a general-purpose, secure, and managed Java framework that supports the deployment of bundles~\cite{osgi_core}. A bundle is the extensible application unit in the OSGi framework. In short, OSGi-based applications are made up of bundles, and each of these may expose their internal business logic so that other bundles make use of it. 
+
+There are several implementations of the OSGi specification, such as Eclipse Equinox, Apache Felix, Eclipse Concierge, and Knopflerfish. Equinox is the reference implementation of OSGi and it is used in many big projects, including Eclipse SmartHome and openHAB. Although current implementation of Equinox is already on release 6, the Eclipse SmartHome strictly follows the 4.2 release as runtime.
 
 \subsubsection{HTTP Service}
 
