@@ -383,14 +383,14 @@ This work is divided in several sections. Section~\ref{sec:art} introduces some 
 %---------------------------
 
 \newpage
-\section{Background and Literature Review} 
+\section{Background} 
 \label{sec:art}
 \TODO{Literature Review or State of the Art}
-% \paragraph{Type rules for integers.} Some text ...
+\TODO{Consider taking out literature review overall}
 \TODO{Short description of what this section is about}
 \TODO{Existing smart home solutions and comparison in securiy}
 
-The purpose of this section is to briefly give some technical background on the concepts that will be recurrently used in this work, and to describe the existing literature on the security in the Internet of Things. The technical concepts introduced as part of the background are derived from various independent areas, namely: information security, network architecture, cloud computing, and the OSGi architecture for Java EE. The OSGi architecture is a fundamental part of Eclipse SmartHome automation software, which part of this work is based on, and thus it is included as part of this section.
+The purpose of this section is to briefly give some technical background on the concepts that will be recurrently used in this work, and to describe the existing security concerns for the Internet of Things presented in the literature. The technical concepts introduced as part of the background are derived from various independent areas, namely: information security, network architecture, cloud computing, and the OSGi architecture for Java EE. The OSGi architecture is a fundamental part of Eclipse SmartHome automation software, which part of this work is based on, and thus it is included as part of this section.
 
 \subsection{Information Security}
 
@@ -477,34 +477,111 @@ A servlet is special Java class used to extend a web server by providing dynamic
 
 Traditional web applications in Java require a container, such as Tomcat or Jetty, where the servlet is published, so that it can be accessed through HTTP. Java servlets make use of an application deployment descriptor, more widely known as the \texttt{web.xml} file. This configuration file specifies to which URL it is mapped to. Thus, when a \texttt{GET} request arrives at that URL, for instance, it is redirected to the correct method.
 
-In the OSGi framework however, this deployement descriptor, i.e. \texttt{web.xml} does not exist. Just as a bundle has to be registered to the runtime, the servlet, and its respective HTTP response methods have to be registered to it. Two mechanisms to perform this registration are Http Service and Http Whiteboard.
+In the OSGi framework however, this deployement descriptor, i.e. \texttt{web.xml} does not exist. Just as a bundle has to be registered to the runtime, the servlet, and its respective HTTP response methods have to be registered to it. Two mechanisms to perform this registration are \texttt{Http Service} and \texttt{Http Whiteboard}, and alongside these, the \texttt{Http Context}.
 
-\paragraph{Http Service}
+\paragraph{Http Service.} As an interface of the \texttt{org.osgi.service.http} package, it is used to allow other bundles in the OSGi runtime to dynamically register resources, servlets, and filters into the URI namespace of Http Service. As the Http Service is not always available, a \texttt{ServiceTracker} object is used to check its availability doing registration~\cite{httpservice}. 
 
-\paragraph{Http Whiteboard}
+\paragraph{Http Whiteboard.} The OSGi Htttp Whiteboard, introduced as part of OSGi Revision 6, simplifies the registration servlets, filters, resources, listeners, and servlet contexts into the OSGi runtime~\cite{httpwhiteboard_01}. Popularly, the Http Whiteboard pattern is described as ``don't call us, we'll call you'', due to not needing a tracker to check for availability at all times~\cite{httpwhiteboard_02}.
+
+\paragraph{Http Context.} For both approaches, registration of servlets and resources may only be done through the use of an \texttt{HttpContext} object. This object defines the methods that the Http Service can call to get information about a registration of a servlet or resource.  Particularly, a class may extend the \texttt{HttpContext} class to override its \texttt{handleSecurity} method. This method may be used to flexibly implement authentication and authorization mechanisms~\cite{httpcontext}.
 
 \subsubsection{REST and JAX-RS Connector}
 
+A popular, yet constrained architectural style for web applications is the \emph{Representation State Transfer} (REST). The REST architecture has a set of well-defined operations for a web service to create, retrieve, update and delete data~\cite{rest_01}. These operations directly translate to the HTTP methods: get, post, put, and delete. This architectural model is particularly handy for creating web services which serve data in data formats like JSON or XML.
+
+In Java, the specification that supports this architecture is known as JAX-RS: Java API for RESTful Web Services~\cite{rest_02}. This is only the specification, thus the actual implementations are various: Jersey, Apache CXF, JBoss, among others.
+
+For the OSGi architecture, a native implementation of the JAX-RS specification does not exist. However, a connector that makes a JAX-RS compatible with the OSGi runtime exists, though it is no longer maintained~\cite{rest_03}.
+
 \subsection{Internet of Things}
 
-The Internet of Things, commonly referred as IoT, is a dynamic and heterogenous environment where \emph{sensing} devices may interact with each other for some particular purpose. The devices range from radio identification devices (RFID), infrared sensors, global positioning systems; to smart watches, smartphones, smart televisions, etc. The most important aspect for these devices is that they can gather some kind of data from the real world, and that are capable of transmitting it to another point. Usually, the devices may interact without human interventation, also known as Machine-to-Machine communication. Due to the wide diversity of capabilities among sensing devices, interoperability is a common challenge, especially due to vendor lock-in and obscure interfaces. Still, it is desirable that the devices can transparently communicate among themselves in a local scope, e.g. inside a wireless sensor network (WSN), and in some cases, even to an exteral scope, e.g. through the Internet. Typically, these devices do not directly communicate with each other, but do so through a gateway, which serves as a communication medium. Additionally, the gateway is also responsible for making the necessary translations between protocols if the devices need to send or receive data through the Internet.
+The Internet of Things, commonly referred as IoT, is a dynamic and heterogenous environment where \emph{sensing} devices may interact with each other for some particular purpose. These devices, also known as \emph{things}, heavily vary in terms of capabilities and resources. Their capabilities may range from radio identification devices (RFID), infrared sensors, global positioning systems; to smart watches, smartphones, smart televisions, etc. The most important aspect for these devices is that they can gather some kind of data from the real world, and that are capable of transmitting it to another point. Usually, the devices may interact without human interventation, also known as Machine-to-Machine (M2M) communication. Due to the wide diversity of capabilities among sensing devices, interoperability within a common framework is a challenge, especially due to vendor lock-in and obscure interfaces. Still, it is desirable that the devices can transparently communicate among themselves in a local scope, e.g. inside a wireless sensor network (WSN), and in some cases, even to an exteral scope, e.g. through the Internet.
+
+The local scope in which these devices operate is called a sensor network. A wireless sensor network (WSN) is the building block for the sensing devices, and is usually managed by one or more gateways. Whenever a \emph{thing} needs to relay information to another device, it would go through the respective gateway. In the past, it was sufficient to structure some kind of client-server architecture, where clients (e.g. \emph{things}) directly communicate to the server, and subsequently the server decides how to handle the rest. However, this model is not very scalable. As there is a very large number of \emph{things} in IoT, it is much manageable to have a distributed solution that employs gateways as relay points. Additionally, the gateway not only serves as a communication medium, but is also responsible for making the necessary translations between protocols if the devices need to send or receive data through the Internet.
 
 The actual devices employed and the nature of the data gathered depend on the specific application for the IoT. These applications may be categorized into smart home, smart grid, smart city, smart transportation, and so on. Regardless of the application, data has to be gathered from the real world and transmitted to another point. Considering the diversity of devices and applications, it is no trivial task to unify or to support interoperability between devices, especially if they make use of different protocols for communication. Indeed, interoperability, device naming in a network, finding other devices, are just some examples of the difficulties that may be found when instantiating an IoT application. To address these issues, a variety of architectures and solutions have been proposed in (ref). 
 
-Given this amount of issues present in the architecture and development of IoT applications, it is no surprise that much of the focus given both in research and industry has been towards the functional requirements. Non-functional requirements such as performance, user experience, security, among others, have been left as an afterthought.
+Given this amount of issues present in the architecture and development of IoT applications, it is no surprise that much of the focus given both in research and industry has been towards the functional requirements. Non-functional requirements such as performance, user experience, security, among others, have been left as an afterthought. In fact, due to the nature of constant exchange of information in IoT, security becomes an inevitable concern.
 
 \TODO{look for reference on law about privacy}
-Due to recent developments on laws pertaining data security and privacy, more emphasis has given to the security of information systems. Thus, incorporating security into a software product is no longer a courtesy, but a duty toward the users. Data encryption, authentication, authorization mechanisms, non-repudiation, are just some of the possible measures that should be taken into account when designing a secure system, and the IoT is no exception to this. In this context, the privacy and confidentiality of the data gathered by the sensing devices come to mind. Depending on the nature of this data, the privacy might be essential to maintain, especially during transit to other devices or points in the network.
+Especially due to recent developments on laws pertaining data security and privacy, more emphasis has given to the security of information systems. Thus, incorporating security into a software product is no longer a courtesy, but a duty toward the users. Data encryption, authentication, authorization mechanisms, non-repudiation, are just some of the possible measures that should be taken into account when designing a secure system, and the IoT is no exception to this. In this context, the privacy and confidentiality of the data gathered by the sensing devices come to mind. Depending on the nature of this data, the privacy might be essential to maintain, especially during transit to other devices or points in the network.
 
-\subsubsection{Security Challenges in IoT}
+\subsubsection{Layers and Applications}
+As described in \cite{ALABA201710}, the IoT can be classified into three layers: application, perception, and network. This abstraction makes it simpler to study security requirements for IoT, as each layer may encounter different security threats. 
 
-\subsubsection{Threats and attack vectors}
+\paragraph{Application layer} This is the uppermost layer, and the one that is visible to the end user. Although there is no universal standard to build an application layer within the IoT, the structure itself is dependent on the service it offers. Applications such as \emph{smart healthcare}, \emph{smart grid}, \emph{smart city}, and \emph{intelligent transportation} make up this layer. A communication protocol for the application layer is used to exchange information between two endpoints within the same application. In terms of architecture, the application layer is usually comprised of middleware, a machine-to-machine communication protocol, a service support platform, and cloud computing. To further elaborate, some applications are briefly described:
 
-eavesdropping, the man-in-the middle, key control attack, and replay attacks.
+\begin{description}
+\item [Smart grid] System of electrical distribution with different operational and energy measures, such as meters, smart appliances and energy-efficient resources. A smart grid is reliable, improves savings, reduces operational costs, and enhances energy independence. 
+\item [Smart healthcare] Provides an individual-focused environment, with attention on controlling and monitoring the state of each patient. It depends on very small \emph{sensing} devices which are placed inside or outside the human body. The information captured by these devices is handled by the smart healthcare system.
+\item [Smart city] Constituted as a smart environment where city services are provided by multiple parties to support a high quantity of users in a distributed manner. The goal is to improve or create services offered to the population.
+\item [Intelligent transportation] New technologies include radio frequency identification (RFID) tags, sensors, and actuators. Incorporating these new devices to transportation systems brings new functions, particularly for tracking locations and movement and monitoring temperature. Some specialized devices may be able to accomplish vehicle-to-vehicle communication, opening up the possibilities for automatic driving, for instance. Additionally, the deployed networks can then observe aspects like travel time, routing decisions, queue lengths, air pollutants, traffic congestion, etc., which may serve as basis for improvement of transportation.
+\end{description}
 
-\TODO{IoT Applications: smarthome, etc}
+\paragraph{Perception layer} The perception layer is divided in two parts: perception node and perception network. Data is captured and controlled in the perception node through sensors and controllers. Meanwhile, the instructions for handling and sending the data is managed through the perception network. The technologies involved in the perception layer range from ZigBee, RFID, sensor nodes, and sensor gateways.
 
-\subsubsection{Smarthome Applications}
+\begin{description}
+\item [RFID] (radio frequency identification) is a technology that allows the identification of devices present by the use of tags. 
+\item [Sensor node] Any device that captures and processes sensory information from the environment, and subsequently transmits it to other nodes.
+\item [Sensor gateway] Central point of establishment of a Wireless Sensor Network (WSN) to which many sensors nodes are connected to. Its task is to translate protocols for communication between two nodes that may not be in the same WSN.
+\end{description}
+
+\paragraph{Network layer} The network layer is in charge of storage awareness and data transmission to the perception layer. Additionally, it provides information security. The main components of this layer include mobile devices, the Internet, and cloud computing.
+
+\subsubsection{Security Challenges}
+
+Due to the pervasive nature of the IoT devices, it is expected that some concerns arise regarding the security of the data being handled. Depending on the specific application, different security requirements may be demanded. In the case of smart health, for example, captured data from the patients should be kept private and confidential, and it should be ensured that this data is transmitted only to those with the clearance to do so.
+
+In the communication scenarios introduced earlier, many questions arise regarding the security concerns of transmitting data from one point to another. In the basic scenario, for instance, what happens if an alien or malicious object tries to join the WSN to communicate with the objects in the network? There is also the case that an eavesdropper may listen to the communication between every object and the gateway. The latter is not very big issue, as the communication technology (Bluetooth, ZigBee) between an object and the gateway often includes encryption, rendering a passive attack useless. However, it is still important to consider how the registration of an object with a gateway is done, as to prevent counterfeits from malicious entities. Very similar concerns are present in the other two communication scenarios, with the difference that the communication now goes through a large public network, e.g., the Internet, and the same assumptions used in the basic scenario do not hold anymore. For this reason, on top of the security services employed within the WSN, there is a need for resistance against passive and active attacks over the public network. Mainly, confidentiality and authentication are the desired properties to have within this insecure network.
+
+Among the existing security services, the ones shown in  \cite{HELLAOUI2017173} and \cite{ALABA201710} are appropriate for their use in IoT. They are described as follows: 
+
+\begin{description}
+\item [Authentication] Ensuring that the object in question can be verified to be authentic, which is, that is what it claims to be. In case of peer authentication, a peer shows that it is legitimately who it claims to be. In the case of message authentication, it refers to a message which has not been tampered with, or that it indeed comes from a certain party. This is typically provided by using asymmetric encryption.
+\item [Access control] Different devices and different data may require granularity in terms of who can access what resource. Access control provides the systematic means of granting and revoking access as required, typically after engaging in authentication.
+\item [Confidentiality] Ensures that the contents of a message transmitted among peers in the IoT cannot be meaningfully read by an unauthorized eavesdropper. This is typically provided by using symmetric encryption.
+\item [Key establishment] Provides the means of exchanging a small piece of secret information, a key, over an insecure channel. This key is used later on to provide other services like confidentiality.
+\item [Trust establishment] Refers to the mechanisms of establishing trust between physical devices and events. In the event that an application server is compromised, the risk of having an adversary forge user credientials will be present. A trust mechanism would verify the network applications, regardless of the location of the physical devices. 
+\end{description}
+
+Security in information systems and networks is a topic that has been studied for a long time now, and many solutions exist to address the requirements that the applications demand. Even though an IoT application shares many similarities with a conventional wireless network, there are still differences that impede the realization of existing solutions for security and privacy \cite{ALABA201710}. For instance, IoT applications are deployed on low power and lossy networks (LLN), whereas the Internet is more robust. Furthermore, there are stricter constraints present in the IoT networks. Constraints in nodes such as storage, energy, processing, and memory, present a challenge to adopt the exact same solutions that have been used in other kinds of networks. Moreover, the security requirements in both contexts may be drastically different. For instance, the sensing nodes present in the perception layer may not have the computational resources to employ typical public key cryptography for key exchange and authentication, and instead they turn to other \emph{lightweight} alternatives. The application layer, where data sharing is the most common occurrence, may suffer from lack of privacy and access control. Finally, the communication protocols in both networks are certainly different: while a single communication protocol is decided per application on the internet, different communication protocols may be used for different layers in the same IoT application. For example, the Hypertext Transport Protocol (HTTP) is used in the application layer of conventional network, but in IoT, the Constrained Application Protocol (CoAP) is used for communication.
+
+Among other challenges present in IoT, naming and identification are also of importance. Considering the massive scale of physical devices that may be present in an IoT application, naming and identification of these objects becomes a complex task \cite{Zhang:2015}. Although very similar to the naming problem in the Internet, naming in IoT is subject to the heterogenous environment. For this reason, the same naming solution used in the Internet cannot be directly applied. However, it is suggested \cite{Zhang:2015} that the DNS naming scheme can be used as a basis to create an appropriate naming scheme for the IoT. 
+
+As the objects in IoT are constantly communicating among themselves in a Machine-To-Machine fashion, naming and identification of these objects is essential, not only in the functional sense, but also in the event of authentication and access control. Indeed, it would be undesirable to have an identification conflict that inadvertedly authenticates the wrong entity, and that tentatively would be provided unwanted access to certain parts of the IoT application.
+
+\subsubsection{Security Threats and Attacks}
+
+According to \cite{ALABA201710}, different threats are present in each IoT layer, and thus their analysis should be abstracted from other details. \autoref{table:threats} shows some of the identified threats present in each layer. These threats are related to the hardware components and network architecture. Due to the large number of different architectures for IoT, there is not a single solution that mitigates all of these threats.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|l|}
+\hline
+\multicolumn{1}{|c|}{\textbf{Layer}} & \multicolumn{1}{c|}{\textbf{Threats}} \\ \hline
+Physical & \begin{tabular}[c]{@{}l@{}}Micro-probing, tampering of hard \\ components, jamming\end{tabular} \\ \hline
+Link & \begin{tabular}[c]{@{}l@{}}Collision, unfairness, exhaustion, replay, \\ meta-data attacks\end{tabular} \\ \hline
+Network & \begin{tabular}[c]{@{}l@{}}Neglect, greed, homing, misdirection, traffic \\ analysis, black holes, meta-data attacks\end{tabular} \\ \hline
+\end{tabular}
+\caption{Threats in each IoT as suggested in \cite{ALABA201710}}
+\label{table:threats}
+\end{table}
+
+Additionally, \cite{DAC3323}, \cite{Zhang:2015}, and \cite{ALABA201710} briefly mention threats corresponding to specific IoT applications. The list is shown as follows:
+
+\begin{enumerate}
+\item Eavesdropping
+\item Man-in-the-Middle-Attack
+\item Denial of Service (DoS) attack
+\item Impersonation/counterfeiting
+\item Stolen smart device. 
+\item Parallel session
+\item Gateway node bypassing
+\end{enumerate}
+
+Unfortunately, cryptographic mechanisms alone are not sufficient to solve all of these issues, and thus other mechanisms should be considered.
+
+\subsection{Eclipse SmartHome and openHAB}
 
 The smart home is one of the many applications for the IoT. A refrigerator that sends an message to your phone when it no longer has any milk. An air conditioner that turns on whenever the it learns that the outside temperature is rising above thirty Celsius degrees. A speaker that plays music whenever you start cooking. These are just some of the possible scenarios that may occur inside a home with \emph{sensing} devices that are capable of interacting with each other. This is no longer a vision for the future or a secluded experiment. There are already several existing solutions that attempt to bring together all these devices for bigger purpose. One such existing solution is the openHAB software stack.
 
@@ -512,11 +589,6 @@ OpenHAB (OH) is such a product that focuses on interoperability among all kinds 
 
 \TODO{Do I need reference here?}
 Ironically, openHAB has been often been labeled as \emph{Intranet of Things}, precisely because it is intended to be used in a private network, without access from external sources that traverse through, e.g. the Internet. In short, openHAB cannot be accessed from the Internet, and the main reason for this is that there is no authorization mechanism in place for alllowing or forbidding access for users. Thus, any individual that can access the openHAB instance is capable of doing any changes and viewing any piece of data, without any lock in place. Therefore, the damage is controlled by making the instance accessible only from inside the private network. Thus, the security is as strong as the security of network. An intruder gaining access to the network implies in gaining access to all of the openHAB capabilities, breaching the privacy and confidentiality of the data in use. 
-
-\TODO{check things needed to make an application open to the internet}
-
-
-\subsection{Architecture of Eclipse SmartHome and openHAB}
 
 \subsubsection{openHAB}
 \paragraph{Version differences}
@@ -646,7 +718,7 @@ Figure \ref{fig:misuse_cases} shows on one side the use cases extracted from the
 \begin{figure} [ht] 
 \begin{center}
 \includegraphics[width=\textwidth]{esh_misuse_cases}
-\caption{The title of the Figure.}
+\caption{Misuse Cases for Access Control in ESH.}
 \label{fig:misuse_cases}
 \end{center}
 \end{figure}
