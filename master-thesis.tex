@@ -378,14 +378,13 @@ This work presents three main contributions. First, an overview of the existing 
 
 \subsection{Structure}
 
-This work is divided in several sections. Section~\ref{sec:art} introduces some key concepts in terms of security and the OSGi architecture, and later delves into the state of the art on the security in the Internet of Things. Section~\ref{sec:related} briefly introduces some works loosely related to the contributions made in this work. Section~\ref{sec:method} describes in great detail the methodology to implement a JSON Web Token-based authenticator and to propose an authorization model suitable for the openHAB smart home application. Section~\ref{sec:eval} evaluates and discusses the authenticator implementation and authorization model proposal. Finally, section~\ref{sec:conclusion} presents the general conclusions obtained from this work, and briefly describes the future work to build upon the contributions presented.
+This work is divided in several sections. Section~\ref{sec:art} introduces some key concepts in terms of security and the OSGi architecture, and later delves into an overivew of the security challenges present in the Internet of Things. Section~\ref{sec:related} briefly introduces some works loosely related to the contributions made in this work. Section~\ref{sec:method} describes in great detail the methodology to implement a JSON Web Token-based authenticator and to propose an authorization model suitable for the openHAB smart home application. Section~\ref{sec:eval} evaluates and discusses the authenticator implementation and authorization model proposal. Finally, section~\ref{sec:conclusion} presents the general conclusions obtained from this work, and briefly describes the future work to build upon the contributions presented.
 
 %---------------------------
 
 \newpage
 \section{Background} 
 \label{sec:art}
-\TODO{Literature Review or State of the Art}
 \TODO{Consider taking out literature review overall}
 \TODO{Short description of what this section is about}
 \TODO{Existing smart home solutions and comparison in securiy}
@@ -583,22 +582,45 @@ Unfortunately, cryptographic mechanisms alone are not sufficient to solve all of
 
 \subsection{Eclipse SmartHome and openHAB}
 
-The smart home is one of the many applications for the IoT. A refrigerator that sends an message to your phone when it no longer has any milk. An air conditioner that turns on whenever the it learns that the outside temperature is rising above thirty Celsius degrees. A speaker that plays music whenever you start cooking. These are just some of the possible scenarios that may occur inside a home with \emph{sensing} devices that are capable of interacting with each other. This is no longer a vision for the future or a secluded experiment. There are already several existing solutions that attempt to bring together all these devices for bigger purpose. One such existing solution is the openHAB software stack.
-
-OpenHAB (OH) is such a product that focuses on interoperability among all kinds of devices from different vendors. It does accomplishes the interaction through logical modules called \emph{bindings}. For example, a smart television from Samsung may not be able to interact with other devices out of box, but it may be able to do so if the appropriate binding is developed for the openHAB environment. OpenHAB, as it name implies, is an open-source software that serves as \emph{hub} that brings together a diverse range of devices through the use of bindings. A binding makes a link to a Thing that may be of either physical or logical nature. For instance, a light switch is undoubtedly a physical Thing, and its state of being turned on or off is the data it can make available. Consider however, a weather service from the Internet that provides weather information such as temperature, humidity, and precipitation probability. This provider of data is undoubtedly not of physical nature, but still fits properly into the model of a smart home. Thus, a binding may incorporate such a weather service as a Thing in the logical sense.
-
-\TODO{Do I need reference here?}
-Ironically, openHAB has been often been labeled as \emph{Intranet of Things}, precisely because it is intended to be used in a private network, without access from external sources that traverse through, e.g. the Internet. In short, openHAB cannot be accessed from the Internet, and the main reason for this is that there is no authorization mechanism in place for alllowing or forbidding access for users. Thus, any individual that can access the openHAB instance is capable of doing any changes and viewing any piece of data, without any lock in place. Therefore, the damage is controlled by making the instance accessible only from inside the private network. Thus, the security is as strong as the security of network. An intruder gaining access to the network implies in gaining access to all of the openHAB capabilities, breaching the privacy and confidentiality of the data in use. 
+The smart home is one of the many applications for the IoT. A refrigerator that sends an message to your phone when it no longer has any milk. An air conditioner that turns on whenever the it learns that the outside temperature is rising above thirty Celsius degrees. A speaker that plays music whenever you start cooking. These are just some of the possible scenarios that may occur inside a home with \emph{sensing} devices that are capable of interacting with each other. This is no longer a vision for the future or a secluded experiment. There are already several existing solutions that attempt to bring together all these devices for bigger purpose. One such existing solution is the openHAB software stack, which the Eclipse SmartHome framework is part of. This subsection will look at both systems, explain their differences, and how they fit into this work. 
 
 \subsubsection{openHAB}
-\paragraph{Version differences}
-\paragraph{Architecture stack}
+
+OpenHAB (OH) is a product that focuses on interoperability among all kinds of devices from different vendors. It accomplishes the interaction through logical modules called \emph{bindings}. For example, a smart television from Samsung may not be able to interact with other devices out of box, but it may be able to do so if the appropriate binding is developed for the openHAB environment. OpenHAB, as it name implies, is an open-source software that serves as \emph{hub} that brings together a diverse range of devices through the use of bindings. A binding makes a link to a Thing that may be of either physical or logical nature. For instance, a light switch is undoubtedly a physical Thing, and its state of being turned on or off is part of the data it can make available. Consider however, a weather service from the Internet that provides weather information such as temperature, humidity, and precipitation probability. This provider of data is undoubtedly not of physical nature, but still fits properly into the model of a smart home. Thus, a binding may incorporate such a weather service as a Thing in the logical sense.
+
+Ironically, openHAB has been often been labeled as \emph{Intranet of Things} because of its ability to operate without a connection to the Internet~\cite{openhab_03}. In Intranet of Things, all the devices are contained within a Local Area Network (LAN), possibly behind a firewall, and thus locally controlled. This is a particular characteristic of openHAB that attempts to solve vendor interoperability and minimize the risk of losing privacy.
+
+Even by exposing a single point of access to the Things in the smart home, it is not recommended to make an openHAB instance to the Internet. The main reason for this is that there is no authorization mechanism in place for alllowing or forbidding access for users. Thus, any individual that can access the openHAB instance is capable of doing any changes and viewing any piece of data, without any lock in place. Therefore, the damage is controlled by making the instance accessible only from inside the private network. Thus, the security is as strong as the security of network. An intruder gaining access to the network implies in gaining access to all of the openHAB capabilities, breaching the privacy and confidentiality of the data in use. 
+
+Two vastly different versions of openHAB currently exist. While the first version, openHAB1, still receives support, it is mainly the second version, openHAB2 (OH2), which is currently under development. openHAB2 was recently released in June 2017, and for this reason, many existing deployments are based in the first version~\cite{openhab_01}. Originally, the whole software stack of openHAB was a single product, i.e., openHAB1. It included functionality that is not even present yet in the second version, particularly partial access control and fine-grained configuration through files. Eventually, the project was made part of the Eclipse Foundation, and thus openHAB2 became the final, end-user solution that made use of several smaller projects, including the core framework for building smart homes: Eclipse SmartHome. For the rest this work, openHAB refers to the second version of the product, i.e., openHAB2.
+
+Figure~\ref{fig:oh_architecture} shows the overall architecture of the openHAB automation software. It is developed in Java and its core is the Eclipse SmartHome framework. By using Apache Karaf and Eclipse Equinox it instantiates an OSGi runtime environment~\cite{openhab_02}. Jetty is deployed as the HTTP server where resources are exposed through the HTTP protocol. OpenHAB is highly extensible through the use of \emph{Add-ons}. Add-ons and extensions may be used to extend the existing user interface, or to provide the communication bridge with physical devices (bindings). Add-ons from the previous version may be used through a special module that performs the necessary adjustments. 
+
+\begin{figure} [ht] 
+\begin{center}
+\includegraphics[width=\textwidth]{oh_architecture}
+\caption{The openHAB architecture based on~\cite{openhab_02}.}
+\label{fig:oh_architecture}
+\end{center}
+\end{figure}
 
 \subsubsection{Eclipse SmartHome}
-\paragraph{Bundle abstraction}
-\paragraph{Tools}
 
-\newpage
+As the core for the openHAB software stack, Eclipse SmartHome (ESH) provides a flexible and modularized framework for smart home and ambient assisted living solutions with a focus on heterogenous environments~\cite{esh_01}. The goal of ESH is to offer a solution for the fragmented market in smart home solutions by offering a medium where vendor-incompatible devices can be operated transparently.
+
+As in the first version of openHAB, the idea of a \emph{binding} is reused in ESH. Bindings implement a Thing-specific protocol e.g. ZigBee, and by loading the appropriate binding, the connection between the devices or services e.g., a TV set or weather service, and the framework, can be established. Furthermore, the bindings are connected to an \emph{event bus}, and this allows to do inter-component communication. Through the event bus, it is possible to send commands to the device or service, or else, to receive status updates from them.
+
+The architecture of ESH is detailed in figure~\ref{fig:esh_architecture}. In the figure, at least four Things are connected to the ESH framework through its respective bindings. There are two ways in which activity prompt changes in the Things connected: through a user interface (UI) and automation logic. The UI for ESH is made up of adaptable \emph{sitemaps} which comprise dynamic web pages, and this medium allows for manual interaction with the Things present in the system. The automation logic is established in terms of \emph{rules}, which are specified through configuration files. In both cases, commands may be directed to the event bus, which are then forwarded to its respective binding. Likewise, status updates may be shown in the UI, or served to the automation logic to perform more operations on top of these results. Finally, it is possible to make use of a custom logging module and console, mostly for development purposes.
+
+\begin{figure} [ht] 
+\begin{center}
+\includegraphics[width=\textwidth]{esh_architecture}
+\caption{The Eclipse SmartHome architecture based on~\cite{esh_02}.}
+\label{fig:esh_architecture}
+\end{center}
+\end{figure}
+
+\clearpage
 \section{Related Work}
 \label{sec:related}
 \TODO{Short description of what this section is about}
@@ -611,13 +633,13 @@ Ironically, openHAB has been often been labeled as \emph{Intranet of Things}, pr
 \subsection{Home Assistant}
 
 \subsection{Discussion}
-
+Talk about intranet of things --- single point of access
 \newpage
 \section{Methodology}
 \label{sec:method}
 \TODO{Short description of what this section is about}
 \TODO{Describe how we got to the point of implementing auth.}
-As a first step towards analyzing the security of IoT models, architectures, and applications, a study on the state of the art was conducted. From reviewed literature, various security mechanisms came to light, which served as the foundation toward data confidentiality, peer authentication, non-repudiation, etc. However, the studied proposals tended to oversimplify and deviate from the issues present in existing solutions. This observation made it clear that there was a disconnect from publications and from the products. Most products, however, do not make public the internal workings, and tend to make their own architectural decisions instead of following standards for, e.g. encoding data transmitted between things. Among the existing solutions for a smart environment, the openHAB smart home software was chosen as a case study in terms of security. The decision was made for various reasons: firstly, it is open-source, and thus it is possible to conduct white-box tests, secondly, it is vendor-agnostic, and finally, because of the active participation of the community in this project.
+As a first step towards analyzing the security of IoT models, architectures, and applications, a brief study on the state of the art was conducted. From the reviewed literature, various security threats and mechanisms to eliminate them came to light, which served as the foundation toward data confidentiality, peer authentication, non-repudiation, etc. However, the studied proposals tended to oversimplify and deviate from the issues present in existing solutions. This observation made it clear that there was a disconnect from publications and from the products. Most products, however, do not make public the internal workings, and tend to make their own architectural decisions instead of following standards for, e.g. encoding data transmitted between things. Among the existing solutions for a smart environment, the openHAB smart home software was chosen as a case study in terms of security. The decision was made for various reasons: firstly, it is open-source, and thus it is possible to conduct white-box tests, secondly, it is vendor-agnostic, and finally, because of the active participation of the community in this project.
 
 \subsection{Security of openHAB}
 \TODO{is it necessary to add screenshots of tcpdump or wireshark?}
