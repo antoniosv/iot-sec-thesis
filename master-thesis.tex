@@ -623,17 +623,42 @@ The architecture of ESH is detailed in figure~\ref{fig:esh_architecture}. In the
 \clearpage
 \section{Related Work}
 \label{sec:related}
-\TODO{Short description of what this section is about}
+As more sensing devices capable of communication with the cloud become available to the public, more scenarios for the smart home take form. Accordingly, more customer-ready solutions appear in the market. OpenHAB is but one of the existing smart home solutions. As an open-source project with a very active community, openHAB distinguises itself from other solutions. As part of the focus of this work is to review the security of openHAB, this section will look at other smart home solutions from a security and privacy perspective. 
 
 \subsection{NEST}
+NEST offers integration of NEST propietary devices for the smart home, such as thermostats, cameras, doorbells, alarm systems, locks, smoke alarms, among others. Each of these devices are capable of connecting to a web service in the cloud. Some high-level detailsabout the protocols and cryptographic primitives employed for communication are public, but the specifics are not published~\cite{related_01}.
+
+The Nest apps (mobile and web), thermostats, and cameras connect to this cloud service using the Transport Layer Security (TLS) protocol, and encrypt the transported data with AES-128. Particularly, the cameras use a 2048-bit RSA key when establishing the TLS session. The CO and smoke alarm devices use a propietary protocol similar to TLS to establish the secure connection with the cloud service.
+
+The data collected from the Nest devices is stored in Amazon Web Services and Google Cloud Platform. The privacy and security policies are enforced according to these particular third-party services~\cite{related_01}.
+
+To control and view data from thermostat, for example, first it has to be paired with the cloud backend. Then, by touching it (proof of posession) it produces a one-time password which can be entered in the mobile application. Thus, it is authenticated, and only the user of this mobile application can access and control the thermostat. Additionally, this can be controlled remotely through the internet: i.e., application connects to cloud backend which forwards commands to device at home.
+
 \subsection{HomeKit}
+
+HomeKit is a smart home solution by Apple, and thus aims to integration of all devices of the Apple ecosystem. HomeKit uses a secure pairing to authenticate with an iDevice, e.g., iPhone, iPad, etc. It employs a propietary HomeKit Accessory Protocol (HAP) to enable third-party accessories to communicate with home or Apple products. The HomeKit Accessory Protocol supports both IP and Bluetooth LE. The pairing process depends on the transport protocol: for IP, devices have to be in the same network; for bluetooth LE, pairing is peer-to-peer. Moreover, all sessions between HomeKit accessories and Apple products are mutually authenticated and encrypted~\cite{related_02}.
+
+There is also hardware security in place. HomeKit introduced an \emph{authentication coprocessor} that only members enrolled in the MFi program can put into their accessories. A commercial HomeKit accessory must include an authentication coprocessor, and additionally include a Wi-Fi Alliance certificate or Bluetooth SIG certification, depending on the type of transport for that particular device~\cite{related_02}.
+
+In early December 2017, a vulnerability in the Apple ecosystem, including HomeKit, allowed anyone with a valid MAC address to login as a root in the system~\cite{related_03}, without providing a valid password. It was promptly patched in a security update, followed by an apology by Apple.
+
 \subsection{openRemote}
+
+~\cite{related_04}
+    It has three components: online designer software, the controller (hardware), and App/Panel front end. 
+    From the forums: https://openremote.github.io/archive-dotorg/forums/      
+    No authentication comes by default, but it can be enabled through Apache Tomcat's  configuration files.
+    It also offers a REST API which doesn't require authentication at all.
+    There was an effort to allow authentication through PKI and TLS. The controller creates certificates for the authorized users and acts as a CA. This never got integrated into the main branch of development~\cite{related_05}. 
+
+
 \subsection{Thingsboard}
 \subsection{the thing system}
 \subsection{Home Assistant}
 
 \subsection{Discussion}
 Talk about intranet of things --- single point of access
+OH stores NO data.
 \newpage
 \section{Methodology}
 \label{sec:method}
@@ -1203,6 +1228,8 @@ Tip: We can use minipage to create a frame around some important information.
 \addcontentsline{toc}{subsection}{I. Glossary}
 Bearer token. The digest of the user credentials to be used in an authentication process.
 Manifest. Configuration file for OSGi bundles that define the bundle's unique identification, packages imported from other bundles, and packages to make available to other bundles.
+IP. Internet Protocol.
+
 \newpage
 
 %=== Licence in English
