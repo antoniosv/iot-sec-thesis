@@ -566,19 +566,21 @@ Network & \begin{tabular}[c]{@{}l@{}}Neglect, greed, homing, misdirection, traff
 \label{table:threats}
 \end{table}
 
-Additionally, \cite{DAC3323}, \cite{Zhang:2015}, and \cite{ALABA201710} briefly mention threats corresponding to specific IoT applications. The list is shown as follows:
+Additionally, \cite{DAC3323}, \cite{Zhang:2015}, and \cite{ALABA201710} briefly mention threats corresponding to specific IoT applications. These threats are:
 
 \begin{enumerate}
 \item Eavesdropping
 \item Man-in-the-Middle-Attack
 \item Denial of Service (DoS) attack
 \item Impersonation/counterfeiting
-\item Stolen smart device. 
+\item Stolen smart device
 \item Parallel session
 \item Gateway node bypassing
 \end{enumerate}
 
 Unfortunately, cryptographic mechanisms alone are not sufficient to solve all of these issues, and thus other mechanisms should be considered.
+
+\TODO{Consider section about authentication and security mechanisms in IoT}
 
 \subsection{Eclipse SmartHome and openHAB}
 
@@ -985,9 +987,12 @@ The proposed authorization model fulfills the purpose noted at the beginning of 
 \newpage
 \section{Conclusion}
 \label{sec:conclusion}
-\TODO{what did you do?} 
-\TODO{What are the results?}
-\TODO{future work?}
+
+This work gave an overview of the security challenges present in applications for Internet of Things, particularly in the domain of smart homes. It analyzed the security mechanisms employed in openHAB and Eclipse SmartHome, especially in terms of access control and privacy. Upon observing the lack of authentication and authorization mechanisms, a JSON Web Token-based authenticator was implemented according to the principles of the OSGi framework. An additional basic authenticator was also implemented as fallback in case the client does not make use of JSON Web Tokens. Finally, a somewhat-grained an authorization model was proposed for openHAB. This authorization model distinguishes between users who may have overlapping permissions, but should not have equal control among all resources of the smart home environment.
+
+At the first step of implementation, a custom \texttt{HttpContext} was successfully implemented to intercept all incoming requests toward the registered servlet. Depending on the value returned by the \texttt{handleSecurity} method, access to a resource could be allowed or forbidden. Based on it, implementation of a JSON Web Token was implemented inside the logic of the aforementioned method.In the evaluation of this first step, JWT authentication was successfully enforced for all client requests to the servlet: clients with an invalid token, or with no token at all were denied access to the servlet resource. As the second step of the implementation, a secondary \emph{basic} authenticator was implemented which requested credentials to the client's web browser as a prompt. In the evaluation, first time clients were always asked for credentials to authenticate, and then further requests transitioned into the JWT authentication. Thus, only when the client provided either valid basic credentials or JWT, access to the servlet resource was allowed.
+
+There are several endeavors in terms of implementation that may be considered for future work. First, implementation of a form-based authentication front-end that makes use of the JWT authenticator. Due to the architecture of the Eclipse SmartHome, it is not trivial to plug-in a redirect from every resource to a web form for authentication. Secondly, it remains to solve how to make use of the authenticator for the REST API. At the time of writing, the \emph{merge} of \texttt{HttpContext} has not been made in the development branch of Eclipse SmartHome, and thus experimentation is not yet possible. Thirdly, a concrete definition and implementation of the mechanisms based on the proposed authorization model. Finally, a fresh re-evaluation of the access control mechanisms could be carried out.
 
 \newpage
 \section{Extra}
