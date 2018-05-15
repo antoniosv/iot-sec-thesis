@@ -337,7 +337,7 @@ Estonian translation goes here...
 \TODO{LIST OF FIGURES AND TABLES}
 We exist in an age where our lives are slowly being invaded by objects that are capable of becoming aware of their physical context. These are not simple physical objects anymore, but rather context-aware sensing devices, whose capababilities may greatly improve our lives in a variety of situations. Smartphones, smart watches, automatic doors with facial recognition, self-driving cars, are some of the objects that have been slowly transitioning into context-aware devices. As we are in constant contact with some of these devices, our environment becomes \emph{smart}. However, with a tremendous amount of data about ourselves flowing between these devices and the cloud, what guarantee is there that our privacy is being protected?
 
-Living in a context-aware home is no longer a futuristic vision. Automatic security systems with face recognition, scheduled meals prepared by e.g. a smart rice cooker, coffee maker; smart refrigerators that notice when ingredients have expired, among others, are just some examples of typical appliances that might be used in a smart home. Going back to the idea of privacy protection: would a regular resident of a smart home be happy that their, for instance, food choices are being disclosed to e.g., their neighbors? Usually, we expect that people are able to maintain their privacy in their own homes. Thus, openly managing such amounts of information becomes a problem, rather than an advantage. In fact, a study disclosed by Orange about the future of digital trust has shown that 78\% of consumers think that it is hard to trust companies when it comes to use their personal data~\cite{orange}. This hints that data privacy and security in general might be an important aspect of the systems that employ these context-aware devices. 
+Living in a context-aware home is no longer a futuristic vision. Automatic security systems with face recognition, scheduled meals prepared by e.g.\ a smart rice cooker, coffee maker; smart refrigerators that notice when ingredients have expired, among others, are just some examples of typical appliances that might be used in a smart home. Going back to the idea of privacy protection: would a regular resident of a smart home be happy that their, for instance, food choices are being disclosed to e.g., their neighbors? Usually, we expect that people are able to maintain their privacy in their own homes. Thus, openly managing such amounts of information becomes a problem, rather than an advantage. In fact, a study disclosed by Orange about the future of digital trust has shown that 78\% of consumers think that it is hard to trust companies when it comes to use their personal data~\cite{orange}. This hints that data privacy and security in general might be an important aspect of the systems that employ these context-aware devices. 
 
 Among all the different scenarios and applications that could be made a reality with these context-aware devices, the \emph{smart home} is of particular interest. openHAB is an automation software that brings together and manages \emph{Things} for the purpose of building a smart home environment~\cite{openhab_02}. The smart home, an application of the Internet of Things paradigm, is gaining popularity not only as a toy, but as a realistic intelligent environment that can be put in use today. A \emph{Thing} i.e., a sensing device, is the basic unit in a smart home environment. Things capture data from their environment and transmit it to another point, typically to another node inside the same network, or perhaps through the Internet to a remote destination. However, is there any security in this transmission of data?
 
@@ -466,9 +466,9 @@ A servlet is special Java class used to extend a web server by providing dynamic
 
 Traditional web applications in Java require a container, such as Tomcat or Jetty, where the servlet is published, so that it can be accessed through HTTP. Java servlets make use of an application deployment descriptor, more widely known as the \texttt{web.xml} file. This configuration file specifies to which URL it is mapped to. Thus, when a \texttt{GET} request arrives at that URL, for instance, it is redirected to the correct method.
 
-In the OSGi framework however, this deployement descriptor, i.e. \texttt{web.xml}, does not exist. Just as a bundle has to be registered to the runtime, the servlet, and its respective HTTP response methods have to be registered to it. Two mechanisms to perform this registration are the \texttt{Http Service} and \texttt{Http Whiteboard}, and as part of these, the \texttt{Http Context}.
+In the OSGi framework however, this deployement descriptor, i.e. \texttt{web.xml}, does not exist. Just as a bundle has to be registered to the runtime, the servlet, and its respective HTTP response methods also have to be registered to it. Two mechanisms to perform this registration are the \texttt{Http Service} and \texttt{Http Whiteboard}, and as part of these, the \texttt{Http Context}.
 
-\paragraph{Http Service.} As an interface of the \texttt{org.osgi.service.http} package, it is used to allow other bundles in the OSGi runtime to dynamically register resources, servlets, and filters into the URI namespace of the Http Service. As the Http Service is not always available, a \texttt{ServiceTracker} object is used to check its availability during registration~\cite{httpservice}. 
+\paragraph{Http Service.} As an interface of the \texttt{org.osgi.service.http} package, it is used to allow other bundles in the OSGi runtime to dynamically register resources, servlets, and filters into the URI namespace of the Http Service. As the Http Service is not always available, a \texttt{ServiceTracker} object is used to check its availability during registration~\cite{httpservice}.
 
 \paragraph{Http Whiteboard.} The OSGi Htttp Whiteboard, introduced as part of OSGi Revision 6, simplifies the registration of servlets, filters, resources, listeners, and servlet contexts into the OSGi runtime~\cite{httpwhiteboard_01}. Popularly, the Http Whiteboard pattern is described as ``don't call us, we'll call you'', due to not needing a tracker to check for availability at all times~\cite{httpwhiteboard_02}.
 
@@ -476,38 +476,37 @@ In the OSGi framework however, this deployement descriptor, i.e. \texttt{web.xml
 
 \subsubsection{REST and JAX-RS Connector}
 
-A popular, yet constrained architectural style for web applications is the \emph{Representation State Transfer} (REST). The REST architecture has a set of well-defined operations for a web service to create, retrieve, update and delete data~\cite{rest_01}. These operations directly translate to the HTTP methods: get, post, put, and delete. This architectural model is particularly handy for creating web services which serve data in data formats like JSON or XML.
+A popular, yet constrained architectural style for web applications is the \emph{Representation State Transfer} (REST). The REST architecture has a set of well-defined operations for a web service to retrieve, create, update and delete data~\cite{rest_01}. These operations directly translate to the HTTP methods: get, post, put, and delete. This architectural model is particularly handy for creating web services which serve data in data formats like JSON or XML.
 
 In Java, the specification that supports this architecture is known as JAX-RS: Java API for RESTful Web Services~\cite{rest_02}. This is only the specification, thus the actual implementations are various: Jersey, Apache CXF, JBoss, among others.
 
-For the OSGi architecture, a native implementation of the JAX-RS specification does not exist. However, a connector that makes a JAX-RS compatible with the OSGi runtime exists, though it is no longer maintained~\cite{rest_03}.
+For the OSGi architecture, a native implementation of the JAX-RS specification does not exist. However, a connector that makes the Jersey JAX-RS implementation compatible with the OSGi runtime exists, though it is no longer maintained~\cite{rest_03}.
 
 \subsection{Internet of Things}
 \label{ssec:iot}
-The Internet of Things, commonly referred as IoT, is a dynamic and heterogenous environment where \emph{sensing} devices may interact with each other for some particular purpose. These devices, also known as \emph{things}, heavily vary in terms of capabilities and resources. Their capabilities may range from radio identification devices (RFID), infrared sensors, global positioning systems; to smart watches, smartphones, smart televisions, etc. The most important aspect for these devices is that they can gather some kind of data from the real world, and that are capable of transmitting it to another point. Usually, the devices may interact without human intervention, also known as Machine-to-Machine (M2M) communication. Due to the wide diversity of capabilities among sensing devices, interoperability within a common framework is a challenge, especially due to vendor lock-in and obscure interfaces. Still, it is desirable that the devices can transparently communicate among themselves in a local scope, e.g. inside a wireless sensor network (WSN), and in some cases, even to an exteral scope, e.g. through the Internet.
+The Internet of Things, commonly referred as IoT, is a dynamic and heterogenous environment where \emph{sensing} devices may interact with each other for some particular purpose. These devices, also known as \emph{things}, heavily vary in terms of capabilities and resources. Their capabilities may range from radio identification devices (RFID), infrared sensors, global positioning systems; to smart watches, smartphones, smart televisions, etc.~\cite{ALABA201710}. The most important aspect for these devices is that they can gather some kind of data from the real world, and that are capable of transmitting it to another point. Usually, the devices may interact without human intervention, also known as Machine-to-Machine (M2M) communication. Due to the wide diversity of capabilities among sensing devices, interoperability within a common framework is a challenge, especially due to vendor lock-in and obscure interfaces. Still, it is desirable that the devices can transparently communicate among themselves in a local scope, e.g.\ inside a wireless sensor network (WSN), and in some cases, even to an exteral scope, e.g.\ through the Internet~\cite{Zhang:2015}.
 
-The local scope in which these devices operate is called a sensor network. A wireless sensor network (WSN) is the common environment for the sensing devices, and is usually managed by one or more gateways. Whenever a \emph{thing} needs to relay information to another device, it would go through the respective gateway. In the past, it was sufficient to structure some kind of client-server architecture, where clients (e.g. \emph{things}) directly communicate to the server, and subsequently the server decides how to handle the rest. However, this model is not very scalable. As there is a very large number of \emph{things} in IoT, it is much manageable to have a distributed solution that employs gateways as relay points. Additionally, the gateway not only serves as a communication medium, but is also responsible for making the necessary translations between protocols if the devices need to send or receive data through the Internet.
+The local scope in which these devices operate is called a sensor network. A wireless sensor network (WSN) is the common environment for the sensing devices, and is usually managed by one or more gateways. Whenever a \emph{thing} needs to relay information to another device, it would go through the respective gateway. In the past, it was sufficient to structure some kind of client-server architecture, where clients (e.g.\ \emph{things}) directly communicate to the server, and subsequently the server decides how to handle the rest. However, this model is not very scalable. As there is a very large number of \emph{things} in IoT, it is much manageable to have a distributed solution that employs gateways as relay points. Additionally, the gateway not only serves as a communication medium, but it is also responsible for making the necessary translations between protocols if the devices need to send or receive data through the Internet.
 
-The actual devices employed and the nature of the data gathered depend on the specific application for the IoT. These applications may be categorized into smart home, smart grid, smart city, smart transportation, and so on. Regardless of the application, data has to be gathered from the real world and transmitted to another point. Considering the diversity of devices and applications, it is no trivial task to unify or to support interoperability between devices, especially if they make use of different protocols for communication. Indeed, interoperability, device naming in a network, finding other devices, are just some examples of the challenges that may be found when instantiating an IoT application. To address these issues, a variety of architectures and solutions have been proposed in~\cite{ALABA201710}. 
+The actual devices employed and the nature of the data gathered depend on the specific application for the IoT. These applications may be categorized into smart home, smart grid, smart city, smart transportation, and so on. Regardless of the application, data has to be gathered from the real world and transmitted to another point. Considering the diversity of devices and applications, it is no trivial task to unify or to support interoperability between devices, especially if they use different protocols for communication. Indeed, interoperability, device naming in a network, finding other devices, are just some examples of the challenges that need to be addressed when designing an IoT application. To take on these issues, a variety of architectures and solutions have been proposed in~\cite{ALABA201710}. 
 
-Given this amount of issues present in the architecture and development of IoT applications, it is no surprise that much of the focus given both in research and industry has been towards the functional requirements. Non-functional requirements such as performance, user experience, security, among others, have been left as an afterthought. In fact, due to the nature of constant exchange of information in IoT, security becomes an inevitable concern~\cite{Zhang:2015}.
+Given this amount of issues present in the architecture and development of IoT applications, it is no surprise that much of the focus given both in research and industry has been directed to the functional requirements. Non-functional requirements such as performance, user experience, security, among others, have been left as an afterthought. In fact, due to the nature of constant exchange of information in IoT, security becomes an inevitable concern~\cite{Zhang:2015}.
 
-\TODO{look for reference on law about privacy}
-Especially due to recent developments on laws pertaining data security and privacy, more emphasis has given to the security of information systems. Thus, incorporating security into a software product is no longer a courtesy, but a duty toward the users. Data encryption, authentication, authorization mechanisms, non-repudiation, are just some of the possible measures that should be taken into account when designing a secure system, and the IoT is no exception to this. In this context, the privacy and confidentiality of the data gathered by the sensing devices come to mind. Depending on the nature of this data, the privacy might be essential to maintain, especially during transit to other devices or points in the network.
+In consequence to recent developments on laws pertaining data privacy~\cite{eu_law}, more emphasis has given to the security of information systems that use data from users. Thus, incorporating security into a software product is no longer a courtesy, but a legal and ethical duty toward the users. Data encryption, authentication, authorization mechanisms, non-repudiation, are just some of the possible measures that should be taken into account when designing a secure system, and the IoT is no exception to this. For IoT in particular, a central part of the security concerns is related to the data collected by the sensing devices, and how and where it is transmitted. Depending on the nature of this data, the privacy might be essential to maintain, especially during transit to other devices or points in the network.
 
 \subsubsection{Layers and Applications}
-As described in \cite{ALABA201710}, the IoT can be classified into three layers: application, perception, and network. This abstraction makes it simpler to study security requirements for IoT, as each layer may encounter different security threats. 
+As described in \cite{ALABA201710}, the IoT can be classified in three layers: application, perception, and network. This abstraction makes it simpler to study security requirements for IoT, as each layer may encounter different security threats. 
 
 \paragraph{Application layer} This is the uppermost layer, and the one that is visible to the end user. Although there is no universal standard to build an application layer within the IoT, the structure itself is dependent on the service it offers. Applications such as \emph{smart healthcare}, \emph{smart grid}, \emph{smart city}, and \emph{intelligent transportation} make up this layer. A communication protocol for the application layer is used to exchange information between two endpoints within the same application. In terms of architecture, the application layer is usually comprised of middleware, a machine-to-machine communication protocol, a service support platform, and cloud computing. To further elaborate, some applications are briefly described:
 
 \begin{description}
-\item [Smart grid] System of electrical distribution with different operational and energy measures, such as meters, smart appliances and energy-efficient resources. A smart grid is reliable, improves savings, reduces operational costs, and enhances energy independence. 
+\item [Smart grid] System of electrical distribution with different operational and energy measures, such as meters, smart appliances, and energy-efficient resources. A smart grid is reliable, improves savings, reduces operational costs, and enhances energy independence. 
 \item [Smart healthcare] Provides an individual-focused environment, with attention on controlling and monitoring the state of each patient. It depends on very small \emph{sensing} devices which are placed inside or outside the human body. The information captured by these devices is handled by the smart healthcare system.
 \item [Smart city] Constituted as a smart environment where city services are provided by multiple parties to support a high quantity of users in a distributed manner. The goal is to improve or create services offered to the population.
-\item [Intelligent transportation] New technologies include radio frequency identification (RFID) tags, sensors, and actuators. Incorporating these new devices to transportation systems brings new functions, particularly for tracking locations and movement and monitoring temperature. Some specialized devices may be able to accomplish vehicle-to-vehicle communication, opening up the possibilities for automatic driving, for instance. Additionally, the deployed networks can then observe aspects like travel time, routing decisions, queue lengths, air pollutants, traffic congestion, etc., which may serve as basis for improvement of transportation.
+\item [Intelligent transportation] New technologies include radio frequency identification (RFID) tags, sensors, and actuators. Incorporating these new devices to transportation systems brings new functions, particularly for real-time location and movement tracking, and monitoring temperature. Some specialized devices may be able to accomplish vehicle-to-vehicle communication, opening up the possibilities for automatic driving, for instance. Additionally, the deployed networks can then observe aspects like travel time, routing decisions, queue lengths, air pollutants, traffic congestion, etc., which may serve as basis for improvement of transportation.
 \end{description}
 
-\paragraph{Perception layer} The perception layer is divided in two parts: perception node and perception network. Data is captured and controlled in the perception node through sensors and controllers. Meanwhile, the instructions for handling and sending the data is managed through the perception network. The technologies involved in the perception layer range from ZigBee, RFID, sensor nodes, and sensor gateways.
+\paragraph{Perception layer} The perception layer is divided in two parts: perception node and perception network. Data is captured and controlled in the perception node through sensors and controllers. Meanwhile, the instructions for handling and sending the data is managed through the perception network. The technologies involved in the perception layer range from ZigBee, RFID, sensor nodes, and sensor gateways, which are described as follows:
 
 \begin{description}
 \item [RFID] (radio frequency identification) is a technology that allows the identification of devices present by the use of tags. 
@@ -515,33 +514,43 @@ As described in \cite{ALABA201710}, the IoT can be classified into three layers:
 \item [Sensor gateway] Central point of establishment of a Wireless Sensor Network (WSN) to which many sensors nodes are connected to. Its task is to translate protocols for communication between two nodes that may not be in the same WSN.
 \end{description}
 
-\paragraph{Network layer} The network layer is in charge of storage awareness and data transmission to the perception layer. Additionally, it provides information security. The main components of this layer include mobile devices, the Internet, and cloud computing.
+\paragraph{Network layer} The network layer is in charge of storage awareness and data transmission to the perception layer. Additionally, it may provide information security through firewalls, for instance. The main components of this layer include mobile devices, the Internet, and cloud computing.
+
+\subsubsection{Communication Scenarios}
+
+Depending on the intended activities performed by the objects in an IoT application, there are three scenarios for communication: basic, extended, and cloud computing. These communication scenarios are described as follows:
+
+\begin{description}
+\item[Basic] In this domestic communication scenario, two things communicate within a single wireless sensor network. Usually, a gateway in the same WSN is used to transmit the data between both things.
+\item[Extended] In this scenario, the end point is isolated from the WSN where the object resides. Thus, a larger public network, such as the Internet, may be used to reach this end point. The gateway is responsible for doing the translations between protocols.
+\item[Cloud computing] In the cloud computing scenario, data is simply pushed to storage in the cloud. Thus, the role of the gateways is to continously gather information from the objects under its control, and push it to said environment.
+\end{description} 
 
 \subsubsection{Security Challenges}
 
 Due to the pervasive nature of the IoT devices, it is expected that some concerns arise regarding the security of the data being handled. Depending on the specific application, different security requirements may be demanded. In the case of smart health, for example, captured data from the patients should be kept private and confidential, and it should be ensured that this data is transmitted only to those with the clearance to do so.
 
-In the communication scenarios introduced earlier, many questions arise regarding the security concerns of transmitting data from one point to another. In the basic scenario, for instance, what happens if an alien or malicious object tries to join the WSN to communicate with the objects in the network? There is also the case that an eavesdropper may listen to the communication between every object and the gateway. The latter is not very big issue, as the communication technology (Bluetooth, ZigBee) between an object and the gateway often includes encryption, rendering a passive attack useless. However, it is still important to consider how the registration of an object with a gateway is done, as to prevent counterfeits from malicious entities. Very similar concerns are present in the other two communication scenarios, with the difference that the communication now goes through a large public network, e.g., the Internet, and the same assumptions used in the basic scenario do not hold anymore. For this reason, on top of the security services employed within the WSN, there is a need for resistance against passive and active attacks over the public network. Mainly, confidentiality and authentication are the desired properties to have within this insecure network.
+Among the different communication scenarios inside IoT applications, many questions arise regarding the security concerns of transmitting data from one point to another. In the basic scenario, for instance, what happens if an alien or malicious object tries to join the WSN to communicate with the objects in the network? There is also the case that an eavesdropper may listen to the communication between every object and the gateway. The latter is not very big issue, as the communication technology (Bluetooth, ZigBee) between an object and the gateway often includes encryption, rendering a passive attack useless. However, it is still important to consider how the registration of an object with a gateway is done, as to prevent counterfeits from malicious entities. Very similar concerns are present in the other two communication scenarios, with the difference that the communication now goes through a large public network, e.g., the Internet, and the same assumptions used in the basic scenario do not hold anymore. For this reason, on top of the security services employed within the WSN, there is a need for resistance against passive and active attacks over the public network. Mainly, confidentiality and access control are the desired properties to have within this insecure network.
 
-Among the existing security services, the ones shown in  \cite{HELLAOUI2017173} and \cite{ALABA201710} are appropriate for their use in IoT. They are described as follows: 
+Among the existing security services, the ones shown in~\cite{HELLAOUI2017173} and~\cite{ALABA201710} are appropriate for their use in IoT. They are described as follows: 
 
 \begin{description}
 \item [Authentication] Ensuring that the object in question can be verified to be authentic, which is, that is what it claims to be. In case of peer authentication, a peer shows that it is legitimately who it claims to be. In the case of message authentication, it refers to a message which has not been tampered with, or that it indeed comes from a certain party. This is typically provided by using asymmetric encryption.
-\item [Access control] Different devices and different data may require granularity in terms of who can access what resource. Access control provides the systematic means of granting and revoking access as required, typically after engaging in authentication.
+\item [Access control] Different devices and data may require granularity in terms of who can access what resource. Access control provides the systematic means of granting and revoking access as required, typically after engaging in authentication.
 \item [Confidentiality] Ensures that the contents of a message transmitted among peers in the IoT cannot be meaningfully read by an unauthorized eavesdropper. This is typically provided by using symmetric encryption.
 \item [Key establishment] Provides the means of exchanging a small piece of secret information, a key, over an insecure channel. This key is used later on to provide other services like confidentiality.
-\item [Trust establishment] Refers to the mechanisms of establishing trust between physical devices and events. In the event that an application server is compromised, the risk of having an adversary forge user credientials will be present. A trust mechanism would verify the network applications, regardless of the location of the physical devices. 
+\item [Trust establishment] Refers to the mechanisms of establishing trust between physical devices and events. In the event that an application server is compromised, the risk of having an adversary forge user credentials will be present. A trust mechanism would verify the network applications, regardless of the location of the physical devices. 
 \end{description}
 
-Security in information systems and networks is a topic that has been studied for a long time now, and many solutions exist to address the requirements that the applications demand. Even though an IoT application shares many similarities with a conventional wireless network, there are still differences that impede the realization of existing solutions for security and privacy \cite{ALABA201710}. For instance, IoT applications are deployed on low power and lossy networks (LLN), whereas the Internet is more robust. Furthermore, there are stricter constraints present in the IoT networks. Constraints in nodes such as storage, energy, processing, and memory, present a challenge to adopt the exact same solutions that have been used in other kinds of networks. Moreover, the security requirements in both contexts may be drastically different. For instance, the sensing nodes present in the perception layer may not have the computational resources to employ typical public key cryptography for key exchange and authentication, and instead they turn to other \emph{lightweight} alternatives. The application layer, where data sharing is the most common occurrence, may suffer from lack of privacy and access control. Finally, the communication protocols in both networks are certainly different: while a single communication protocol is decided per application on the internet, different communication protocols may be used for different layers in the same IoT application. For example, the Hypertext Transport Protocol (HTTP) is used in the application layer of conventional network, but in IoT, the Constrained Application Protocol (CoAP) is used for communication.
+Security in information systems and networks is a topic that has been studied for a long time now, and many solutions exist to address the requirements that the applications demand. Even though the IoT paradigm shares many similarities with a conventional wireless network, there are still differences that impede the the direct reuse of existing solutions for security and privacy~\cite{ALABA201710}. For instance, IoT applications are deployed on low power and lossy networks (LLN), whereas the Internet is more robust. Furthermore, there are stricter constraints present in the IoT networks. Constraints in nodes such as storage, energy, processing, and memory, present a challenge to adopt the exact same solutions that have been used in other kinds of networks. Moreover, the security requirements in both contexts may be drastically different. For instance, the sensing nodes present in the perception layer may not have the computational resources to employ typical public key cryptography for key exchange and authentication, and instead they turn to other \emph{lightweight} alternatives. The application layer, where data sharing is the most common occurrence, may suffer from lack of privacy and access control. Finally, the communication protocols in both networks are certainly different: while a single communication protocol is decided per application on the internet, different communication protocols may be used for different layers in the same IoT application. For example, the Hypertext Transport Protocol (HTTP) is used in the application layer of conventional network, but in IoT, the Constrained Application Protocol (CoAP) is used for communication.
 
-Among other challenges present in IoT, naming and identification are also of importance. Considering the massive scale of physical devices that may be present in an IoT application, naming and identification of these objects becomes a complex task \cite{Zhang:2015}. Although very similar to the naming problem in the Internet, naming in IoT is subject to the heterogenous environment. For this reason, the same naming solution used in the Internet cannot be directly applied. However, it is suggested \cite{Zhang:2015} that the DNS naming scheme can be used as a basis to create an appropriate naming scheme for the IoT. 
+Among other challenges present in IoT, naming and identification are also of importance. Considering the massive scale of physical devices that may be present in an IoT application, naming and identification of these objects becomes a complex task~\cite{Zhang:2015}. Although very similar to the naming problem in the Internet, naming in IoT is subject to the heterogenous environment. For this reason, the same naming solution used in the Internet cannot be directly applied. However, it is suggested that the DNS naming scheme can be used as a basis to create an appropriate naming scheme for the IoT~\cite{Zhang:2015}. 
 
-As the objects in IoT are constantly communicating among themselves in a Machine-To-Machine fashion, naming and identification of these objects is essential, not only in the functional sense, but also in the event of authentication and access control. Indeed, it would be undesirable to have an identification conflict that inadvertedly authenticates the wrong entity, and that tentatively would be provided unwanted access to certain parts of the IoT application.
+As the objects in IoT are constantly communicating among themselves in a Machine-To-Machine fashion, naming and identification of these objects is essential, not only in the functional sense, but also in the event of authentication and access control. Indeed, it would be undesirable to have an identification conflict that inadvertedly authenticates the wrong entity, and so that it is granted unwanted access to certain parts of the IoT application.
 
 \subsubsection{Security Threats and Attacks}
 
-According to \cite{ALABA201710}, different threats are present in each IoT layer, and thus their analysis should be abstracted from other details. \autoref{table:threats} shows some of the identified threats present in each layer. These threats are related to the hardware components and network architecture. Due to the large number of different architectures for IoT, there is not a single solution that mitigates all of these threats.
+According to~\cite{ALABA201710}, different threats are present in each IoT layer, and thus their analysis should be abstracted from other details. \autoref{table:threats} shows some of the identified threats present in each layer. These threats are related to the hardware components and network architecture. Due to the large number of different architectures for IoT, there is not a single solution that mitigates all of these threats.
 
 \begin{table}[h]
 \centering
@@ -556,7 +565,7 @@ Network & \begin{tabular}[c]{@{}l@{}}Neglect, greed, homing, misdirection, traff
 \label{table:threats}
 \end{table}
 
-Additionally, \cite{DAC3323}, \cite{Zhang:2015}, and \cite{ALABA201710} briefly mention threats corresponding to specific IoT applications. These threats are:
+Additionally,~\cite{DAC3323},~\cite{Zhang:2015}, and~\cite{ALABA201710} briefly mention threats corresponding to specific IoT applications. These threats are:
 
 \begin{enumerate}
 \item Eavesdropping
@@ -570,7 +579,17 @@ Additionally, \cite{DAC3323}, \cite{Zhang:2015}, and \cite{ALABA201710} briefly 
 
 Unfortunately, cryptographic mechanisms alone are not sufficient to solve all of these issues, and thus other mechanisms should be considered.
 
-\TODO{Consider section about authentication and security mechanisms in IoT}
+\subsubsection{Authentication Models}
+
+One of the main security challenges of IoT is achieving \emph{peer authentication}. Authentication is a security service that allows one party to verify that the incoming messages come from the legitimate third party. In IoT, this would mean that a sensor node is receiving queries from an authorized endpoint, and not from a counterfeit.
+
+Authentication protects against Man-in-the-Middle attacks, and active attacks in general. In the Internet, this is done through protocols like TLS, which rely on public key infrastructure (PKI). In IoT, the structure of the network is vastly different to the structure of the Internet, and thus a different approach is needed. There are four main approaches to achieve peer authentication in IoT, namely: authentication by gateway, authentication by security token, authentication by Trust Chain, and authentication by Global Trust Tree. All these occur in the extended communication scenario, and are briefly described in~\cite{Zhang:2015} as follows:
+\begin{description}
+\item[Authentication by gateway] Gateway takes care of running the authentication mechanisms on behalf of each of the sensor nodes in its WSN. The gateway becomes the central point of operation for authentication. As such, traffic congestion should also be considered.
+\item[Authentication by security token] When two remote nodes want to communicate with each other, the gateway prepares a security token (e.g.\ a cookie) with certain security properties. The end points can then authenticate each other by using this token, which may have an expiration time. 
+\item[Authentication by Trust Chain] Follows the approach used in public key infrastructure, meaning that public certificates (X.509) are used along with public-key algorithms to achieve authentication. This method may be expensive, both computationally and economically.
+\item[Authentication by Global Trust Tree] The idea is that a single central authority oversees authentication between nodes in any IoT that it has access to. This approach is purely theoretical, and there are no candidates for it yet.
+\end{description}
 
 \subsection{Eclipse SmartHome and openHAB}
 
@@ -600,7 +619,7 @@ Figure~\ref{fig:oh_architecture} shows the overall architecture of the openHAB a
 
 As the core for the openHAB software stack, Eclipse SmartHome (ESH) provides a flexible and modularized framework for smart home and ambient assisted living solutions with a focus on heterogenous environments~\cite{esh_01}. The goal of ESH is to offer a solution for the fragmented market in smart home solutions by offering a medium where vendor-incompatible devices can be operated transparently.
 
-As in the first version of openHAB, the idea of a \emph{binding} is reused in ESH. Bindings implement a Thing-specific protocol e.g. ZigBee, and by loading the appropriate binding, the connection between the devices or services e.g., a TV set or weather service, and the framework, can be established. Furthermore, the bindings are connected to an \emph{event bus}, and this allows to do inter-component communication. Through the event bus, it is possible to send commands to the device or service, or else, to receive status updates from them.
+As in the first version of openHAB, the idea of a \emph{binding} is reused in ESH. Bindings implement a Thing-specific protocol e.g.\ ZigBee, and by loading the appropriate binding, the connection between the devices or services e.g., a TV set or weather service, and the framework, can be established. Furthermore, the bindings are connected to an \emph{event bus}, and this allows to do inter-component communication. Through the event bus, it is possible to send commands to the device or service, or else, to receive status updates from them.
 
 The architecture of ESH is detailed in figure~\ref{fig:esh_architecture}. In the figure, at least four Things are connected to the ESH framework through its respective bindings. There are two ways in which activity prompt changes in the Things connected: through a user interface (UI) and automation logic. The UI for ESH is made up of adaptable \emph{sitemaps} which comprise dynamic web pages, and this medium allows for manual interaction with the Things present in the system. The automation logic is established in terms of \emph{rules}, which are specified through configuration files. In both cases, commands may be directed to the event bus, which are then forwarded to its respective binding. Likewise, status updates may be shown in the UI, or served to the automation logic to perform more operations on top of these results. Finally, it is possible to make use of a custom logging module and console, mostly for development purposes.
 
@@ -651,7 +670,7 @@ With respect to security, the technical documentation covers two aspects: transp
 
 The Thing System is an open-source set of highly-extensible software components developed in node.js and network protocols to connect Things, independent of their vendor, into a heterogenous environment~\cite{related_08}.
 
-The Thing System enforces by default access control mechanisms, and recognizes that a single user may have more than one client (e.g. smart phone, laptop, tablet, etc.). If there are no users configured, the first access to the system instance may create the first user. Every time a user is created, a time-based one-time password is sent by the system. Since the process is compliant with the RFC 6238~\cite{RFC6238}, Google Authenticators and other programs may be used for web-based access.
+The Thing System enforces by default access control mechanisms, and recognizes that a single user may have more than one client (e.g.\ smart phone, laptop, tablet, etc.). If there are no users configured, the first access to the system instance may create the first user. Every time a user is created, a time-based one-time password is sent by the system. Since the process is compliant with the RFC 6238~\cite{RFC6238}, Google Authenticators and other programs may be used for web-based access.
 
 Any created client may have one role out of: master, resident, guest, device, cloud. The first three roles is meant for regular users to a varying degree of permissions inside the core of The Things System. The cloud role is assigned to services accessed through the Internet, and the device role, as its name implies, is assigned to devices to be made part of the environment~\cite{related_08}. 
 
@@ -681,7 +700,7 @@ Due to their proprietary nature, HomeKit and NEST are the ones that most distant
 \section{Methodology}
 \label{sec:method}
 \TODO{SUMMARY}
-As a first step towards analyzing the security of IoT models, architectures, and applications, a brief study on the state of the art was conducted. From the reviewed literature, various security threats and mechanisms to eliminate them came to light, which served as the foundation toward data confidentiality, peer authentication, non-repudiation, etc. However, the studied proposals tended to oversimplify and deviate from the issues present in existing solutions. This observation made it clear that there was a disconnect from publications and from the products. Most products, however, do not make public the internal workings, and tend to make their own architectural decisions instead of following standards for, e.g. encoding data transmitted between things. Among the existing solutions for a smart environment, the openHAB smart home software was chosen as a case study in terms of security. The decision was made for various reasons: firstly, it is open-source, and thus it is possible to conduct white-box tests, secondly, it is vendor-agnostic, and finally, because of the active participation of the community in this project.
+As a first step towards analyzing the security of IoT models, architectures, and applications, a brief study on the state of the art was conducted. From the reviewed literature, various security threats and mechanisms to eliminate them came to light, which served as the foundation toward data confidentiality, peer authentication, non-repudiation, etc. However, the studied proposals tended to oversimplify and deviate from the issues present in existing solutions. This observation made it clear that there was a disconnect from publications and from the products. Most products, however, do not make public the internal workings, and tend to make their own architectural decisions instead of following standards for, e.g.\ encoding data transmitted between things. Among the existing solutions for a smart environment, the openHAB smart home software was chosen as a case study in terms of security. The decision was made for various reasons: firstly, it is open-source, and thus it is possible to conduct white-box tests, secondly, it is vendor-agnostic, and finally, because of the active participation of the community in this project.
 
 \subsection{Security of openHAB}
 \TODO{is it necessary to add screenshots of tcpdump or wireshark?}
@@ -761,7 +780,7 @@ The community in openHAB was inspired by JAAS-based attempts at security and pro
 
 There are several problems with this approach, however. First, access control is not managed through a database or any other dynamic means, but is instead static. It is defined inside the source code, and there is no way to change permissions at runtime. This means that the project would need to be built again in order to take in any changes to the authorization on any method that makes use of it. Secondly, it offers no clear view on how the fine-grained details would have its access controlled. For example, let it be of public access to obtain the status of a light bulb, but only authorized users may flip its switch from the user interface. Moreover, a different kind of Thing would prefer the opposite behavior: to hide its status, but make it public to control it. As openHAB is vendor and Thing-agnostic, relying on annotations makes it impossible to deal with such fine-grained details in authorization.
 
-Following the design patterns in Apache Shiro, the authentication API for the Eclipse SmartHome was designed to have the means to plug in any authentication providers as desired. These providers may provide the service either locally or remotely (e.g. through OAuth). The goal was to have a flexible solution that may accept different kinds of authentication mechanisms to satisfy the many different use-case scenarios. The concrete implementations would be done by the products relying on the Eclipse SmartHome, such as openHAB. Different products may have different scenarios and constraints for authentication, and thus it makes sense to have some flexibility in this aspect. For example, a new user may prefer to login through his Google credentials instead of setting up a new account for the particular SmartHome instance. 
+Following the design patterns in Apache Shiro, the authentication API for the Eclipse SmartHome was designed to have the means to plug in any authentication providers as desired. These providers may provide the service either locally or remotely (e.g.\ through OAuth). The goal was to have a flexible solution that may accept different kinds of authentication mechanisms to satisfy the many different use-case scenarios. The concrete implementations would be done by the products relying on the Eclipse SmartHome, such as openHAB. Different products may have different scenarios and constraints for authentication, and thus it makes sense to have some flexibility in this aspect. For example, a new user may prefer to login through his Google credentials instead of setting up a new account for the particular SmartHome instance. 
 
 A common problem with the new authentication API was that there was no way to turn it off, and thus it automatically rejected all incoming requests without an authorization header (REFERENCE). Normally, this is not a problem for most web applications, as there typically is a redirect method that leads to a login page, where the user can set his credentials. The authentication API, however, offered no login form, as it only supported basic authentication out of the box. Indeed, without a way to inject the credentials into every HTTP request, the changes were mostly unusable. This was a problem especially for new users, who would have no idea on what to do whenever a ``Forbidden access'' page would come up. Originally, it was thought that if no authentication provider was available, then access control would not be enforced, making it an optional feature. However, it turned out that not detecting any authentication provider made no change whatsoever, leading to all requests to the REST end points being rejected. In the end, it was decided to disable the authentication API bundle from the default runtime, so it would not impede the normal functioning of openHAB.
 
@@ -794,7 +813,7 @@ On 15th February, 2018, a videocall meeting was held by the interested parties i
 Typically, all kinds of token-based authentication follow these steps (REFERENCE):
 \TODO{Structure as an algorithm}
 \begin{enumerate}
-\item The client sends its credentials (e.g. username, password, fingerprint) to the server.
+\item The client sends its credentials (e.g.\ username, password, fingerprint) to the server.
 \item The server attmpts to authenticate: if valid, it generates a token that includes expiration time.
 \item The server stores a copy of the token and associates it with the user.
 \item The server sends the token to the client.
@@ -830,7 +849,7 @@ As part of the OSGi version 6 specification, filters may be registered to any re
 
 As development of the Eclipse Smarthome halted, a new direction involving traditional servlet security was considered for this work. As part of servlet registration to the OSGi runtime, an entity called \texttt{HttpContext} has to be provided. This entity provides the means to intercept HTTP requests before they reach the servlet, and thus it becomes the point where authentication and authorization may be implemented. Originally, this approach was discarded because the REST endpoints did not support the use of \texttt{HttpContext} alongside its registration. The key in this case is that both groups of servlets, the traditional and the REST servlet, run under different application contexts. What this means is that, even if a traditional servlet handles authentication properly, this information would not be propagated to the REST endpoints, and thus authorization mechanisms would not be enforced. In the months of March and April, however, part of the community started an effort to combine, or rather, to \emph{share} the provided \texttt{HttpContext} among servlets and REST endpoints.
 
-Figure \ref{fig:esh_auth_arch} shows at a very high level the underlying architecture of the Eclipse SmartHome runtime. At the lowest level, the Jetty HTTP server and servlet engine is running. On top of it, there are several servlets running separately. Part of these servlets may be associated as being \emph{traditional}, while a particular servlet, the REST servlet, runs under different conditions. The REST servlet is used to serve resources, such as things, items, channels, etc. The Chart and Icon servlets, are of the traditional kind and thus, run under the same shared application context. Meanwhile, the REST servlet is shown to run under an isolated application context. Thus, the solution worked on by the community is to \textbf{bridge} both contexts and therefore have a commonly shared \texttt{HttpContext}~\cite{esh_03}. Yellow boxes represent the entities or resources that should have its access restricted according to a specified policy. Green boxes represent the possible solution to the problem, whereas the red boxes are the attempted solutions in previous years. Particularly, ``JAX-RS Custom ContainerContext'' was an attempted solution by the community, which had many problems when ported into the actual openHAB product. An alternative solution to it, the ``JAX-RS Custom Filter'' was originally planned to be implemented for this work, but the notion was discarded after understanding the limitations of this kind of filter, since it would not enforce authorization for the rest of the servlets (e.g. Icon servlet). 
+Figure \ref{fig:esh_auth_arch} shows at a very high level the underlying architecture of the Eclipse SmartHome runtime. At the lowest level, the Jetty HTTP server and servlet engine is running. On top of it, there are several servlets running separately. Part of these servlets may be associated as being \emph{traditional}, while a particular servlet, the REST servlet, runs under different conditions. The REST servlet is used to serve resources, such as things, items, channels, etc. The Chart and Icon servlets, are of the traditional kind and thus, run under the same shared application context. Meanwhile, the REST servlet is shown to run under an isolated application context. Thus, the solution worked on by the community is to \textbf{bridge} both contexts and therefore have a commonly shared \texttt{HttpContext}~\cite{esh_03}. Yellow boxes represent the entities or resources that should have its access restricted according to a specified policy. Green boxes represent the possible solution to the problem, whereas the red boxes are the attempted solutions in previous years. Particularly, ``JAX-RS Custom ContainerContext'' was an attempted solution by the community, which had many problems when ported into the actual openHAB product. An alternative solution to it, the ``JAX-RS Custom Filter'' was originally planned to be implemented for this work, but the notion was discarded after understanding the limitations of this kind of filter, since it would not enforce authorization for the rest of the servlets (e.g.\ Icon servlet). 
 
 \begin{figure} [ht] 
 \begin{center}
@@ -899,7 +918,7 @@ class CustomHttpContext implements HttpContext {
 \label{lst:core_impl}
 \end{figure}
 
-The simplified code snippet shows the core part of the \texttt{HttpContext} that intercepts requests and performs authentication from the provided HTTP header. As shown in the code snippet, after the JWT has been generated, it is given to the client as a \emph{cookie}. This way, no logic has to be implemented to manage the token in the client side (e.g. through local storage using HTML5). In subsequent requests, the cookie is presented to the server, and from it, the token is extracted and verified.
+The simplified code snippet shows the core part of the \texttt{HttpContext} that intercepts requests and performs authentication from the provided HTTP header. As shown in the code snippet, after the JWT has been generated, it is given to the client as a \emph{cookie}. This way, no logic has to be implemented to manage the token in the client side (e.g.\ through local storage using HTML5). In subsequent requests, the cookie is presented to the server, and from it, the token is extracted and verified.
 
 To handle the creation and verification of JWT, a third library, Nimbus, was used~\cite{nimbus}. This library even provides more complex features such as encryption of the JWT via a symmetric key encryption, but these are not currently considered for this work. As part of the basic structure of the JWT, a signature of the host is included at the end of the claims (e.g., username, permissions). For the proof of concept, an RSA-1024 key is generated as a singleton during runtime. Using the singleton pattern ensures that multiple private keys do not exist simultaneously, which could cause conflicts during signature verification. The freshly created RSA key is then used to both generate and sign the JWT, as shown in the simplified code snippet \ref{lst:rsa}.
 
@@ -928,7 +947,7 @@ The rest of the implementation follows the authentication logic for the basic an
 \subsection{Proposed Authorization Model}
 \label{ssec:autho}
 \TODO{Mention what will be "secured": servlets, REST endpoints, to view and to modify, etc}
-As part of the access control mechanism, authorization is split up in several phases: defining a security policy, selecting an authorization model, implementing the model, and enforcing the policy (REFERENCE). As a smart home automation software, it is not trivial to define a security policy that covers all cases, due to the dynamic and varied-purpose devices present. The implementation of any authorization model emcompasses engineerning work tightly related to the OSGi architecture of the system, and thus, is left out of the scope of this work. However, by having knowledge of the resources that need to be restricted through access control, e.g. things, items, channels, system settings, an authorization model can be proposed independently of the authorization policy and implementation. Then, when a specific policy is decided by the Eclipse SmartHome community, the model will not change drastically, and thus, implementation can follow. 
+As part of the access control mechanism, authorization is split up in several phases: defining a security policy, selecting an authorization model, implementing the model, and enforcing the policy (REFERENCE). As a smart home automation software, it is not trivial to define a security policy that covers all cases, due to the dynamic and varied-purpose devices present. The implementation of any authorization model emcompasses engineerning work tightly related to the OSGi architecture of the system, and thus, is left out of the scope of this work. However, by having knowledge of the resources that need to be restricted through access control, e.g.\ things, items, channels, system settings, an authorization model can be proposed independently of the authorization policy and implementation. Then, when a specific policy is decided by the Eclipse SmartHome community, the model will not change drastically, and thus, implementation can follow. 
 
 For a smart home application, the focus of an authorization model should lean towards privacy-preservation and usability (REFERENCE). Considering that most end users of the openHAB are not tech-savvy, some options for an authorization model are instantly discarded. Some models are considered to be complex to manage and set up, such as the Attribute-Based Acess Control (ABAC), Usage Control (UCON), and the Access Control Matrix and List (ACM, ACL).
 
@@ -978,7 +997,7 @@ As one of the main contributions for this work, the implementation of two authen
 
 The first successful attempt at implementing the authenticators was made outside the ESH ecosystem~\cite{repo_extra}. Instead of relying on the Equinox OSGi runtime 4.2 that ESH is based on, the deployment was made for Apache Karaf 4.2, which supported up to OSGi 6. This implementation included an activator of the bundle, a servlet, and a custom \texttt{HttpContext} to intercept the HTTP request. The goal is to have a servlet published as an HTTP service in the OSGi runtime. However, any request to this servlet is intercepted by the \texttt{handleSecurity} method of the custom \texttt{HttpContext}, which decides if the request goes through or not. In this case, it contained the logic for basic and JWT authentication. This implementation was first built with Maven using \texttt{\$ mvn clean install}, and then deployed to Apache Karaf as a stand-alone bundle with \texttt{\$ install -s mvn:org.dreamland./org.dreamland.whitefilter/1.0.0-SNAPSHOT}. Inside Karaf, executing \texttt{http:list} showed that the installed bundle exposed an HTTP service published in the \texttt{/whitefiltered} path, which represented the resource servlet to be secured.
 
-Accessing the servlet resource through e.g. curl, without any credentials, gets a response: ``HTTP ERROR 401. Problem accessing /whitefiltered. Reason: Unauthorized''. Passing the hard-coded, valid credentials adding the \texttt{-u} parameter to curl gets a \texttt{200 OK} response from the web server. If the servlet was accessed from a web browser, then the server returns a cookie alongside the response. This cookie, a very long string, is where the JSON Web Token is stored. In subsequent HTTP requests, the cookie is sent to the server to perform JWT authentication. The response by the servlet does not change, however, so by observing the Karaf log in the \texttt{/system/console/log} it can be confirmed that the JWT authentication worked flawlessly. JWT revokation due to expiration is not implemented, and therefore the same token may be reused as long as the same RSA key is being used by the server to verify the signature of the JWT.
+Accessing the servlet resource through e.g.\ curl, without any credentials, gets a response: ``HTTP ERROR 401. Problem accessing /whitefiltered. Reason: Unauthorized''. Passing the hard-coded, valid credentials adding the \texttt{-u} parameter to curl gets a \texttt{200 OK} response from the web server. If the servlet was accessed from a web browser, then the server returns a cookie alongside the response. This cookie, a very long string, is where the JSON Web Token is stored. In subsequent HTTP requests, the cookie is sent to the server to perform JWT authentication. The response by the servlet does not change, however, so by observing the Karaf log in the \texttt{/system/console/log} it can be confirmed that the JWT authentication worked flawlessly. JWT revokation due to expiration is not implemented, and therefore the same token may be reused as long as the same RSA key is being used by the server to verify the signature of the JWT.
 
 The next step in the evaluation of the implementation was to relocate the authentication logic into the core bundles of the Eclipse SmartHome. Very similar steps were followed, except that the bundle was built from the package \texttt{org.eclipse.smarthome.auth\\.jwt}. First, the logic for basic authentication was put into a custom \texttt{HttpContext} as before. A test resource servlet was also included in this bundle. The activator, however, used the \texttt{HttpService} and \texttt{ServiceTracker} to register the servlet and custom context as an HTTP service in the OSGi runtime. For the previous deployment the registration was made under the whiteboard pattern supported by OSGi 6 implementations. Up to the experimentation of the basic authentication, everything was replicated exactly under the ESH environment. However, when attempting to include the third party library, Nimbus, problems started to arise. Particularly, a persistent class-loading problem for this library has not been solved, not even with the support of a very active developer of the Eclipse SmartHome and openHAB. The exact error is as follows: \texttt{Missing constraint: Import-Package: com.nimbusds.jose}, which suggests that the JAR file is not recognized by the runtime. The usual approach for including third-party libraries into a bundle for ESH is to create a \texttt{lib} directory in the root of the bundle, and put the respective JAR there. Then, the \texttt{build.properties} and \texttt{MANIFEST.MF} files have to be changed to load the classes from the JAR. This same approach has been followed in other bundles in the ESH distribution, such as the \texttt{org.eclipse.smarthome.model.persistence} bundle. However, not even replicating the same structure as this bundle made it possible to recognize the Nimbus JAR.
 
@@ -995,226 +1014,6 @@ At the first step of implementation, a custom \texttt{HttpContext} was successfu
 There are several endeavors in terms of implementation that may be considered for future work. First of all, implementation of a form-based authentication front-end that makes use of the JWT authenticator. Due to the architecture of the Eclipse SmartHome, it is not trivial to plug-in a redirect from every resource to a web form for authentication. Second of all, it would be desirable to have an expiration date for the generated JSON Web Tokens, and thus an implementation of the renewal, or rather, re-generation process in these instances. Thirdly, it remains to solve how to make use of the authenticator for the REST API. At the time of writing, the \emph{merge} of \texttt{HttpContext} has not been made in the development branch of Eclipse SmartHome, and thus experimentation is not yet possible. Thirdly, a concrete definition and implementation of the mechanisms based on the proposed authorization model. Finally, a fresh re-evaluation of the access control mechanisms could be carried out.
 
 \newpage
-\section{Extra}
-\subsection{How to use references} \label{sec:using_ref}
-
-\paragraph{Cross-references to figures, tables and other document elements.}
-LaTeX  internally numbers all kind of objects that have sequence numbers:
-\begin{itemize}
-\item chapters, sections, subsections;
-\item figures, tables, algorithms;
-\item equations, equation arrays.
-\end{itemize}
-To reference them automatically, you have to generate a label using \texttt{$\backslash$label\{some-name\}} just after the object that has the number inside. Usually, labels of different objects are split into different namespaces by adding dedicated prefix, such as \texttt{sec:}, \texttt{fig:}. To use the corresponding reference, you must use command \texttt{$\backslash$ref} or \texttt{$\backslash$eqref}. For instance, we can reference this subsection by calling Section~\ref{sec:using_ref}. Note that there should be a nonbreakable space \texttt{\~} between the name of the object and the reference so that they would not appear on different lines (does not work in Estonian).          
-
-
-\paragraph{Citations.}
-Usually, you also want to reference articles, webpages, tools or programs or books. For that you should use citations and references. The system is similar to the cross-referencing system in LaTeX. For each reference you must assign a unique label. Again, there are many naming schemes for labels. However, as you have a short document anything works. To reference to a particular source you must use \texttt{$\backslash$cite\{label\}} or \texttt{$\backslash$cite[page]\{label\}}. 
-
-References themselves can be part of a LaTeX source file. For that you need to define a bibliography section. However, this approach is really uncommon. It is much more easier to use BibTeX to synthesise the right reference form for you. For that you must use two commands in the LaTeX source
-\begin{itemize}
-\item $\backslash$bibliographystyle\{alpha\} or $\backslash$bibliographystyle\{plain\}
-\item $\backslash$bibliography\{file-name\}
-\end{itemize}
-The first command determines whether the references are numbered by letter-number combinations or by cryptic numbers. It is more common to use \texttt{alpha} style. The second command determines the file containing the bibliographic entries. The file should end with \texttt{bib} extension. Each reference there is in specific form. The simplest way to avoid all technicalities is to use graphical frontend  Jabref (\url{http://jabref.sourceforge.net/}) to manage references. Another alternative is to use DBLP database of references and copy BibTeX entries directly form there.   
-    
-   
-The following paragraph shows how references can be used. Game-based proving is a way to analyse security of a cryptographic protocol~\cite{GameB_1, GameB_2}. There are automatic provers, such as {CertiCrypt\-}~\cite{dummy} and ProVerif~\cite{proVerif}.
-
-
-\newpage
-\section{How to add figures and pictures to your thesis}
-
-
-Here are a few examples of how to add figures or pictures to your thesis (see Figures~\ref{fig:fnCompModel}, \ref{fig:game-based_proofs}, \ref{fig:proveit_screenshot}).
-
-Rule: All the figures, tables and extras in the thesis have to be referred to somewhere in the text.
-
-
-\begin{figure} [ht] %try to place the figure here (next option top of the page) 
-\begin{center}
-\includegraphics[width=0.8\textwidth]{computational_model_function}
-\caption{The title of the Figure.}
-\label{fig:fnCompModel}
-\end{center}
-\end{figure}
-
-
-
-\begin{figure} [!ht] %if [h] doesn't work, we can force with !
-\begin{center}
-\includegraphics[width=\textwidth]{game-based_proofs}
-\caption{Refer if the figure is not yours~\cite{kamm12}.}
-\label{fig:game-based_proofs}
-\end{center}
-\end{figure}
-
-
-\begin{figure} [p]
-\begin{center}
-\includegraphics[width=\textwidth]{proveit_screenshot}
-\caption{Screenshot of \proveit.}
-\label{fig:proveit_screenshot}
-\end{center}
-\end{figure}
-
-Tip: If you add a screenshot then labeling the parts might help make the text more understandable (panel C vs bottom left part), e.g.
-
-
-\begin{figure} [htbp]
-\begin{tabular}{c c}
-%
-\begin{minipage}{0.45\textwidth}
-\includegraphics[width=\textwidth]{LCA_2_solutions}
-\end{minipage}
-%
-&
-\begin{minipage}{0.55\textwidth}
-\centering
-\begin{tabular}{ l | l |}
-	Node & Decendants \\ \hline
-  1 & 2, 3, 4 \\ \hline
-  2 & 3, 4 \\ \hline
-  3 & \\ \hline
-  4 & \\ \hline
-  5 & 3, 4, 6, 7 \\ \hline
-  6 & 4 \\ \hline
-  7 & 3 \\  \hline
-  8 & 3, 4, 5, 6, 7\\ \hline
-  9 & 3, 4, 5, 6, 7\\ \hline
-\end{tabular}
-\end{minipage}
-\end{tabular}
-%
-\caption{Example how to put two figures parallel to each other.}
-\label{fig:LCA_2_solutions}
-\end{figure}
-
-
-Example: A screenshot of \proveit can be seen on Figure~\ref{fig:proveit_screenshot}. The user first enters the pseudocode of the initial game in panel B. \proveit also keeps track of all the previous games showing the progress on a graph seen in panel A.
-
-There are two figures side by side on Figure~\ref{fig:LCA_2_solutions}.
-
-
-
-\clearpage %if newpage doesn't work
-\section{Other Ways to Represent Data}
-
-\subsection{Tables}
-
-\begin{table}[h]
-\centering
-\caption{Statements in the \proveit language.}
-\begin{tabular}{| l | l |}
-	\hline
-	\bf{Statement} & \bf{Typeset Example} \\
-	\hline
-	assignment & $a := 5 + b$ \\
-	\hline
-	uniform choice & $m <- M$ \\
-	\hline
-	function signature & $f : K \times M -> L$\\
-	\hline
-\end{tabular}
-\label{tab:statements}
-\end{table}
-
-
-\subsection{Lists}
-
-Numbered list example:
-\begin{enumerate}
-	\item item one; 
-	\item item two;
-	\item item three.
-\end{enumerate} 
-
-\subsection{Math mode}
-Example:
-\begin{equation}
-a + b = c + d
-\end{equation}
-Aligning:
-\begin{align*}
-	a &= 5 \\
-	b + c &= a \\
-	a -2*3 &= 5/4
-\end{align*}
-Hint: Variables or equations in text are separated with \$ sign, e.g. $a$, $x - y$.
-
-\paragraph{Inference Rules}
-\[ 
-	\inference[addition]{x : T & y : T}{x + y : T} 
-\]
-Bigger example:
-\[
-\inference[assign]{c := a + b & 
-	\inference[addG]{a : \typeRat & 
-		\inference[var]{b : \typeInt & \typeInt \subseteq \typeRat}{b : \typeRat}
-		}{a + b : \typeRat}
-	}{c : \typeRat}
-\]
-
-
-\subsection{algorithm2e}
-
-\begin{algorithm} [!h]
-	\caption{typeChecking} \label{alg:typeChecking}
-	\KwIn{Abstract syntax tree}
-	\KwResult{Type checking result; In addition, type table \typeF{type\_G} for global variables, \typeF{game} for the main game and \typeF{fun} for each $fun \in F$}
-	\SetKwData{s}{s}
-	\BlankLine
-	
-	\While{something changed in last cycle}{
-		\lForEach{global statement \s} {
-			\parseStatement{\s, \typeF{type\_G}}\;
-		}
-		\ForEach{function $fun$} {
-		\lForEach{statement \s in $fun$} {
-			\parseStatement{\s, \typeF{fun}}\;
-		}
-		}
-		\lForEach{statement \s in game} {
-			\parseStatement{\s, \typeF{game}}\;
-		}
-	}
-	%\eIf{error messages were found}{\Return \False\;}{\Return \True\;}
-\end{algorithm}
-
-\subsection{Pseudocode}
-
-\begin{figure} [htb]
-\begin{lstlisting}
-expression
-  : NUMBER
-  | VARIABLE
-  | '+' expression
-  | expression '+' expression
-  | expression '*' expression
-  | function_name '(' parameters ')'
-  | '(' expression ')'
-\end{lstlisting}
-\caption{Grammar of arithmetic expressions.}
-\label{fig:parser_exp}
-\end{figure}
-
-\subsection{Frame Around Information}
-
-Tip: We can use minipage to create a frame around some important information.
-\begin{figure} [h]
-\frame{
-\begin{minipage}{\textwidth}
-\begin{enumerate}
-	\item integer division ($\opDiv$) -- only usable between \typeInt types
-	\item remainder ($\%$) -- only usable between \typeInt types
-\end{enumerate}
-\end{minipage}
-}
-\caption{Arithmetic operations in \proveit revisited.}
-\label{fig:aritmOp_revisit}
-\end{figure}
-
-\newpage
 
 % BibTeX bibliography
 \bibliographystyle{plain}%alpha} %plain=[1], alpha=[BGZ09]
@@ -1225,23 +1024,6 @@ Tip: We can use minipage to create a frame around some important information.
 
 % Use Biblatex if you have problems with Estonian keywords
 %\printbibliography %biblatex
-
-
-% Use alternative local LaTeX bibliography
-\begin{comment}
-\begin{thebibliography}{9}
-\bibitem{proVerif} 
-  Bruno Blanchet. 
-  Proverif: Cryptographic protocol verifier in the formal model.
-  \url{http://www.proverif.ens.fr/}.
-  (checked 15.05.2012)
-\bibitem{GameB_1} GameB1
-\bibitem{GameB_2} GameB2
-\bibitem{dummy} dummy
-\bibitem{kamm12} kamm12
-\end{thebibliography}
-\end{comment}
-
 
 \newpage
 %\appendix
