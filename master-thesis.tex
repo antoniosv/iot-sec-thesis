@@ -221,8 +221,7 @@ Informaatika õppekava\\%[2mm]
 
 \vspace{4mm}
 
-\huge Security of the openHAB Smart Home \\
-\large A contribution for the user authentication and authorization
+\huge Securing openHAB Smart Home through User Authentication and Authorization \\
 
 %\vspace*{\stretch{7}}
 \vspace{20mm}
@@ -270,14 +269,14 @@ Informaatika õppekava\\%[2mm]
 %=== Info in English
 \newcommand\EngInfo{{%
     \selectlanguage{english}
-\noindent\textbf{\large Security of the openHAB Smart Home \\ \normalsize A contribution for the user authentication and authorization}
+\noindent\textbf{\large Securing openHAB Smart Home through User Authentication and Authorization}
 
 \vspace*{3ex}
 
 \noindent\textbf{Abstract:}
 
 \noindent
-The Internet of Things (IoT) is a dynamic and heterogenous environment where \emph{Things} gather data from the real world to perform various tasks. Applications in IoT, such as the smart home, typically use private data derived from its users for its operations. Security becomes a concern when these applications are exposed to insecure networks. OpenHAB is an OSGi-based an automation software that integrates the data from devices at home. OpenHAB does not enforce any access control mechanism for its users, and depends solely on the security of the wireless network. In this work, we implement a JSON Web Token-based authenticator for Eclipse SmartHome, the core of openHAB, as a base for access control mechanisms. Furthermore, we propose a somewhat-grained and usable authorization model to manage access permissions to Things among legitimate users. The results obtained show that it is feasible to enforce access control mechanisms for servlet and REST resources in the architecture of openHAB. 
+The Internet of Things (IoT) is a dynamic and heterogenous environment where \emph{Things} gather data from the real world to perform various tasks. Applications in IoT, such as the smart home, typically use private data derived from its users for its operations. Security becomes a concern when these applications are exposed to insecure networks. OpenHAB is an OSGi-based automation software that integrates the data from devices at home. OpenHAB does not enforce any access control mechanism for its users, and depends solely on the security of the wireless network. In this work, we studied and attempted to implement a JSON Web Token-based authenticator for Eclipse SmartHome, the core of openHAB, as a base for access control mechanisms. Furthermore, we propose a fine-grained, yet usable authorization model to manage access permissions to Things among legitimate users. The results obtained show that it is feasible to enforce access control mechanisms for servlet and REST resources in the architecture of openHAB. 
 
 \vspace*{1ex}
 
@@ -335,7 +334,7 @@ Estonian translation goes here...
 
 \newpage
 \section{Introduction}
-
+\TODO{LIST OF FIGURES AND TABLES}
 We exist in an age where our lives are slowly being invaded by objects that are capable of becoming aware of their physical context. These are not simple physical objects anymore, but rather context-aware sensing devices, whose capababilities may greatly improve our lives in a variety of situations. Smartphones, smart watches, automatic doors with facial recognition, self-driving cars, are some of the objects that have been slowly transitioning into context-aware devices. As we are in constant contact with some of these devices, our environment becomes \emph{smart}. However, with a tremendous amount of data about ourselves flowing between these devices and the cloud, what guarantee is there that our privacy is being protected?
 
 Living in a context-aware home is no longer a futuristic vision. Automatic security systems with face recognition, scheduled meals prepared by e.g. a smart rice cooker, coffee maker; smart refrigerators that notice when ingredients have expired, among others, are just some examples of typical appliances that might be used in a smart home. Going back to the idea of privacy protection: would a regular resident of a smart home be happy that their, for instance, food choices are being disclosed to e.g., their neighbors? Usually, we expect that people are able to maintain their privacy in their own homes. Thus, openly managing such amounts of information becomes a problem, rather than an advantage. In fact, a study disclosed by Orange about the future of digital trust has shown that 78\% of consumers think that it is hard to trust companies when it comes to use their personal data~\cite{orange}. This hints that data privacy and security in general might be an important aspect of the systems that employ these context-aware devices. 
@@ -362,18 +361,23 @@ By analyzing the architecture and communication processes in the openHAB automat
 
 \subsection{Contributions}
 
-This work presents three main contributions. First, a literature overview on the security challenges and threats in the Internet of Things is presented in Chapter~\ref{ssec:iot}. Second, the implementation of a JSON Web Token-based authenticator for the core framework of openHAB, \emph{Eclipse SmartHome}, that is detailed in Chapter~\ref{ssec:impl}. Finally, a somewhat-grained and usable authorization model for access control of the resources in openHAB is detailed in Chapter~\ref{ssec:autho}.
+This work presents three main contributions. First, a literature overview on the security challenges and threats in the Internet of Things is presented in Chapter~\ref{ssec:iot}. Second, the implementation of a JSON Web Token-based authenticator for the core framework of openHAB, \emph{Eclipse SmartHome}, that is detailed in Chapter~\ref{ssec:impl}. Finally, a fine-grained, yet usable authorization model for access control of the resources in openHAB is detailed in Chapter~\ref{ssec:autho}.
 
 \subsection{Structure}
 
-This work is divided in several chapters. Chapter~\ref{sec:art} introduces some key concepts in terms of security and the OSGi architecture, and later delves into an overview of the security challenges present in the Internet of Things. Chapter~\ref{sec:related} briefly introduces some works loosely related to the contributions made in this work, and superficially describes their security mechanisms. Chapter~\ref{sec:method} describes in great detail the methodology to implement a JSON Web Token-based authenticator, and later makes a proposal for an authorization model suitable for the Eclipse SmartHome, and therefore, for the openHAB smart home application. Chapter~\ref{sec:eval} evaluates and discusses the authenticator implementation and authorization model proposal. Finally, Chapter~\ref{sec:conclusion} presents the general conclusions obtained from this work, and briefly describes the future work to build upon the contributions presented.
+This work is divided in several chapters:\\
+Chapter~\ref{sec:art} introduces some key concepts in terms of security and the OSGi architecture, and later delves into an overview of the security challenges present in the IoT. \\
+Chapter~\ref{sec:related} briefly introduces some works loosely related to the contributions made in this work, and superficially describes their security mechanisms.\\
+Chapter~\ref{sec:method} describes in great detail the methodology to implement a JSON Web Token-based authenticator, and later makes a proposal for an authorization model suitable for the Eclipse SmartHome, and therefore, for the openHAB smart home application. \\
+Chapter~\ref{sec:eval} evaluates and discusses the authenticator implementation and authorization model proposal.\\
+Chapter~\ref{sec:conclusion} presents the general conclusions obtained from this work, and briefly describes the future research directions to build upon the contributions presented.
 
 %---------------------------
 
 \newpage
 \section{Background} 
 \label{sec:art}
-
+\TODO{SUMMARY}
 The purpose of this section is to briefly give some technical background on the concepts that will be recurrently used in this work, and to describe the existing security concerns presented in the literature for the Internet of Things. The technical concepts introduced as part of the background are derived from various independent areas, namely: information security, network architecture, cloud computing, and the OSGi architecture for Java EE. The OSGi architecture is a fundamental part of the Eclipse SmartHome framework and openHAB automation software, and thus it is included as part of this chapter.
 
 \subsection{Information Security}
@@ -611,6 +615,7 @@ The architecture of ESH is detailed in figure~\ref{fig:esh_architecture}. In the
 \clearpage
 \section{Related Work}
 \label{sec:related}
+\TODO{SUMMARY}
 As more sensing devices capable of communication with the cloud become available to the public, more scenarios for the smart home take form. Accordingly, more customer-ready solutions appear in the market. OpenHAB is but one of the existing smart home solutions. As an open-source project with a very active community, openHAB distinguises itself from other solutions. As part of the focus of this work is to review the security of openHAB, this section will look at other smart home solutions from a security and privacy perspective. 
 
 \subsection{NEST}
@@ -675,8 +680,7 @@ Due to their proprietary nature, HomeKit and NEST are the ones that most distant
 \newpage
 \section{Methodology}
 \label{sec:method}
-\TODO{Short description of what this section is about}
-\TODO{Describe how we got to the point of implementing auth.}
+\TODO{SUMMARY}
 As a first step towards analyzing the security of IoT models, architectures, and applications, a brief study on the state of the art was conducted. From the reviewed literature, various security threats and mechanisms to eliminate them came to light, which served as the foundation toward data confidentiality, peer authentication, non-repudiation, etc. However, the studied proposals tended to oversimplify and deviate from the issues present in existing solutions. This observation made it clear that there was a disconnect from publications and from the products. Most products, however, do not make public the internal workings, and tend to make their own architectural decisions instead of following standards for, e.g. encoding data transmitted between things. Among the existing solutions for a smart environment, the openHAB smart home software was chosen as a case study in terms of security. The decision was made for various reasons: firstly, it is open-source, and thus it is possible to conduct white-box tests, secondly, it is vendor-agnostic, and finally, because of the active participation of the community in this project.
 
 \subsection{Security of openHAB}
@@ -928,7 +932,7 @@ As part of the access control mechanism, authorization is split up in several ph
 
 For a smart home application, the focus of an authorization model should lean towards privacy-preservation and usability (REFERENCE). Considering that most end users of the openHAB are not tech-savvy, some options for an authorization model are instantly discarded. Some models are considered to be complex to manage and set up, such as the Attribute-Based Acess Control (ABAC), Usage Control (UCON), and the Access Control Matrix and List (ACM, ACL).
 
-According to the requirements document written by the Eclipse Smart Home community, fine-grained access control is desired (REFERENCE). This is, an end user should be allowed to manage Things individually for each registered user, along with permissions regarding the sitemaps (User Interface templates), system settings, among others. A fine-grained authorization model that is capable of satisfying these requirements is the Attribute-Based Access Control (ABAC) model. This model, however leaves a lot to be desired in terms of usability due to the management of every single permission as attributes for every user. This kind of management might end up in user pains, opting users to disable access control for the sake of comfort. 
+According to the requirements document written by the Eclipse Smart Home community, fine-grained access control is desirable (REFERENCE). This is, an end user should be allowed to manage Things individually for each registered user, along with permissions regarding the sitemaps (User Interface templates), system settings, among others. A fine-grained authorization model that is capable of satisfying these requirements is the Attribute-Based Access Control (ABAC) model. This model, however leaves a lot to be desired in terms of usability due to the management of every single permission as attributes for every user. This kind of management might end up in user pains, opting users to disable access control for the sake of comfort. 
 
 Initially, it was considered to make direct use of the Role-Based Access Control (RBAC) authorization model. However, this kind of model works best when there are functional differences between the users of the system. In the case of openHAB, all users are typically members of the same household or temporal guests. In that sense, it does not make much sense to have a functional separation between users. However, it is reasonable to assume that some members of the household may not have the same rights as others. For example, a guest could be allowed to turn on/off the light switch, but may not be allowed to freely open the front door anytime. Likewise, permissions might not be equally split even among the permanent residents.
 
@@ -963,12 +967,13 @@ Table \ref{tbl:autho_cap} shows a sample assignment of capability sets to some u
   \label{tbl:autho_op}
 \end{table}
 
-The proposed authorization model fulfills the purpose noted at the beginning of this subsection: satisfying security usability and somewhat-grained access control. Through the assignation of capability sets, an end user is capable of setting the permissions without causing significant pains. Additionally, through the definition of the operations involved in a capability set, the developer of a particular binding or component of Eclipse SmartHome or openHAB is able to implement the access control policy.
+The proposed authorization model fulfills the purpose noted at the beginning of this subsection: satisfying security usability and fine-grained access control. Through the assignation of capability sets, an end user is capable of setting the permissions without causing significant pains. Additionally, through the definition of the operations involved in a capability set, the developer of a particular binding or component of Eclipse SmartHome or openHAB is able to implement the access control policy.
 
 \newpage
 \section{Evaluation}
 \label{sec:eval}
-
+\TODO{SUMMARY}
+\TODO{There is an extra ``an'' somewhere in this section}
 As one of the main contributions for this work, the implementation of two authenticators: basic and JSON Web Token-based, results in a bundle for the OSGi environment. This chapter looks at the resulting bundle and how it is used alongside the other bundles for the Eclipse SmartHome distribution (ESH). Recall that the ESH framework is a core component for the openHAB automation software. Thus, if the solution does not work in ESH, it will not work on openHAB.
 
 The first successful attempt at implementing the authenticators was made outside the ESH ecosystem~\cite{repo_extra}. Instead of relying on the Equinox OSGi runtime 4.2 that ESH is based on, the deployment was made for Apache Karaf 4.2, which supported up to OSGi 6. This implementation included an activator of the bundle, a servlet, and a custom \texttt{HttpContext} to intercept the HTTP request. The goal is to have a servlet published as an HTTP service in the OSGi runtime. However, any request to this servlet is intercepted by the \texttt{handleSecurity} method of the custom \texttt{HttpContext}, which decides if the request goes through or not. In this case, it contained the logic for basic and JWT authentication. This implementation was first built with Maven using \texttt{\$ mvn clean install}, and then deployed to Apache Karaf as a stand-alone bundle with \texttt{\$ install -s mvn:org.dreamland./org.dreamland.whitefilter/1.0.0-SNAPSHOT}. Inside Karaf, executing \texttt{http:list} showed that the installed bundle exposed an HTTP service published in the \texttt{/whitefiltered} path, which represented the resource servlet to be secured.
@@ -980,10 +985,10 @@ The next step in the evaluation of the implementation was to relocate the authen
 Essentially, the implementation of basic and JWT authenticators was successfully deployed into the OSGi runtime in Karaf. The testing of the deployment showed no flaws when initiating HTTP requests via curl or the web browser. The deployment of the basic authenticator for the OSGi runtime in ESH was succesfully replicated. It effectively prevent unauthorized access to a servlet resource. However, the deployment of the JWT authenticator for ESH ran into class-loading problems, and thus its effective functioning could not be verified. 
 
 \newpage
-\section{Conclusion}
+\section{Conclusion and Future Research Directions}
 \label{sec:conclusion}
-
-This work gave an overview of the security challenges present in applications for Internet of Things, particularly in the domain of smart homes. It analyzed the security mechanisms employed in openHAB and Eclipse SmartHome, especially in terms of access control and privacy. Upon observing the lack of authentication and authorization mechanisms, a JSON Web Token-based authenticator was implemented according to the principles of the OSGi framework. An additional basic authenticator was also implemented as fallback in case the client does not make use of JSON Web Tokens. Finally, a somewhat-grained and usable authorization model was proposed for openHAB. This authorization model distinguishes between users who may have overlapping permissions, but should not have equal control among all resources of the smart home environment.
+\TODO{ADD MORE PARAGRAPHS FOR FUTURE RESEARCH DIRECTIONS}
+This work gave an overview of the security challenges present in applications for Internet of Things, particularly in the domain of smart homes. It analyzed the security mechanisms employed in openHAB and Eclipse SmartHome, especially in terms of access control and privacy. Upon observing the lack of authentication and authorization mechanisms, a JSON Web Token-based authenticator was implemented according to the principles of the OSGi framework. An additional basic authenticator was also implemented as fallback in case the client does not make use of JSON Web Tokens. Finally, a fine-grained, yet usable authorization model was proposed for openHAB. This authorization model distinguishes between users who may have overlapping permissions, but should not have equal control among all resources of the smart home environment.
 
 At the first step of implementation, a custom \texttt{HttpContext} was successfully implemented to intercept all incoming requests toward the registered servlet. Depending on the value returned by the \texttt{handleSecurity} method, access to a resource could be allowed or forbidden. Based on it, implementation of a JSON Web Token was implemented inside the logic of the aforementioned method.In the evaluation of this first step, JWT authentication was successfully enforced for all client requests to the servlet: clients with an invalid token, or with no token at all were denied access to the servlet resource. As the second step of the implementation, a secondary \emph{basic} authenticator was implemented which requested credentials to the client's web browser as a prompt. The evaluation was performed in two stages. The first stage was made outside the ESH runtime, in an isolated OSGi environment. Both the basic and JWT authenticators were effectively able to authenticate incoming HTTP requests to the servlet. First time clients were always asked for credentials to authenticate, and then further requests transitioned into the JWT authentication. Thus, only when the client provided either valid basic credentials or JWT, access to the servlet resource was allowed. The second stage of the evaluation made use of the the same implementation but deployed under the ESH OSGi runtime. Due to class-loading problems, the JWT authenticator was not able to be tested. However, the basic authenticator, which did not depend on external libraries, effectively restricted access to the servlet resource if the credentials were not provided in the header of the HTTP request.
 
@@ -1248,22 +1253,21 @@ Tip: We can use minipage to create a frame around some important information.
   {\section*{Lisad}
   \addcontentsline{toc}{section}{Lisad}}
   
-\section*{I. Glossary}
-\addcontentsline{toc}{subsection}{I. Glossary}
-\TODO{FINISH GLOSSARY}
-Bearer token. The digest of the user credentials to be used in an authentication process.
-Manifest. Configuration file for OSGi bundles that define the bundle's unique identification, packages imported from other bundles, and packages to make available to other bundles.
-IP. Internet Protocol.
-CoAP.
-HTTPS.
-MQTT.
-Spoofing.
-curl.
-JAR.
-Thing.
-Eclipse SmartHome
-
-\newpage
+%% \section*{I. Glossary}
+%% \addcontentsline{toc}{subsection}{I. Glossary}
+%% \TODO{FINISH GLOSSARY}
+%% Bearer token. The digest of the user credentials to be used in an authentication process.
+%% Manifest. Configuration file for OSGi bundles that define the bundle's unique identification, packages imported from other bundles, and packages to make available to other bundles.
+%% IP. Internet Protocol.
+%% CoAP.
+%% HTTPS.
+%% MQTT.
+%% Spoofing.
+%% curl.
+%% JAR.
+%% Thing.
+%% Eclipse SmartHome
+%\newpage
 
 %=== Licence in English
 \newcommand\EngLicence{{%
@@ -1287,7 +1291,7 @@ make available to the public via the web environment of the University of Tartu,
 \end{enumerate}
 
 of my thesis
-\textbf{Security of the openHAB Smart Home}
+\textbf{Securing openHAB Smart Home through User Authentication and Authorization}
 
 supervised by Satish Narayana Srirama and Danilo Gligoroski
 
