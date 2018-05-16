@@ -1,16 +1,22 @@
-% This file was created with JabRef 2.7.2.
-% Encoding: MacRoman
 
 
-% https://docs.openhab.org/installation/security.html
-% https://tools.ietf.org/html/rfc5246
-% https://karaf.apache.org/manual/latest/security
-% https://github.com/eclipse/smarthome/pull/2587
-% Authentication API: Add documentation https://github.com/eclipse/smarthome/issues/2620
-% Misuse cases http://hjem.ifi.uio.no/nik/2001/21-sindre.pdf
 % How token-based authentication works https://github.com/Posya/wiki/blob/master/best-practice-for-rest-token-based-authentication-with-jax-rs-and-jersey.adoc
 % JAX-RS Programmatic Security https://dennis-xlc.gitbooks.io/restful-java-with-jax-rs-2-0-2rd-edition/content/en/part1/chapter15/programmatic_security.html
 % ESH Fork with JWT Authentication https://github.com/antoniosv/smarthome/tree/customhttpcontext/bundles/auth/org.eclipse.smarthome.auth.jwt
+
+@article{misuse,
+author = {Sindre, Guttorm and Opdahl, Andreas},
+year = {2018},
+month = {05},
+title = {Capturing security requirements through misuse cases}
+}
+
+@misc{karaf,
+ title = {{Apache Karaf Manual: Security}},
+ author = {Apache Karaf},
+ note = {Accessed date: 2018-03-05},
+ howpublished = {\url{https://karaf.apache.org/manual/latest/security}},
+}
 
 @misc{eu_law,
   title = {2018 reform of EU data protection rules},
@@ -67,6 +73,16 @@ note = {Date accessed: 2018-05-05}
   author = {Connect2id},
   note = {Date of access: 2018-04-01},
   howpublished = {\url{https://connect2id.com/products/nimbus-jose-jwt}}
+}
+
+@article{taekim,
+author = {Tae Kim, Jung},
+year = {2015},
+month = {10},
+pages = {201-208},
+title = {Requirement of Security for IoT Application based on Gateway System},
+volume = {9},
+booktitle = {International Journal of Security and Its Applications}
 }
 
 @article{ALABA201710,
@@ -156,8 +172,15 @@ note = {e3323 IJCS-16-0515.R1},
 @misc{openhab_04,
   author = {The openHAB Community and the openHAB Foundation e.V.},
   title = {Securing access to openHAB},
-  note = {Access date: 2018-05-16},
+  note = {Date accessed: 2018-05-16},
   howpublished = {\url{https://docs.openhab.org/installation/security.html}}
+}
+
+@misc{openhab_05,
+ author = {scurrier03 and Markus Storm},
+ title = {{Exposing OpenHAB 2 to the internet}},
+ note = {Date accessed: 2018-02-15},
+ howpublished = {\url{https://community.openhab.org/t/exposing-openhab-2-to-the-internet/19513}}
 }
 
 @article{esh_01,
@@ -188,6 +211,26 @@ keywords = "Smart Home, AAL, Personalisation, User Interface, Eclipse Smart Home
   note = {Date accessed: 2018-05-14}
 }
 
+@misc{esh_04,
+ title = {{Authentication API for ESH}},
+ author = {Kai Kreuzer and Lukazs Dywicki},
+ howpublished = {\url{ https://github.com/eclipse/smarthome/pull/2587}},
+ note = {Date accessed: 2018-02-15}
+}
+
+@misc{esh_05,
+ title = {Authentication API: Add documentation},
+ author = {Kai Kreuzer and Markus Rathgeb},
+ note = {Date accessed: 2018-02-15},
+ howpublished = {\url{https://github.com/eclipse/smarthome/issues/2620}}
+}
+
+@misc{esh_06,
+ title = {Eclipse SmartHome Security Concept},
+ author = {Kai Kreuzer and Lukazs Dywicki and Mehmet Arziman and Markus Rathgeb},
+ howpublished = {\url{https://docs.google.com/document/d/1Vja574ycr2f_1nDdhLheEPdqkRlsvHf2lc_byY2ahzc/edit#}},
+ note = {Date accessed: 2018-02-12}
+}
 @misc{related_01,
   author = {Nest labs},
   title = {Keeping data safe at Nest},
@@ -310,6 +353,13 @@ howpublished = {\url{https://openremote.github.io/archive-dotorg/forums/Security
  howpublished = {\url{https://github.com/hstaudacher/osgi-jax-rs-connector}}
 }
 
+@misc{java_01,
+ author = {Oracle},
+ title = {{Class HttpsURLConnection}},
+ note = {Date accessed: 2018-02-20},
+ howpublished = {\url{https://docs.oracle.com/javase/8/docs/api/javax/net/ssl/HttpsURLConnection.html}}
+}
+
 @misc{servlet,
  author = {Oracle},
  title = {Lesson 5: Writing Servlets},
@@ -355,6 +405,22 @@ howpublished = {\url{https://openremote.github.io/archive-dotorg/forums/Security
  month = {June},
  url = {https://www.osgi.org/release-4-version-4-2-download/}
 }
+
+@techreport{RFC5246,
+ author = {T. Dierks and E. Rescorla},
+ title = {The Transport Layer Security (TLS) Protocol Version 1.2},
+ howpublished = {Internet Requests for Comments},
+ type = {RFC},
+ number = {5246},
+ year = {2008},
+ month = {August},
+ issn = {2070-1721},
+ publisher = {RFC Editor},
+ institution = {RFC Editor},
+ url = {http://www.rfc-editor.org/rfc/rfc5246.txt},
+ note = {\url{http://www.rfc-editor.org/rfc/rfc5246.txt}},
+}
+			
 
 @techreport{RFC7519,
  author = {M. Jones and J. Bradley and N. Sakimura},
