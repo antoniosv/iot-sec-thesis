@@ -294,19 +294,18 @@ Internet of Things, IoT, smart home, openHAB, Eclipse SmartHome, JSON Web Token,
 %=== Info in Estonian
 \newcommand\EstInfo{{%
 \selectlanguage{estonian}
-\noindent\textbf{\large Tüübituletus neljandat järku loogikavalemitele}
+\noindent\textbf{\large OpenHAB-põhise Targa Kodu Turvamine Kasutajate Autentimise ning Autoriseerimise abil}
 \vspace*{1ex}
 
 \noindent\textbf{Lühikokkuvõte:} 
 
 \noindent
-Estonian translation goes here...
-
+Asjade Internet ehk värkvõrk on dünaamiline ja heterogeenne keskkond, kus Asjad koguvad erinevate ülesannete täitmiseks keskkonnast andmeid. Värkvõrgu rakendusvaldkondades nagu näiteks tark kodu kasutatakse harilikult operatsioonide täitmisel kasutaja privaatandmeid. Kui sellised rakendused on turvamata võrkudele avatud, muutub turvalisus oluliseks probleemiks. OpenHAB on OSGi-põhine automatiseerimistarkvara, mis koondab kodukeskkonna seadmete andmeid. OpenHAB ei tee kasutajatele ligipääsu reguleerimismehhanismide kasutamist kohustuslikuks ning sõltub seega täielikult juhtmevaba võrgu turvalisusest. Käesolevas lõputöös uurisime ning arendasime JSON Web Token'i-põhist tõendi autenturit Eclipse SmartHome platvormile, millel põhineb ka openHAB. Tõendi autentur on baasiks ligipääsu reguleerimismehhanismile. Lisaks esitleme kasutatavat volitusmudelit, mis võimaldab hallata kasutajate ligipääsuõigusi Asjadele. Saavutatud tulemused osutavad, et ligipääsu reguleerimismehhanismide rakendamine servlet-ide ja REST ressursside jaoks openHABi arhitektuuris on teostatav.
 
 \vspace*{1ex}
 
 \noindent\textbf{Võtmesõnad:}\\
-\TODO{List of keywords}
+Asjade Internet, IoT, targa kodu, openHAB, Eclipse SmartHome, JSON Web Token, JWT, autentimise, autoriseerimise, sutajatele ligipääsu, väärkasutuse juhtumid, OSGi 
 %Layout, formatting, template
 
 \vspace*{1ex}
@@ -1004,7 +1003,7 @@ The next step in the evaluation of the implementation was to relocate the authen
 
 Up to the experimentation of the basic-authentication, everything was replicated exactly under the ESH environment. However, when attempting to include the third-party library, Nimbus, problems started to arise. Particularly, a persistent class-loading problem for this library could not be solved, not even with the support of a very active developer of the Eclipse SmartHome and openHAB. The exact error is as follows: \texttt{Missing constraint: Import-Package: com.nimbusds.jose}, which suggests that the JAR file is not recognized by the runtime. The usual approach for including third-party libraries into a bundle for ESH is to create a \texttt{lib} directory in the root of the bundle, and put the respective JAR there. Then, the \texttt{build.properties} and \texttt{MANIFEST.MF} files have to be changed to load the classes from the JAR. This same approach has been followed in other bundles in the ESH distribution, such as the \texttt{org.eclipse.smarthome.model.persistence} bundle. However, not even replicating the same structure as this other bundle made it possible to recognize the Nimbus JAR.
 
-Essentially, the implementation of basic and JWT authenticators was successfully deployed into the OSGi runtime in Karaf. The testing of the deployment showed no flaws when initiating HTTP requests via curl or the web browser. The deployment of the basic authenticator for the OSGi runtime in ESH was succesfully replicated. It effectively prevent unauthorized access to a servlet resource. However, the deployment of the JWT authenticator for ESH ran into class-loading problems, and thus its effective functioning could not be verified. 
+Essentially, the implementation of the basic and JWT authenticators was successfully deployed into the OSGi runtime in Karaf. The testing of the deployment showed no flaws when initiating HTTP requests via curl or the web browser. The deployment of the basic authenticator for the OSGi runtime in ESH was succesfully replicated. It effectively prevent unauthorized access to a servlet resource. However, the deployment of the JWT authenticator for ESH ran into class-loading problems, and thus its effective functioning could not be verified. 
 
 \newpage
 \section{Conclusion and Future Research Directions}
