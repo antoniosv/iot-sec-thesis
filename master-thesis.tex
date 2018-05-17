@@ -166,6 +166,9 @@
   morekeywords={*,game, fun}       % if you want to add more keywords to the set
 }
 
+\renewcommand{\lstlistingname}{Code Snippet}
+\renewcommand{\lstlistlistingname}{List of \lstlistingname s}
+
 
 % Obscure packages to write logic formulae and program semantics
 % Unless you do a bachelor thesis on program semantics or static code analysis you do not need that
@@ -324,16 +327,20 @@ Asjade Internet, IoT, targa kodu, openHAB, Eclipse SmartHome, JSON Web Token, JW
 \newpage
 \tableofcontents
 
+\newpage
+\listoffigures
+\listoftables
+\lstlistoflistings
 
 % Remember to remove this from the final thesis version
-\newpage
-\listoftodos[Unsolved issues]
+% BEGIN TODO PAGE
+%\newpage
+%\listoftodos[Unsolved issues]
 % END OF TODO PAGE 
 
 
 \newpage
 \section{Introduction}
-\TODO{LIST OF FIGURES AND TABLES}
 We exist in an age where our lives are slowly being invaded by objects that are capable of becoming aware of their physical context. These are not simple physical objects anymore, but rather context-aware sensing devices, whose capababilities may greatly improve our lives in a variety of situations. Smartphones, smart watches, automatic doors with facial recognition, self-driving cars, are some of the objects that have been slowly transitioning into context-aware devices. As we are in constant contact with some of these devices, our environment becomes \emph{smart}. However, with a tremendous amount of data about ourselves flowing between these devices and the cloud, what guarantee is there that our privacy is being protected?
 
 Living in a context-aware home is no longer a futuristic vision. Automatic security systems with face recognition, scheduled meals prepared by e.g.\ a smart rice cooker, coffee maker; smart refrigerators that notice when ingredients have expired, among others, are just some examples of typical appliances that might be used in a smart home. Going back to the idea of privacy protection: would a regular resident of a smart home be happy that their, for instance, food choices are being disclosed to e.g., their neighbors? Usually, we expect that people are able to maintain their privacy in their own homes. Thus, openly managing such amounts of information becomes a problem, rather than an advantage. In fact, a study disclosed by Orange about the future of digital trust has shown that 78\% of consumers think that it is hard to trust companies when it comes to use their personal data~\cite{orange}. This hints that data privacy and security in general might be an important aspect of the systems that employ these context-aware devices. 
@@ -376,7 +383,6 @@ Chapter~\ref{sec:conclusion} presents the general conclusions obtained from this
 \newpage
 \section{Background} 
 \label{sec:art}
-\TODO{SUMMARY}
 The purpose of this chapter is to briefly give some technical background on the concepts that will be recurrently used in this work, and to describe the existing security concerns presented in the literature for the Internet of Things. The technical concepts introduced as part of the background are derived from various independent areas, namely: information security, network architecture, cloud computing, and the OSGi architecture for Java EE. The OSGi architecture is a fundamental part of the Eclipse SmartHome framework and openHAB automation software, and thus it is included as part of this chapter.
 
 \subsection{Information Security}
@@ -628,10 +634,11 @@ The architecture of ESH is detailed in figure~\ref{fig:esh_architecture}. In the
 \end{center}
 \end{figure}
 
+\paragraph{Summary.} This chapter had two objectives: to introduce relevant concepts about information security and the OSGi architecture used throughout the rest of this work, and to give an overview on the security challenges and threats for applications in IoT, particularly, the smart home application. Finally, it introduces two keystones for this work: Eclipse SmartHome and openHAB. Eclipse SmartHome, as the core framework of openHAB, is the focus of the the contributions made in this work. An overview of the architecture of both software stacks is given in this chapter to facilitate the understanding of the architectural decisions taken later in chapter~\ref{sec:method}.
+
 \clearpage
 \section{Related Work}
 \label{sec:related}
-\TODO{SUMMARY}
 As more sensing devices capable of communication with the cloud become available to the public, more scenarios take form for the smart home. Accordingly, there is an increase of customer-ready solutions in the market. OpenHAB is but one of the existing smart home solutions. As an open-source project with a very active community, openHAB distinguises itself from other solutions. As part of the focus of this work is to review the security of openHAB, this section will look at other smart home solutions from a security and privacy perspective. 
 
 \subsection{NEST}
@@ -691,12 +698,14 @@ The access control mechanisms in The Thing System is, in part, what openHAB shou
 
 The current state of OpenRemote and ThingsBoard greatly resemble that of openHAB. All three support the use of encrypted connections through HTTPS, although configuration varies depending on the web server for each solution. OpenRemote could have in place a reasonable access control mechanism for its REST API if the external contribution had been adopted.
 
-Due to their proprietary nature, HomeKit and NEST are the ones that most distant from openHAB in terms of functionality and interoperability. HomeKit and NEST both mandatorily require an active Internet connection at all times, and thus all data is stored in the cloud. Meanwhile, openHAB can operate out of the box without having to depend on access to the Internet. In terms of security, HomeKit introduces a novel hardware approach which would prevent device spoofing. In contrast, NEST provides a \emph{proof-of-posession} authentication mechanism to authenticate with the web services. Due to the specific nature of the hardware, neither solution could be implemented in openHAB. 
+Due to their proprietary nature, HomeKit and NEST are the ones that most distant from openHAB in terms of functionality and interoperability. HomeKit and NEST both mandatorily require an active Internet connection at all times, and thus all data is stored in the cloud. Meanwhile, openHAB can operate out of the box without having to depend on access to the Internet. In terms of security, HomeKit introduces a novel hardware approach which would prevent device spoofing. In contrast, NEST provides a \emph{proof-of-posession} authentication mechanism to authenticate with the web services. Due to the specific nature of the hardware, neither solution could be implemented in openHAB.
+
+\paragraph{Summary.} This chapter introduced six smart home application products which, although cover overlapping use cases, followdifferent approaches with regards to security. Nest and HomeKit, in particular, take advantage of their proprietary hardware to enforce an additional layer of authentication and integrity protection, respectively. OpenRemote had an initiative to support public key infrastructure (PKI) among peers inside the smart home ecosystem. ThingsBoard, although a more general solution for IoT, offered support for token-based credentials for all used protocols. The Thing System incorporated a mechanism to enforce access control after the first user got registered through a time-based one-time password. Finally, Home Assistant has the capability to expose itself to Tor, while maintaining privacy. 
 
 \newpage
 \section{Methodology}
 \label{sec:method}
-\TODO{SUMMARY}
+
 As a first step towards analyzing the security of IoT models, architectures, and applications, a brief study on the state of the art was conducted. From the reviewed literature, security challenges and threats in IoT were identified, along with possible countermeasures that provide data confidentiality, peer authentication, non-repudiation, etc. However, the studied proposals tended to oversimplify and deviate from the issues present in real-world, customer-ready solutions. This observation made it clear that there was a disconnect from academic publications and commercial software. Most products, however, do not make public their internal components, and tend to make their own architectural decisions instead of following standards for, e.g.\ encoding data transmitted between things. Among the existing solutions for a smart environment, the openHAB smart home software was chosen as a case study in terms of security. The decision was made for various reasons: first, it is open-source, and thus it is possible to conduct white-box testing, secondly, it is vendor-agnostic, and finally, because of the active participation of the community in this project.
 
 \subsection{Security of openHAB}
@@ -715,8 +724,8 @@ This last scenario hints at the implication of guaranteeing secure communication
 
 When analyzing the source code, it becomes evident that the URL chosen to direct the request is decided at the time the binding was written. This implies that the security of each binding is independent from each other. If a binding points to a plain HTTP URL, then it is only that binding that is subject to effective eavesdropping, and it would not affect other bindings added to the system.
 
-\begin{figure} [htb]
-\begin{lstlisting}
+\newpage
+\begin{lstlisting}[caption={HTTP connection for iCloud binding.},label={lst:https_binding},numbers=left,escapeinside={@}{@}]
   public class Connection {
     private final String iCloudApiURL = "https://fmipmobile.icloud.com/fmipservice/device/";
     private final String iCloudAPIRequestDataCommand = "/initClient";
@@ -738,9 +747,6 @@ When analyzing the source code, it becomes evident that the URL chosen to direct
     }
   }
 \end{lstlisting}
-\caption{HTTP connection for iCloud binding.}
-\label{lst:https_binding}
-\end{figure}
 
 Code snippet~\ref{lst:https_binding} is an example of a binding, in this case for the iCloud service. This binding is meant to establish a connection to the iCloud services, for example, to learn the status of a device. The method \texttt{requestDeviceStatus} is responsible for establishing the connection and returning the result as a JSON structure stored as a string. In the context of security, the important thing to note is that the connection is established through the use of the \texttt{HttpsURLConnection} class, which supports https-specific features, such as the encrypted communication through the TLS protocol~\cite{java_01}. In this case, it is expected that the communication will be encrypted, so that an eavesdropper will not be able to read the plain data.
 
@@ -765,10 +771,10 @@ Starting from the situation that there is no access control mechanism in place, 
 
 One such OSGi-based project that implements authentication and access control is Apache Karaf, a container for the OSGi runtime, which provides security based on JAAS (Java Authentication and Authorization Service)~\cite{karaf}. This embdedded security system can internally control access to OSGi services, console commands, etc. This is an interesting scenario as it relies on the basic-authentication framework offered by Java, instead of relying on more heavy frameworks like Apache Shiro or Spring Security.
 
-The community in openHAB was inspired by JAAS-based attempts at security and proposed a solution that made use of annotations and \emph{Basic} authentication. The changes of several OSGi bundles were made a pull request in eventually merged into the master branch of the project~\cite{esh_04}. First of all, the changes themselves were designed as a sort of \emph{authentication API}, rather than a unique, concrete implementation. Meaning that a good portion of the code was made up of interfaces and abstract classes that defined methods to create and manage credentials and authentication providers. A concrete implementation offered with these changes was based on the JAAS realm with \emph{Basic} authentication. Basic-authentication, in this case, means that the credentials are enclosed inside an HTTP request as a pair of the form \texttt{username:password}. These credentials are enclosed as part of the HTTP request header, and the concrete implementation is meant to extract these details from the HTTP request header to instantiate a \texttt{Credentials} object. Moreover, by relying on the JAAS realm, it was possible to use Java \emph{annotations} in the code. These annotations serve to regulate access depending on the roles that the authenticated user has. If the authenticated user has the required role, then access is granted to the method or resource. The code snippet~\ref{lst:jaas_roles} shows that to add a new thing to the openHAB environment, the role of \emph{admin} is needed. If the user is not authenticated, or has a different role, then access to the method is forbidden. 
+The community in openHAB was inspired by JAAS-based attempts at security and proposed a solution that made use of annotations and \emph{Basic} authentication. The changes of several OSGi bundles were made a pull request in eventually merged into the master branch of the project~\cite{esh_04}. First of all, the changes themselves were designed as a sort of \emph{authentication API}, rather than a unique, concrete implementation. Meaning that a good portion of the code was made up of interfaces and abstract classes that defined methods to create and manage credentials and authentication providers. A concrete implementation offered with these changes was based on the JAAS realm with \emph{Basic} authentication. Basic-authentication, in this case, means that the credentials are enclosed inside an HTTP request as a pair of the form \texttt{username:password}. These credentials are enclosed as part of the HTTP request header, and the concrete implementation is meant to extract these details from the HTTP request header to instantiate a \texttt{Credentials} object. Moreover, by relying on the JAAS realm, it was possible to use Java \emph{annotations} in the code. These annotations serve to regulate access depending on the roles that the authenticated user has. If the authenticated user has the required role, then access is granted to the method or resource. Code snippet~\ref{lst:jaas_roles} shows that to add a new thing to the openHAB environment, the role of \emph{admin} is needed. If the user is not authenticated, or has a different role, then access to the method is forbidden. 
 
-\begin{figure} [htb]
-\begin{lstlisting}
+
+\begin{lstlisting}[caption={Role-Based method restriction in ESH.},label={lst:jaas_roles},numbers=left]
     @POST
     @RolesAllowed({ Role.ADMIN })
     @Consumes(MediaType.APPLICATION_JSON)
@@ -776,9 +782,6 @@ The community in openHAB was inspired by JAAS-based attempts at security and pro
       // Thing is added here
     }
 \end{lstlisting}
-\caption{HTTP connection for iCloud binding.}
-\label{lst:jaas_roles}
-\end{figure}
 
 There are several problems with this approach, however. First, access control is not managed through a database or any other dynamic means, but is instead static. It is defined inside the source code, and there is no way to change permissions at runtime. This means that the project would need to be built and deployed again in order to take in any changes to the authorization policy. Secondly, it offers no clear view on how the fine-grained details would have its access controlled. For example, let the status of a light bulb be of public access, but only authorized users may flip its switch from the user interface; others may only view the state of the light bulb. Moreover, a different thing could have the opposite behavior: to hide its status, but make it public to control it. As openHAB is vendor and thing-agnostic, relying on annotations makes it impossible to deal with such fine-grained details in authorization.
 
@@ -888,14 +891,12 @@ The implementation of the authenticators was made into the \texttt{auth} bundle 
 
 As an interface class of the \texttt{Http Service} OSGi feature, \texttt{HttpContext} includes a method \texttt{handleSecurity} which, as the name implies, handles the security for the specified request to the servlet. As long as the servlet is registered with the custom \texttt{HttpContext}, every request into the servlet will go through the \texttt{handleSecurity} method.
 
-\TODO{FIX HYPHEN ISSUES AND REF TO CODE SNIPPET INSTEAD OF FIG}
-\begin{figure} [htb]
-  \begin{lstlisting}
+\begin{lstlisting}[caption={Core implementation of \texttt{CustomHttpContext}.},label={lst:core_impl},numbers=left,escapeinside={@}{@}]    
 class CustomHttpContext implements HttpContext {   
  boolean handleSecurity(request,response) {
   if(request.getHeader("Authorization") == null \
        && request.getHeader("Cookie") == null) {
-    response.addHeader("WWW-Authenticate", \
+    response.addHeader("WWW@-@Authenticate", \
 	"Basic realm=\"Test Realm\"");
     response.sendError(HttpServletResponse.SC_UNAUTHORIZED;
     return false;
@@ -905,7 +906,7 @@ class CustomHttpContext implements HttpContext {
   } else if(basicAuthenticated(request)){
     username = getUsername(request);
     freshToken = generateJwt(username);
-    response.addHeader("Set-Cookie", freshToken);
+    response.addHeader("Set@-@Cookie", freshToken);
     return true;
   } else {
     response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
@@ -914,16 +915,13 @@ class CustomHttpContext implements HttpContext {
  }
 }
 \end{lstlisting}
-\caption{Core implementation of \texttt{CustomHttpContext}.}
-\label{lst:core_impl}
-\end{figure}
 
 The simplified code snippet shows the core part of the \texttt{HttpContext} that intercepts requests and performs authentication from the provided HTTP header. As shown in the code snippet, after the JWT has been generated, it is given to the client as a \emph{cookie}. This way, no logic has to be implemented to manage token storage in the client side (e.g.\ through local storage using HTML5). In subsequent requests, the cookie is presented to the server, and from it, the token is extracted and verified.
 
 To handle the creation and verification of a JWT, a third-party library, Nimbus, was used~\cite{nimbus}. This library also provides more complex features such as encryption of the JWT via symmetric key encryption. These features are not currently considered for this work. As part of the basic structure of the JWT, a signature from the host is included at the end of the claims (e.g., username, permissions). For the proof of concept, an RSA-1024 key is generated as a singleton during runtime. Using the singleton pattern ensures that multiple private keys do not exist simultaneously, which would cause conflicts during signature verification. The freshly created RSA key is then used to both generate and sign the JWT, as shown in the simplified code snippet~\ref{lst:rsa}.
 
-\begin{figure} [htb]
-\begin{lstlisting}
+\begin{lstlisting}[caption={Generation and signing of the JWT.},label={lst:rsa},numbers=left,escapeinside={@}{@}]
+    
   protected String generateJwt(String username, String claim) {
     RSAPublicKey publicKey = (RSAPublicKey)getKeyPair().getPublic();
     RSAPrivateKey privKey = (RSAPrivateKey)getKeyPair().getPrivate();
@@ -934,9 +932,6 @@ To handle the creation and verification of a JWT, a third-party library, Nimbus,
     return jwsObject.serialize();	
   }    
 \end{lstlisting}
-\caption{Generation and signing of the JWT.}
-\label{lst:rsa}
-\end{figure}
 
 Code for the verification of the JWT is omitted as it follows a very similar logic to JWT generation and signing, but in reverse order. This implies de-serializing the JWT, loading the RSA public key into some object, verifying JWT using said object, and finally extracting username and any other claims. In the implementation, the username need not be extracted, as it is guaranteed that the claims are valid, given that the signature is valid.
 
@@ -988,10 +983,11 @@ Table~\ref{tbl:autho_cap} shows a sample assignment of capability sets to some u
 
 The proposed authorization model fulfills the purpose noted at the beginning of this chapter: satisfying security usability and fine-grained access control. Through the assignation of capability sets, users are capable of setting the permissions without troubling themselves with complex configuration options. Moreover, through the definition of the operations involved in a capability set, the developer of a particular binding or component of Eclipse SmartHome or openHAB is able to implement the access control policy.
 
+\paragraph{Summary.} This chapter showed in detail the heart of the contributions made in this work for Eclipse SmartHome and consequently, openHAB. First, the security of openHAB was analyzed at a communication level between things, the openHAB instance, and remote REST APIs. Then, openHAB design decisions about ``Intranet of Things'' were discussed. Later, the long-time held community discussion about authentication and access control was introduced, and its points were summarized. As an important contribution to securing openHAB, a JWT authenticator was implemented in Java according to the OSGi architecture. Finally, a fine-grained, yet usable authorization model that uses the concept of capability sets was proposed for the smart home ecosystem.
+
 \newpage
 \section{Evaluation}
 \label{sec:eval}
-\TODO{SUMMARY}
 
 As one of the main contributions for this work, the basic and JSON Web Token-based authenticators were implemented as a bundle for the OSGi runtime used in Eclipse SmartHome (ESH). This chapter looks at the resulting authentication bundle and how it is used alongside the other bundles for the ESH distribution. Recall that the ESH framework is a core component for the openHAB automation software. Thus, if the solution does not work in ESH, it will not work on openHAB.
 
@@ -1003,13 +999,13 @@ The next step in the evaluation of the implementation was to relocate the authen
 
 Up to the experimentation of the basic-authentication, everything was replicated exactly under the ESH environment. However, when attempting to include the third-party library, Nimbus, problems started to arise. Particularly, a persistent class-loading problem for this library could not be solved, not even with the support of a very active developer of the Eclipse SmartHome and openHAB. The exact error is as follows: \texttt{Missing constraint: Import-Package: com.nimbusds.jose}, which suggests that the JAR file is not recognized by the runtime. The usual approach for including third-party libraries into a bundle for ESH is to create a \texttt{lib} directory in the root of the bundle, and put the respective JAR there. Then, the \texttt{build.properties} and \texttt{MANIFEST.MF} files have to be changed to load the classes from the JAR. This same approach has been followed in other bundles in the ESH distribution, such as the \texttt{org.eclipse.smarthome.model.persistence} bundle. However, not even replicating the same structure as this other bundle made it possible to recognize the Nimbus JAR.
 
-Essentially, the implementation of the basic and JWT authenticators was successfully deployed into the OSGi runtime in Karaf. The testing of the deployment showed no flaws when initiating HTTP requests via curl or the web browser. The deployment of the basic authenticator for the OSGi runtime in ESH was succesfully replicated. It effectively prevent unauthorized access to a servlet resource. However, the deployment of the JWT authenticator for ESH ran into class-loading problems, and thus its effective functioning could not be verified. 
+Essentially, the implementation of the basic and JWT authenticators was successfully deployed into the OSGi runtime in Karaf. The testing of the deployment showed no flaws when initiating HTTP requests via curl or the web browser. The deployment of the basic authenticator for the OSGi runtime in ESH was succesfully replicated. It effectively prevent unauthorized access to a servlet resource. However, the deployment of the JWT authenticator for ESH ran into class-loading problems, and thus its effective functioning could not be verified.
+
+\paragraph{Summary.} In essence, the proposed implementation of basic and JWT authenticators for the ESH ecosystem was evaluated in two steps. A stand-alone, OSGi-based ecosystem running in Karaf was used as the first step of evaluation. As this was an independent deployment, there were no class-loading issues with the third-party library used for JWT verification, Nimbus. The JWT and basic authenticators worked as proposed in this deployment. The second stage of evaluation was made within the ESH ecosystem. In this deployment, class-loading issues were found within ESH that impeded the use of Nimbus. Thus, only the basic authenticator for securing servlet resources could be successfully tested in this environment.
 
 \newpage
 \section{Conclusion and Future Research Directions}
 \label{sec:conclusion}
-\TODO{ADD MORE PARAGRAPHS FOR FUTURE RESEARCH DIRECTIONS}
-\TODO{SUMMARY}
 This work gave an overview of the security challenges present in applications for Internet of Things, particularly in the domain of smart homes. It analyzed the security mechanisms employed in openHAB and Eclipse SmartHome, especially in terms of access control and privacy. Upon observing the lack of authentication and authorization mechanisms, a JSON Web Token-based authenticator was implemented according to the principles of the OSGi framework. An additional basic authenticator was also implemented as a fallback mechanism in case the client cannot store a JSON Web Token as a cookie. Finally, a fine-grained, yet usable authorization model was proposed for Eclipse SmartHome and openHAB. This authorization model distinguishes between users who may have overlapping permissions, but should not have equal control among all resources of the smart home ecosystem.
 
 \subsection{Contributions}
@@ -1037,6 +1033,8 @@ A long existing problem for the ESH community regarding turning \emph{off} acces
 A concrete definition and implementation of the mechanisms based on the proposed authorization model. Finally, a fresh re-evaluation of the access control mechanisms could be carried out.
 
 Finally, this work looked at the scenario of authentication \emph{within} the ecosystem, but as Internet of Things, there are other authentication scenarios. By employing OAuth, for example, a user may choose to through e.g., Google, Facebook, Twitter, etc, expanding the use cases and options for users.
+
+\paragraph{Summary.} This chapter finalizes this work by giving some final remarks on the contributions proposed for securing openHAB and Eclipse SmartHome through user authentication and authorization. In terms of authentication, basic and JWT authenticators were implemented according to the OSGi framework. For authorization, a model inspired on RBAC and CapBAC was proposed with fine-grained access control and usability in mind. Following up from this work, several future research directions may be considered. Future work may encompass further implementation efforts on the authenticators, both local and remote; design and implementation of local management of users (e.g., through LDAP), and setting up access control after registration of the first user. Moreover, a concrete authorization implementation based on the proposed model could be explored. 
 
 \newpage
 
@@ -1082,9 +1080,9 @@ Finally, this work looked at the scenario of authentication \emph{within} the ec
 %=== Licence in English
 \newcommand\EngLicence{{%
 \selectlanguage{english}
-\section*{II. Licence}
+\section*{I. Licence}
 
-\addcontentsline{toc}{subsection}{II. Licence}
+\addcontentsline{toc}{subsection}{I. Licence}
 
 \subsection*{Non-exclusive licence to reproduce thesis and make thesis public}
 
