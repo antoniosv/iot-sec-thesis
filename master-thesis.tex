@@ -131,6 +131,8 @@
 % comments and verbatim text (code)
 \usepackage{verbatim}
 
+% Package to include author's name in references
+\usepackage[numbers]{natbib}
 
 % Proper way to create coloured code listings
 \usepackage{listings}
@@ -279,7 +281,7 @@ Informaatika õppekava\\%[2mm]
 \noindent\textbf{Abstract:}
 
 \noindent
-The Internet of Things (IoT) is a dynamic and heterogenous environment where \emph{Things} gather data from the real world to perform various tasks. Applications in IoT, such as the smart home, typically use private data derived from its users for its operations. Security becomes a concern when these applications are exposed to insecure networks. OpenHAB is an OSGi-based automation software that integrates the data from devices at home. OpenHAB does not enforce any access control mechanism for its users, and depends solely on the security of the wireless network. In this work, we studied and attempted to implement a JSON Web Token-based authenticator for Eclipse SmartHome, the core of openHAB, as a base for access control mechanisms. Furthermore, we propose a fine-grained, yet usable authorization model to manage access permissions to things among legitimate users. The results obtained show that it is feasible to enforce access control mechanisms for servlet and REST resources in the architecture of openHAB. 
+The Internet of Things (IoT) is a dynamic and heterogenous environment where \emph{Things} gather data from the real world to perform various tasks. Applications in IoT, such as the smart home, typically use private data derived from its users for its operations. Security becomes a concern when these applications are exposed to insecure networks. OpenHAB is an OSGi-based automation software that integrates the data from devices at home. OpenHAB does not enforce any access control mechanism for its users, and depends solely on the security of the wireless network. In this work, we studied and implemented a JSON Web Token-based authenticator for Eclipse SmartHome, the core of openHAB, as a base for access control mechanisms. Furthermore, we propose a fine-grained, yet usable authorization model to manage access permissions to things among legitimate users. The results obtained show that it is feasible to enforce access control mechanisms for servlet and REST resources in the architecture of openHAB. 
 
 \vspace*{1ex}
 
@@ -347,7 +349,7 @@ Living in a context-aware home is no longer a futuristic vision. Automatic secur
 
 Among all the different scenarios and applications that could be made a reality with these context-aware devices, the \emph{smart home} is of particular interest. OpenHAB is an automation software that brings together and manages \emph{things} for the purpose of building a smart home environment~\cite{openhab_02}. The smart home, an application of the Internet of Things paradigm, is gaining popularity not only as a toy, but as a realistic intelligent environment that can be put in use today. A so-called \emph{thing} i.e., a sensing device, is the basic unit in a smart home environment. Things capture data from their environment and transmit it to another point, typically to another node inside the same network, or perhaps through the Internet to a remote destination. However, is there any security in this transmission of data?
 
-Security is defined as having ``protection against adversaries'', i.e., those would, intentionally or not, cause harm~\cite{whitman2011principles} . In this context, security refers to \emph{information security}, which is conceived as a layer of security that aims to protect the confidentiality, integrity, authenticity, and availability of information resources that may be in storage, processing or transmission. An adversary could attempt to violate these security properties through the use of passive (eavesdropping) and active (e.g.\ message tampering, Man-in-the-Middle) attacks.
+Security is defined as having ``protection against adversaries'', i.e., those would, intentionally or not, cause harm~\cite{whitman2011principles}. In this context, security refers to \emph{information security}, which is conceived as a layer of security that aims to protect the confidentiality, integrity, authenticity, and availability of information resources that may be in storage, processing or transmission. An adversary could attempt to violate these security properties through the use of passive (eavesdropping) and active (e.g.\ message tampering, Man-in-the-Middle) attacks.
 
 This work introduces the notion of reviewing, evaluating, and possibly improving the (information) security present in the openHAB automation software for the smart home environment. 
 
@@ -364,7 +366,7 @@ The security of the openHAB software, in terms of data protection and privacy pr
 
 \subsection{Motivation}
 
-It is known that security breaches may have a significant economic impact on a firm, as described by~\cite{GOEL}. Data loss or theft, tampering, and unauthorized operations are just some of the possible ocurrences led by the lack of proper security mechanisms in place. In the case of openHAB, a smart home application, it is not quite quantifiable how expensive it results to have a security breach occur at any level. The consequences may go from mere user discomfort to identity theft, or worse.
+It is known that security breaches may have a significant economic impact on a firm, as described by \citet{GOEL}. Data loss or theft, tampering, and unauthorized operations are just some of the possible ocurrences led by the lack of proper security mechanisms in place. In the case of openHAB, a smart home application, it is not quite quantifiable how expensive it results to have a security breach occur at any level. The consequences may go from mere user discomfort to identity theft, or worse.
 
 Applications for the Internet of Things are still very recent, and not much is known about the possibilities they will bring. This has led to ongoing efforts, such as openHAB, to focus mostly on the system functionalities, rather than the user experience, security, and many other non-functional requirements. Ideally, there should be a framework that can be used to evaluate the security of IoT applications. At this time, a framework for this purpose has not been established due to the vast differences in the architectures and implementations. Some attempts to identify security threats in IoT do exist, however, such as the OWASP Top 10 for IoT~\cite{owasp}. As the environment grows in complexity, so do the attack surface areas and possible vulnerabilities.
 
@@ -384,7 +386,7 @@ This work is divided in several chapters:\\
 Chapter~\ref{sec:art} introduces some key concepts in terms of security and the OSGi architecture, and later delves into an overview of the security challenges present in the IoT. \\
 Chapter~\ref{sec:related} briefly introduces some works loosely related to the contributions made in this work, and superficially describes their security mechanisms.\\
 Chapter~\ref{sec:method} describes in great detail the methodology to implement a JSON Web Token-based authenticator, and later makes a proposal for an authorization model suitable for Eclipse SmartHome, and therefore, for the openHAB smart home application. \\
-Chapter~\ref{sec:eval} evaluates and discusses the authenticator implementation and authorization model proposal.\\
+Chapter~\ref{sec:mechanisms} evaluates and discusses the authenticator implementation and authorization model proposal.\\
 Chapter~\ref{sec:conclusion} presents the general conclusions obtained from this work, and briefly describes the future research directions to build upon the contributions presented.
 
 %---------------------------
@@ -447,7 +449,7 @@ In the Internet, the Hypertext Transfer Protocol (HTTP) is used to exchange data
 
 \paragraph{JSON Web Token (JWT).} Compact and self-contained mechanism for securely transmitting information as a token with a JSON structure. A JSON Web Token is composed of three parts: header, payload, and signature. The payload includes one or more claims about the user and their identity. To preserve the authenticity and integrity of the payload, a digital signature from the token issuer is attached. The header simply includes details about the nature of the token and the algorithm used for the signature~\cite{RFC7519}. Among the distinct types of tokens, the JWT follows the schema for a typical \emph{bearer} token. 
 
-\subsubsection{Authorization models}
+\subsubsection{Authorization Models}
 
 As part of an access control system, an authorization model is the abstraction that interprets a security policy from the real world into well-defined and unambiguous rules that are enforceable by a computer system~\cite{access_01}. By doing this abstraction, the complexity is reduced, leading to a better understanding for the implementation of the security policy. 
 
@@ -486,7 +488,7 @@ In the OSGi framework this deployment descriptor, i.e.\ the \texttt{web.xml} fil
 
 \paragraph{Http Service.} As an interface of the \texttt{org.osgi.service.http} package, it is used to allow other bundles in the OSGi runtime to dynamically register resources, servlets, and filters into the URI namespace of the Http Service. As the Http Service is not always available, a \texttt{ServiceTracker} object is used to check its availability for registration~\cite{httpservice}.
 
-\paragraph{Http Whiteboard.} The OSGi Htttp Whiteboard, introduced as part of OSGi Revision~6, simplifies the registration of servlets, filters, resources, listeners, and servlet contexts into the OSGi runtime~\cite{httpwhiteboard_01}. Popularly, the Http Whiteboard pattern is described as ``don't call us, we'll call you'', due to not needing a tracker to check for availability at all times~\cite{httpwhiteboard_02}.
+\paragraph{Http Whiteboard.} The OSGi Http Whiteboard, introduced as part of OSGi Revision~6, simplifies the registration of servlets, filters, resources, listeners, and servlet contexts into the OSGi runtime~\cite{httpwhiteboard_01}. Popularly, the Http Whiteboard pattern is described as ``don't call us, we'll call you'', due to not needing a tracker to check for availability at all times~\cite{httpwhiteboard_02}.
 
 \paragraph{Http Context.} For both approaches, registration of servlets and resources may only be done through the use of an \texttt{HttpContext} object. This object defines the methods that the Http Service can call to get information about a registration of a servlet or resource.  Particularly, a class may extend the \texttt{HttpContext} class to override its \texttt{handleSecurity} method. This method may be used to flexibly implement authentication and authorization mechanisms~\cite{httpcontext}.
 
@@ -504,14 +506,14 @@ The Internet of Things, commonly referred as IoT, is a dynamic and heterogenous 
 
 The local scope in which these devices operate is called a \emph{sensor network}. A wireless sensor network (WSN) is the common environment for the sensing devices, and is usually managed by one or more gateways. Whenever a \emph{thing} needs to relay information to another device, it would go through the respective gateway. In the past, it was sufficient to structure some kind of client-server architecture, where clients (e.g.\ \emph{things}) directly communicate to the server, and subsequently the server decides how to handle the rest. However, this model is not very scalable. As there is a very large number of \emph{things} in IoT, it is much more manageable to have a distributed solution that employs gateways as relay points. Additionally, the gateway not only serves as a communication medium, but it is also responsible for making the necessary translations between protocols if the devices need to send or receive data through the Internet.
 
-The actual devices employed and the nature of the data gathered depend on the specific application for the IoT. These applications may be categorized into smart home, smart grid, smart city, smart transportation, and so on. Regardless of the application, data has to be gathered from the real world and transmitted to another point. Considering the diversity of devices and applications, it is no trivial task to unify or to support interoperability between devices, especially if they use different protocols for communication. Indeed, interoperability, device naming in a network, finding other devices, are just some examples of the challenges that need to be addressed when designing an IoT application. To take on these issues, a variety of architectures and solutions have been proposed in~\cite{ALABA201710}. 
+The actual devices employed and the nature of the data gathered depend on the specific application for the IoT. These applications may be categorized into smart home, smart grid, smart city, smart transportation, and so on. Regardless of the application, data has to be gathered from the real world and transmitted to another point. Considering the diversity of devices and applications, it is no trivial task to unify or to support interoperability between devices, especially if they use different protocols for communication. Indeed, interoperability, device naming in a network, finding other devices, are just some examples of the challenges that need to be addressed when designing an IoT application. To take on these issues, a variety of architectures and solutions have been proposed by \citet{ALABA201710}. 
 
 Given this amount of issues present in the architecture and development of IoT applications, it is no surprise that much of the focus given both in research and industry has been directed to the functional requirements. Non-functional requirements such as performance, user experience, security, among others, have been left as an afterthought. Nevertheless, due to the nature of constant exchange of information in IoT, security becomes an inevitable concern~\cite{Zhang:2015}.
 
 In consequence to recent developments on laws pertaining data privacy~\cite{eu_law}, more emphasis has given to the security of information systems that use data from users. Thus, incorporating security into a software product is no longer a courtesy, but a legal and ethical duty toward the users. Data encryption, authentication, authorization mechanisms, non-repudiation, are just some of the possible measures that should be taken into account when designing a secure system, and the IoT is no exception to this. For IoT in particular, a central part of the security concerns is related to the data collected by the sensing devices, and how and where it is transmitted. Depending on the nature of this data, the privacy might be essential to safeguard, especially during transit to other devices and outside a private network.
 
 \subsubsection{Layers and Applications}
-As described in \cite{ALABA201710}, the IoT can be classified in three layers: application, perception, and network. This abstraction makes it simpler to study security requirements for IoT, as each layer may encounter different security threats. 
+As described by \citet{ALABA201710}, the IoT can be classified in three layers: application, perception, and network. This abstraction makes it simpler to study security requirements for IoT, as each layer may encounter different security threats. 
 
 \paragraph{Application layer} This is the uppermost layer, and the one that is visible to the end user. Although there is no universal standard to build an application layer within the IoT, the structure itself is dependent on the service it offers. Applications such as \emph{smart healthcare}, \emph{smart grid}, \emph{smart city}, and \emph{intelligent transportation} make up this layer. A communication protocol for the application layer is used to exchange information between two endpoints within the same application. In terms of architecture, the application layer is usually comprised of middleware, a machine-to-machine communication protocol, a service support platform, and cloud computing. To further elaborate, we describe some common applications of the Internet of Things:
 
@@ -548,7 +550,7 @@ Due to the pervasive nature of the IoT devices, it is expected that some concern
 
 Among the different communication scenarios inside IoT applications, many questions arise regarding the security concerns of transmitting data from one point to another. In the basic scenario, for instance, what happens if an alien or malicious object tries to join the WSN to communicate with the objects in the network? There is also the case that an eavesdropper may listen to the communication between every object and the gateway. The latter is not very big issue, as the communication technology (Bluetooth, ZigBee) between an object and the gateway often includes encryption, rendering a passive attack useless. However, it is still important to consider how the registration of an object with a gateway is done, as to prevent counterfeits from malicious entities. Very similar concerns are present in the other two communication scenarios, with the difference that the communication now goes through a large public network, e.g., the Internet, and the same assumptions used in the basic scenario do not hold anymore. For this reason, on top of the security services employed within the WSN, there is a need for resistance against passive and active attacks over the public network. Mainly, confidentiality and access control are the desired properties to have within this insecure network.
 
-Among the existing security services, the ones shown in~\cite{HELLAOUI2017173} and~\cite{ALABA201710} are appropriate for their use in IoT. They are described as follows: 
+Among the existing security services, the ones proposed by \citet{HELLAOUI2017173} and \citet{ALABA201710} are appropriate for their use in IoT. They are described as follows: 
 
 \begin{description}
 \item [Authentication] Ensuring that the thing in question can be verified to be authentic, i.e., that it is what it claims to be. In case of peer authentication, a peer shows that it is legitimately who it claims to be. In the case of message authentication, it refers to a message which has not been tampered with, or that it indeed comes from a certain party. This is typically achieved by using asymmetric encryption.
@@ -566,10 +568,12 @@ As the objects in IoT are constantly communicating among themselves in a Machine
 
 \subsubsection{Security Threats and Attacks}
 
-According to~\cite{ALABA201710}, different threats are present in each IoT layer, and thus their analysis should be abstracted from other details. \autoref{table:threats} shows some of the identified threats present in each layer. These threats are related to the hardware components and network architecture. Due to the large number of different architectures for IoT, there is not a single solution that mitigates all of these threats.
+According to \citet{ALABA201710}, different threats are present in each IoT layer, and thus their analysis should be abstracted from other details. \autoref{table:threats} shows some of the identified threats present in each layer. These threats are related to the hardware components and network architecture. Due to the large number of different architectures for IoT, there is not a single solution that mitigates all of these threats.
 
 \begin{table}[h]
 \centering
+\caption{Threats in each IoT as suggested by \citet{ALABA201710}}
+
 \begin{tabular}{|l|l|}
 \hline
 \multicolumn{1}{|c|}{\textbf{Layer}} & \multicolumn{1}{c|}{\textbf{Threats}} \\ \hline
@@ -577,11 +581,10 @@ Physical & \begin{tabular}[c]{@{}l@{}}Micro-probing, tampering of hard \\ compon
 Link & \begin{tabular}[c]{@{}l@{}}Collision, unfairness, exhaustion, replay, \\ meta-data attacks\end{tabular} \\ \hline
 Network & \begin{tabular}[c]{@{}l@{}}Neglect, greed, homing, misdirection, traffic \\ analysis, black holes, meta-data attacks\end{tabular} \\ \hline
 \end{tabular}
-\caption{Threats in each IoT as suggested in \cite{ALABA201710}}
 \label{table:threats}
 \end{table}
 
-Additionally,~\cite{DAC3323},~\cite{Zhang:2015}, and~\cite{ALABA201710} briefly mention threats corresponding to specific IoT applications. These threats are:
+Additionally, the works by \citet{DAC3323}, \citet{Zhang:2015}, and \citet{ALABA201710} briefly mention threats corresponding to specific IoT applications. These threats are:
 
 \begin{enumerate}
 \item Eavesdropping
@@ -599,7 +602,7 @@ Unfortunately, cryptographic mechanisms alone are not sufficient to solve all of
 
 One of the main security challenges of IoT is achieving \emph{peer authentication}. Authentication is a security service that allows one party to verify that the incoming messages come from the legitimate third party. In IoT, this would mean that a sensor node is receiving queries from an authorized endpoint, and not from a counterfeit.
 
-Authentication protects against Man-in-the-Middle attacks, and active attacks in general. In the Internet, this is done through protocols like TLS, which rely on public key infrastructure (PKI). In IoT, the structure of the network is vastly different to the structure of the Internet, and thus a different approach is needed. There are four main approaches to achieve peer authentication in IoT, namely: authentication by gateway, authentication by security token, authentication by Trust Chain, and authentication by Global Trust Tree. All these occur in the extended communication scenario, and are briefly described in~\cite{Zhang:2015} as follows:
+Authentication protects against Man-in-the-Middle attacks, and active attacks in general. In the Internet, this is done through protocols like TLS, which rely on public key infrastructure (PKI). In IoT, the structure of the network is vastly different to the structure of the Internet, and thus a different approach is needed. There are four main approaches to achieve peer authentication in IoT, namely: authentication by gateway, authentication by security token, authentication by Trust Chain, and authentication by Global Trust Tree. All these occur in the extended communication scenario, and are briefly described by \citet{Zhang:2015} as follows:
 \begin{description}
 \item[Authentication by gateway] Gateway takes care of running the authentication mechanisms on behalf of each of the sensor nodes in its WSN. The gateway becomes the central point of operation for authentication. As such, traffic congestion should also be considered.
 \item[Authentication by security token] When two remote nodes want to communicate with each other, the gateway prepares a security token (e.g.\ a cookie) with certain security properties. The end points can then authenticate each other by using this token, which may have an expiration time. 
@@ -607,11 +610,11 @@ Authentication protects against Man-in-the-Middle attacks, and active attacks in
 \item[Authentication by Global Trust Tree] A single central authority oversees authentication between nodes in any IoT that it has access to. This approach is purely theoretical, and there are no candidates for it yet.
 \end{description}
 
-\subsection{Eclipse SmartHome and openHAB}
+\subsection{Eclipse SmartHome and OpenHAB}
 
 The smart home is one of the many applications for the IoT. A refrigerator that sends an message to your phone when it no longer has any milk. An air conditioner that turns on whenever it becomes aware that the outside temperature is rising above thirty Celsius degrees. A speaker that plays music whenever you start cooking. These are just some of the possible scenarios that may occur inside a home with \emph{sensing} devices that are capable of interacting with each other. This is no longer a vision for the future or a secluded experiment. There are already several existing solutions that attempt to bring together all these devices for more ambitious purposes. One such existing solution is the openHAB automation software, which the Eclipse SmartHome framework is part of. This chapter will look at both systems, explain their differences, and how they fit into this work. 
 
-\subsubsection{openHAB}
+\subsubsection{OpenHAB}
 \label{sssec:oh}
 OpenHAB (OH) is a product that focuses on interoperability among all kinds of devices from different vendors. It accomplishes inter-device interaction through logical modules called \emph{bindings}. For example, a smart television from Samsung may not be able to interact with other devices out of box, but it may be able to do so if the appropriate binding is developed for the openHAB ecosystem. OpenHAB, as it name implies, is an open-source software that serves as a \emph{hub} that brings together a diverse range of devices through the use of bindings. A binding makes a link to a thing that may be of either physical or logical nature. For instance, a light switch is undoubtedly a physical thing, and its state of being turned on or off is part of the data it exposes. Consider however, a weather service from the Internet that provides weather information such as temperature, humidity, and precipitation probability. This provider of data is undoubtedly not of physical nature, but still fits in the model of a smart home. Thus, a binding may incorporate such a weather service as a thing in the logical sense.
 
@@ -624,7 +627,7 @@ Two vastly different versions of openHAB currently exist. While the first versio
 \begin{figure} [ht] 
 \begin{center}
 \includegraphics[width=\textwidth]{oh_architecture}
-\caption{The openHAB architecture based on~\cite{openhab_02}.}
+\caption{The openHAB architecture based as described in~\cite{openhab_02}.}
 \label{fig:oh_architecture}
 \end{center}
 \end{figure}
@@ -640,17 +643,17 @@ The architecture of ESH is detailed in \autoref{fig:esh_architecture}. In the fi
 \begin{figure} [ht] 
 \begin{center}
 \includegraphics[width=\textwidth]{esh_architecture}
-\caption{The Eclipse SmartHome architecture based on~\cite{esh_02}.}
+\caption{The Eclipse SmartHome architecture based on the diagram by \citet{esh_02}.}
 \label{fig:esh_architecture}
 \end{center}
 \end{figure}
 
-\paragraph{Summary.} This chapter had two objectives: to introduce relevant concepts about information security and the OSGi architecture used throughout the rest of this work, and to give an overview on the security challenges and threats for applications in IoT, particularly, the smart home application. Finally, it introduces two keystones for this work: Eclipse SmartHome and openHAB. Eclipse SmartHome, as the core framework of openHAB, is the focus of the contributions made in this work. An overview of the architecture of both software stacks is given in this chapter to facilitate the understanding of the architectural decisions taken later in chapter~\ref{sec:method}.
+\paragraph{Summary.} This chapter had two objectives: to introduce relevant concepts about information security and the OSGi architecture used throughout the rest of this work, and to give an overview on the security challenges and threats for applications in IoT, particularly, the smart home application. Finally, it introduces two keystones for this work: Eclipse SmartHome and openHAB. Eclipse SmartHome, as the core framework of openHAB, is the focus of the contributions made in this work. An overview of the architecture of both software stacks is given in this chapter to facilitate the understanding of the architectural decisions taken later in Chapter~\ref{sec:method}.
 
 \clearpage
 \section{Related Work}
 \label{sec:related}
-As more sensing devices capable of communication with the cloud become available to the public, more scenarios take form for the smart home. Accordingly, there is an increase of customer-ready solutions in the market. OpenHAB is but one of the existing smart home solutions. As an open-source project with a very active community, openHAB distinguishes itself from other solutions. As part of the focus of this work is to review the security of openHAB, this section will look at other smart home solutions from a security and privacy perspective. 
+As more sensing devices capable of communication with the cloud become available to the public, more scenarios take form for the smart home. In consequence, the market share of smart home solutions is growing accordingly. OpenHAB is but one of the existing smart home solutions. As an open-source project with a very active community, openHAB distinguishes itself from other solutions. As part of the focus of this work is to review the security of openHAB, this section will look at other smart home solutions from a security and privacy perspective. 
 
 \subsection{Nest}
 Nest offers integration of Nest proprietary devices for the smart home, such as thermostats, cameras, doorbells, alarm systems, locks, smoke alarms, among others. Each of these devices is capable of connecting to a web service in the cloud. Some superficial details about the protocols and cryptographic primitives used for the device-cloud communication are disclosed, but the specifics are not published~\cite{related_01}.
@@ -714,22 +717,22 @@ Due to their proprietary nature, HomeKit and Nest are the most distant from open
 \paragraph{Summary.} This chapter introduced six smart home applications which cover overlapping use cases, but follow distinct approaches in terms of security. Nest and HomeKit, particularly, take advantage of their hardware to enforce an additional layer of authentication and integrity protection, respectively. OpenRemote had an initiative to support public key infrastructure among peers inside the smart home ecosystem. ThingsBoard, although a more general solution for IoT, offered support for token-based credentials for its compatible protocols. The Thing System adopted the means to enforce access control after the first user gets registered with a time-based one-time password. Finally, Home Assistant has the capability to expose itself to Tor, as an effort of privacy protection. 
 
 \newpage
-\section{Security Challenges in openHAB}
+\section{Security Challenges in OpenHAB}
 \label{sec:method}
 
 As a first step towards analyzing the security of IoT models, architectures, and applications, a brief study on the state of the art was conducted. From the reviewed literature, security challenges and threats in IoT were identified, along with possible countermeasures that provide data confidentiality, peer authentication, non-repudiation, etc. However, the studied proposals tended to oversimplify and deviate from the issues present in real-world, customer-ready solutions. This observation made it clear that there was a disconnect from academic publications and commercial software. Most products, however, do not make public their internal components, and tend to make their own architectural decisions instead of following standards for, e.g.\ encoding data transmitted between things. Among the existing solutions for a smart environment, the openHAB smart home software was chosen as a case study in terms of security. The decision was made for various reasons: first, it is open-source, and thus it is possible to conduct white-box testing, secondly, it is vendor-agnostic, and finally, because of the active participation of the community in this project.
 
-\subsection{Security of openHAB}
+\subsection{Security of OpenHAB}
 
-A binding is the logical piece of the system that links a \emph{thing} to openHAB. Through the User Interface (UI) or REST API calls, a user is able to view, and possibly modify the channels, i.e.\ state values, of the things connected to the system. Temperature and humidity numbers, on/off state of light switches, information about currently playing media, etc., are some examples of these channels. In the case of the least complex adversary, it may be assumed that it is possible to eavesdrop the incoming and outgoing data packets through the network. Thus, the first effort was to see how the data is moving around the system. Through the use of Wireshark and tcpdump, it was observed that the transit of data ocurred in two possible ways: through the cloud, or through the openHAB instance. Some devices, such as light switches, do not require to communicate with a server in the Internet to set or unset the state of the switch. As this may be done internally, the binding provides the means to operate the thing directly through the User Interface of openHAB. The other case involves devices which need to communicate to a remote server through the Internet to store its data in a third-party service. The binding, in this case, connects to the remote server through a external REST API, and gets the data required from it. This is more evident in a logical thing, e.g., a weather service. The binding for the weather service connects to the remote server through an API to query data about temperature, humidity, etc., of a particular location.
+A binding is the logical piece of the system that links a \emph{thing} to openHAB. Through the User Interface (UI) or REST API calls, a user is able to view, and possibly modify the channels, i.e.\ state values, of the things connected to the system. Temperature and humidity numbers, on/off state of light switches, information about currently playing media, etc., are some examples of these channels. In the case of the least complex adversary, it may be assumed that they can eavesdrop all incoming and outgoing data packets through the network. Thus, the first effort was to see how the data is moving around the system. Through the use of Wireshark and tcpdump, it was observed that the transit of data occurred in two possible ways: through the cloud, or through the openHAB instance. Some devices, such as light switches, do not require to communicate with a server in the Internet to set or unset the state of the switch. As this may be done internally, the binding provides the means to operate the thing directly through the User Interface of openHAB. The other case involves devices which need to communicate to a remote server through the Internet to store its data in a third-party service. The binding, in this case, connects to the remote server through an external REST API, and gets the data required from it. This is more evident in a logical thing, e.g., a weather service. The binding for the weather service connects to the remote server through an API to query data about temperature, humidity, etc., of a particular location.
 
 In short, there are three communication scenarios in openHAB: internal (thing-openHAB), external with logical thing (openHAB-remote web service), and external with physical thing (openHAB-remote web service-thing). For each, the security implications differ.
 
-Internal communication between things and the openHAB instance is typically done under a wireless network that encrypted with AES, for example. Because of this, an eavesdropper is only able to get the transmitted data if it can break AES, which is computationally infeasible for a sensible amount of time for even a 128-bit key. Thus, data confidentiality in this scenario depends entirely on the security of the wireless network where the openHAB instance and the thing reside. Evidently, if the attacker gains access to this private network, all intercepted communication will be openly visible.
+Internal communication between things and the openHAB instance is typically done under a wireless network that is encrypted with AES, for example. Because of this, an eavesdropper is only able to get the transmitted data if they can break AES, which is computationally infeasible for a sensible amount of time for even a 128-bit key. Thus, data confidentiality in this scenario depends entirely on the security of the wireless network where the openHAB instance and the thing reside. Evidently, if the attacker gains access to this private network, all intercepted communication will be openly visible.
 
-The second communication scenario, where the openHAB instance communicates with a remote server in the cloud, has an additional point of vulnerability: eavesdropping and tampering within the Internet. An eavesdropper that does not have access to the private network may still find a way to obtain the data during transit after it has left the router and is moving through the Internet. Returning to the example of the weather service, a binding may be programmed to get the current temperature and humidity every 10 minutes. This e.g., HTTP request leaves the openHAB instance and goes into the router, and then it travels through distinct points along the Internet. The remote server accepts the request if valid, and returns a response with the appropriate values in a format such as JSON or XML. If this request is not encrypted (e.g., by using TLS), then the eavesdropper may easily learn the data sent back in the HTTP response.
+The second communication scenario, where the openHAB instance communicates with a remote server in the cloud, has an additional point of vulnerability, namely eavesdropping and tampering within the Internet. An eavesdropper that does not have access to the private network may still find a way to obtain the data during transit after it has left the router and is moving through the Internet. Returning to the example of the weather service, a binding may be programmed to get the current temperature and humidity every 10 minutes. This e.g., HTTP request leaves the openHAB instance and goes into the router, and then it travels through distinct points along the Internet. The remote server accepts the request if valid, and returns a response with the appropriate values in a format like JSON or XML. If this request is not encrypted (e.g., by using TLS), then the eavesdropper may easily learn the data sent back in the HTTP response.
 
-For the third and last scenario, communication of a thing with a remote server through openHAB was the first obstacle in the security analysis. Because of simplifications in the literature about IoT, it is typically assumed that for the architecture of IoT applications there is no connection to the Internet to accomplish a task that may be performed locally~\cite{ALABA201710}. However, due to different vendors and a variety of devices, the actual solution tends to depend on a remote connection. For this reason, the security requirements in the literature, such as in~\cite{taekim}, do not quite fit. These differences do not make the communication in openHAB inherently less secure, but in that case, the security analysis should be more flexible and consider these design variations. 
+For the third scenario, communication of a thing with a remote server through openHAB was the first obstacle in the security analysis. Because of simplifications in the literature about the IoT architectures, it is typically assumed thatthere is no connection to the Internet to accomplish a task that may be performed within the local ecosystem~\cite{ALABA201710}. However, due to different vendors and devices, the actual solution tends to depend on a remote connection. For this reason, the security requirements in the literature, such in the work by \citet{taekim}, do not quite fit. These differences do not make the communication in openHAB inherently less secure, but in that case, the security analysis should be more flexible and consider these design variations. 
 
 This last scenario hints at the implication of guaranteeing secure communication between things, the openHAB instance, and the remote servers. Indeed, if the request performed by a binding is pointed at a location through HTTPS, then the request will perform the TLS protocol, encrypting the communication. The main question in this case is then, is it guaranteed that the request will point to an HTTPS location? The answer to this could only be found by looking at the source code of the bindings present in openHAB. Recall that through a binding, openHAB is able to send commands to things, and in this particular scenario, through a remote server.
 
@@ -759,17 +762,17 @@ When analyzing the source code, it becomes evident that the URL chosen to direct
   }
 \end{lstlisting}
 
-\autoref{lst:https_binding} is an example of a binding, in this case for the iCloud service. This binding is meant to establish a connection to the iCloud services, for example, to learn the status of a device. The method \texttt{requestDeviceStatus} is responsible for establishing the connection and returning the result as a JSON structure stored as a string. In the context of security, the important thing to note is that the connection is established through the use of the \texttt{HttpsURLConnection} class, which supports https-specific features, such as the encrypted communication through the TLS protocol~\cite{java_01}. Under this assumption, it is expected that the communication will be encrypted, so that an eavesdropper will not be able to read the plain data.
+\autoref{lst:https_binding} is an example of a binding, in this case for the iCloud service. This binding is meant to establish a connection to the iCloud services, for example, to learn the status of a device. The method \texttt{requestDeviceStatusJSON} is responsible for establishing the connection and returning the result as a JSON structure stored in a String. In the context of security, the important thing to note is that the connection is established through the use of the \texttt{HttpsURLConnection} class, which supports https-specific features, such as the encrypted communication through the TLS protocol~\cite{java_01}. Under this assumption, it is expected that the communication will be encrypted, so that an eavesdropper will not be able to read the plain data.
 
-To verify these findings, Wireshark was used to observe the packets sent from and to the openHAB instance installed in port 8090. Naturally, there were many TLS sessions packets captured in Wireshark, some of these originating from unrelated services installed in the host. One of the established sessions was for a maps web service, used in the Netatmo binding installed in this local openHAB instance. Thus, the use of Wireshark confirmed that the HTTP requests are being encrypted with TLS as defined in the corresponding bindings. To protect the privacy of the author, the captured data packets will not be disclosed. 
+To verify these findings, Wireshark was used to observe the packets sent from and to the openHAB instance listening on port 8090. Naturally, there were many TLS sessions packets captured in Wireshark, some of these originating from unrelated services installed in the host. One of the established sessions was for a maps web service, used in the Netatmo binding installed in this local openHAB instance. Thus, the use of Wireshark confirmed that the HTTP requests are being encrypted with TLS as defined in the corresponding bindings. To protect the privacy of the author, the captured data packets will not be disclosed. 
 
 As hinted, the use of HTTPS in bindings is of great importance due to the underlying Transport Layer Security protocol, also known plainly as TLS. According to the specification by the IETF, TLS provides communications security over the internet, and it is designed to prevent eavesdropping, tampering, or message forgery~\cite{RFC5246}. The specifics of the protocol are of no relevance in this work, thus it suffices to stress the fact that relying on it will offer confidentiality and integrity to the data sent between the openHAB instance and remote servers.
 
 \subsection{openHAB: Intranet of Things}
 
-An openHAB instance is typically installed on a small server, which may even be a Raspberry Pi, deployed on some port, 8080 by default. Due to the configuration of openHAB, this port may only be accessed by end devices in the same wireless network. It has been asked by the community if it is possible to access the openHAB instance from the outside, that is: through the Internet~\cite{openhab_05}. Exposing an application to the outside may be trivial from a functional standpoint, but it carries its own set of security risks. Denial-of-Service attacks, unrestricted URL access, injection, session hijacking, etc., are only some of the possibilities that could affect an application open to the Internet. These risks are well documented by projects such as the OWASP Top Ten in IoT~\cite{owasp}. In the case of openHAB particularly, an adversary does not need to explore too much before finding out an apparent vulnerability: the lack of authentication, and therefore, absence of access control.
+An openHAB instance is typically installed on a small server, which may even be a Raspberry Pi, deployed on some port, 8080 by default. Due to the configuration of openHAB, this port may only be accessed by end devices in the same wireless network. It has been asked by the community if it is possible to access the openHAB instance from outside of the private network, i.e., through the Internet~\cite{openhab_05}. Exposing an application to the outside may be trivial from a functional standpoint, but it carries its own set of security risks. Denial-of-Service attacks, unrestricted URL access, injection, session hijacking, etc., are only some of the possibilities that could affect an application open to the Internet. These risks are well documented by projects such as the OWASP Top Ten in IoT~\cite{owasp}. In the case of openHAB particularly, an adversary does not need to explore too much before finding out an apparent vulnerability: the lack of authentication, and therefore, absence of access control.
 
-As mentioned in chapter~\ref{sssec:oh}, to preserve privacy it is recommended to keep the openHAB instance from being exposed to the Internet. This may satisfy a weak security requirement, but it limits the use cases for the smart home. For any smart home application it is desirable to have the possibility of secure remote access, e.g., from the office, and openHAB is no exception. For this reason, openHAB offers three options for secure remote access: VPN connection, myopenHAB Cloud Service, and running openHAB behind a reverse proxy~\cite{openhab_04}. These options have the same idea: to make the transmission channel as safe as possible to prevent any unauthorized party from entering the private network. Although these options make secure remote access viable, any adversary that gains access to the private network ends up gaining full control over openHAB. Thus, the security against adversaries is as strong as the security of the channel.
+As mentioned in Chapter~\ref{sssec:oh}, to preserve privacy it is recommended to keep the openHAB instance from being exposed to the Internet. This may satisfy a weak security requirement, but it limits the use cases for the smart home. For any smart home application it is desirable to have the possibility of secure remote access, e.g., from the office, and openHAB is no exception. For this reason, openHAB offers three options for secure remote access: VPN connection, myopenHAB Cloud Service, and running openHAB behind a reverse proxy~\cite{openhab_04}. The common strategy is to make the transmission channel as safe as possible to prevent any unauthorized party from entering the private network. Although these options make secure remote access viable, any adversary that gains access to the private network ends up gaining full control over openHAB. Thus, the security against adversaries is as strong as the security of the channel.
 
 Relying purely on the communication channel makes it very difficult to make the openHAB instance securely \emph{exposed} to the Internet, even if openHAB, and not the things, is the only point of external access~\cite{openhab_03}. The main reason for this is that there is no authorization mechanism in place for alllowing or forbidding access to users. Thus, any individual that can access the openHAB instance is capable of altering the system state and retrieving any piece of data, as there is no lock in place. This threat is minimized by making the instance accessible only from inside the private network, taking the appearance of ``Intranet of Things''.  Therefore, the security of openHAB is as strong as the security of the private network. An intruder gaining access to the network implies allowing them access to all of the openHAB capabilities, thus breaching the privacy and confidentiality of the data in use.
 
@@ -808,7 +811,7 @@ As a product of the discussion at the time, the Eclipse Smarthome community crea
 
 In an attempt to identify which were the aspects that more resembled requirements with respect to security, rather than management of resources, \emph{misuse cases} were written according to the state of the Eclipse Smarthome framework at the time. Thus, the provided requirements document included the \emph{use cases} that served as a basis to identify the \emph{misuse cases}. 
 
-A misuse case, as the name suggests, is meant to cause the opposite consequence of a typical use case. That is, instead of designing the system to cover a certain functionality, the intention is to pinpoint which functionalities or \emph{actions} should not be permitted in the ideal system~\cite{misuse}. A misuse case diagram shows mis-actors, i.e.\ adversaries, initiating misuse cases to cause some anomaly by taking advantage of legitimate use cases.
+A misuse case, as the name suggests, is meant to cause the opposite consequence of a typical use case. That is, instead of designing the system to cover a certain functionality, the intention to pinpoint which functionalities or \emph{actions} should not be permitted in the ideal system~\cite{misuse}. A misuse case diagram shows mis-actors, i.e.\ adversaries, initiating misuse cases to cause some anomaly by taking advantage of legitimate use cases.
 
 Often, it is not obvious to identify misuse cases, as there are many angles and attack vectors that may go unnoticed to everyone but the adversary. Thus, it becomes more of a ``brainstorming'' exercise to attempt to detect possible threats, and an initial response to mitigate them. In this case, misuse cases were written to find out which threats could be posed by adversaries, and how these could be mitigated.
 
@@ -826,7 +829,7 @@ Often, it is not obvious to identify misuse cases, as there are many angles and 
 
 \newpage
 \section{Proposed Security Mechanisms}
-
+\label{sec:mechanisms}
 Security in openHAB may be improved through the implementation of access control mechanisms. Access control requires, as a prerequisite, a reliable client authentication mechanism. This chapter proposes a suitable implementation of a JSON Web Token authenticator for Eclipse SmartHome, the core framework of openHAB. As one of the components of an access control system, an authorization model has to be defined before a security policy can be enforced. Thus, an authorization model suitable for the smart home ecosystem is proposed as part of the contributions for openHAB.
 
 \subsection{Token-Based Authentication Procedure}
@@ -844,7 +847,7 @@ Typically, all kinds of token-based authentication mechanisms follow these steps
 \item If the token is expired, the server generates a new token and sends it to the client. 
 \end{enumerate}
 
-The JSON Web Token (JWT) holds some peculiarities to other tokens. The primary difference is that this token includes a digital signature by the party that created it, e.g., the server. Thus, some adaptations would have to be applied to this procedure. Consider, for example, the limitations in the user interface in Eclipse SmartHome to provide web forms to put the credentials. For this reason, credentials are sent first through \emph{basic authentication}, since the web browser takes care of asking for the credentials. Therefore, the proposed authentication mechanism is as follows:
+The JSON Web Token (JWT) holds some peculiarities to other tokens. The primary difference is that this token includes a digital signature by the party that created it, e.g., the server. Thus, some adaptations would have to be applied to this procedure. Consider, for example, the limitations in the user interface in Eclipse SmartHome to provide web forms for inputting the credentials. For this reason, credentials are sent first through \emph{basic authentication}, since the web browser takes care of asking for the credentials. Therefore, the proposed authentication mechanism is as follows:
 
 \begin{enumerate}
 \item The client sends credentials through the basic authentication natively supported by the web browser.
@@ -880,7 +883,7 @@ As this particular development of the Eclipse Smarthome framework halted, a new 
 \end{center}
 \end{figure}
 
-Initial results by the community~\cite{esh_03} showed that it was indeed possible to make the \texttt{HttpContext} shared by the components that needed access control. Taking these results into account, work in the direction of a \emph{custom} \texttt{HttpContext} started. For this, the merged \texttt{HttpContext} requires the existence of an authenticator, i.e.\ a module that performs the authentication logic, and thereafter the module that performs authorization. \autoref{fig:esh_arch_authenticator} shows how the authenticator is merely a black box performs the logic of a certain type of authentication, such as the basic or token-based. The decision is based on the received HTTP request: depending on whether it has a session identifier (e.g.\ cookie), an authorization header, or neither. And if it does have one of these, to which authenticator the credentials would be directed to. Implementation details for the basic and JWT authenticators are introduced in chapter~\ref{ssec:impl}. Form authentication is left as future work. 
+Initial results by the community~\cite{esh_03} showed that it was indeed possible to make the \texttt{HttpContext} shared by the components that needed access control. Taking these results into account, work in the direction of a \emph{custom} \texttt{HttpContext} started. For this, the merged \texttt{HttpContext} requires the existence of an authenticator, i.e.\ a module that performs the authentication logic, and thereafter the module that performs authorization. \autoref{fig:esh_arch_authenticator} shows how the authenticator is merely a black box performs the logic of a certain type of authentication, such as the basic or token-based. The decision is based on the received HTTP request: depending on whether it has a session identifier (e.g.\ cookie), an authorization header, or neither. And if it does have one of these, to which authenticator the credentials would be directed to. Implementation details for the basic and JWT authenticators are introduced in Chapter~\ref{ssec:impl}. Form authentication is left as future work. 
 
 \begin{figure} [ht] 
 \begin{center}
@@ -890,7 +893,7 @@ Initial results by the community~\cite{esh_03} showed that it was indeed possibl
 \end{center}
 \end{figure}
 
-After the process of authentication, what follows is authorization. The authorization itself depends on the access control policies decided for each particular resource and the privilege level of the user requesting access. This work focuses on authentication, and thus does not include the implementation of a particular access control policy. However, a proposal for access control is made in chapter~\ref{ssec:autho}.
+After the process of authentication, what follows is authorization. The authorization itself depends on the access control policies decided for each particular resource and the privilege level of the user requesting access. This work focuses on authentication, and thus does not include the implementation of a particular access control policy. However, a proposal for access control is made in Chapter~\ref{ssec:autho}.
 
 \subsection{Implementation of Authenticators}
 \label{ssec:impl}
@@ -955,7 +958,7 @@ Code for the verification of the JWT is omitted as it follows a very similar log
 
 As mentioned, the RSA key is generated once at runtime. Originally, this was merely be a placeholder for a pre-existing RSA key that is already present in the distribution of openHAB. This RSA key is used by openHAB for SSH access. This pre-existing RSA key is stored in a file \texttt{keys.properties} under the \texttt{etc/} directory of the installation path of openHAB. However, it turned out that some problems emerged from this idea. First, the pre-existing RSA key was disabled, i.e.\ commented, as a security precaution. Secondly, the key is only enabled after running the Karaf console inside the openHAB distribution. As Karaf is not included within the Eclipse SmartHome distribution, there is no pre-existing key. For the first problem, it would be enough to have the openHAB administrator generate a fresh key pair and store the public and private keys. However, this is not exactly user-friendly, and thus becomes a problem in terms of security usability. A solution to the overall problem is to leave key generation to the \texttt{auth} bundle and store it in some file in the local filesystem. When the bundle is activated it will first look for the file before attempting to generate a new RSA key. As the discussion within the community has not gotten to this point, the implementation has maintained the idea of storing the RSA key in memory during runtime. It should not cause problems and, in case that the bundle is restarted, then due to invalid JWTs, credentials will be requested again.
 
-The rest of the implementation follows the logic for the basic and token-based authentication mechanisms. The code is currently maintained as two independent repositories: one that uses the whiteboard pattern~\cite{repo_02}, and one as a fork of the Eclipse SmartHome project~\cite{repo_01}. The latter does not include the JWT authenticator logic due to class-loading problems described in chapter~\ref{sec:eval}.
+The rest of the implementation follows the logic for the basic and token-based authentication mechanisms. The code is currently maintained as two independent repositories: one that uses the whiteboard pattern~\cite{repo_02}, and one as a fork of the Eclipse SmartHome project~\cite{repo_01}. The latter does not include the JWT authenticator logic due to class-loading problems described in Chapter~\ref{sec:eval}.
   
 \subsection{Proposed Authorization Model}
 \label{ssec:autho}
@@ -976,18 +979,19 @@ A fine-grained, yet usable authorization model that makes use of the concept of 
 
 \begin{table}[h]
   \centering
+  \caption{Sample relation of user and capability sets}
   \begin{tabular}{|l|l|}
     \hline
     \multicolumn{1}{|c|}{\textbf{User}} & \multicolumn{1}{c|}{\textbf{Capability Sets}}            \\ \hline
     Marian                              & (speakers-quiet, lights-on, doors-close, sitemaps-paper) \\ \hline
     Erika                               & (speakers-playback, lights-all, doors-all, sitemaps-all) \\ \hline
   \end{tabular}
-  \caption{Sample relation of user and capability sets}
   \label{tbl:autho_cap}
 \end{table}
 
 \begin{table}[h]
   \centering
+  \caption{Sample listings of operations involved for each capability set}  
   \begin{tabular}{ll}
     \hline
     \multicolumn{1}{|c|}{\textbf{Capability Set}} & \multicolumn{1}{c|}{\textbf{Involved Operations}}                                                                                                                                                                                      \\ \hline
@@ -995,7 +999,6 @@ A fine-grained, yet usable authorization model that makes use of the concept of 
     \multicolumn{1}{|l|}{things-all}          & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}rest.core.internal.thing.ThingResource.getAll()\\ rest.core.internal.thing.ThingResource.create()\end{tabular}}                       \\ \hline
     &
   \end{tabular}
-  \caption{Sample listings of operations involved for each capability set}
   \label{tbl:autho_op}
 \end{table}
 
@@ -1054,7 +1057,7 @@ Finally, this work looked at the scenario of authentication \emph{within} the ec
 \newpage
 
 % BibTeX bibliography
-\bibliographystyle{plain}%alpha} %plain=[1], alpha=[BGZ09]
+\bibliographystyle{plainnat}%alpha} %plain=[1], alpha=[BGZ09]
 \bibliography{master-thesis}
 
 \addcontentsline{toc}{section}{\refname}
