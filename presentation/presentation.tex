@@ -1,0 +1,240 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Beamer Presentation
+% LaTeX Template
+% Version 1.0 (10/11/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+\PassOptionsToPackage{subsection=false}{beamerouterthememiniframes}
+\documentclass{beamer}
+\usepackage{listings}
+\usepackage{mdframed}
+
+\renewcommand{\figurename}{Figure}
+\renewcommand{\tablename}{Table}
+\renewcommand{\lstlistingname}{Code Snippet} 
+
+\def\titulo{{Securing openHAB Smart Home through User Authentication and Authorization}}
+\def\autor{Jes\'{u}s Antonio Soto Vel\'{a}zquez}
+\def\grado{Master of Science in Engineering (Computer Science)}
+\def\matricula{B70630}
+\def\fecha{June 2018}
+\usepackage[numbers,sort]{natbib}
+%\bibliographystyle{../estiloDeBibliografia}
+
+\setbeamertemplate{caption}[numbered]
+
+
+\definecolor{carolinablue}{rgb}{0.6, 0.73, 0.89}
+\definecolor{lbcolor}{rgb}{0.9,0.9,0.9}
+\lstset{
+    tabsize=4,    
+    language=Java,
+    basicstyle=\scriptsize,
+    upquote=true,
+    %        aboveskip={1.5\baselineskip},
+    columns=fixed,
+    showstringspaces=false,
+    extendedchars=false,
+    breaklines=true,
+    prebreak = \raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}},
+    frame=single,
+    numbers=left,
+    numberstyle=\tiny,
+    numbersep=5pt,
+    showtabs=false,
+    showspaces=false,
+    showstringspaces=false,
+    identifierstyle=\ttfamily,
+    keywordstyle=\color[rgb]{0.0, 0.45, 0.73},
+    commentstyle=\color[rgb]{0.09, 0.45, 0.27},
+    stringstyle=\color[rgb]{0.627,0.126,0.941},
+%    numberstyle=\color[rgb]{0.205, 0.142, 0.73},
+    %        \lstdefinestyle{C++}{language=C++,style=numbers}’.
+}
+
+
+\mode<presentation> {
+  \usetheme{Berlin}
+  \usecolortheme{spruce}
+%\useoutertheme[subsection=false]{miniframes}
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+
+%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
+
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+
+
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title[]{\titulo} % The short title appears at the bottom of every slide, the full title is only on the title page
+
+\author{\autor} % Your name
+\institute[UT]{
+  UNIVERSITY OF TARTU\\[3mm]
+  Institute of Computer Science\\
+  Security and Mobile Computing Curriculum\\[3mm]  
+  \includegraphics[height=3cm]{../fig/UT_logo}
+}
+
+\date{\fecha} % Date, can be changed to a custom date
+
+\begin{document}
+
+\begin{frame}
+\titlepage % Print the title page as the first slide
+\end{frame}
+
+\begin{frame}
+\frametitle{Overview} % Table of contents slide, comment this block out to remove it
+\tableofcontents % Throughout your presentation, if you choose to use \section{} and \subsection{} commands, these will automatically be printed on this slide as an overview of your presentation
+\end{frame}
+
+%----------------------------------------------------------------------------------------
+%	PRESENTATION SLIDES
+%----------------------------------------------------------------------------------------
+
+%------------------------------------------------
+\section{Introduction} % Sections can be created in order to organize your presentation into discrete blocks, all sections and subsections are automatically printed in the table of contents as an overview of the talk
+%------------------------------------------------
+\begin{frame}
+\frametitle{Introduction: Internet of Things}
+\begin{itemize}
+  \setlength\itemsep{1.5em}
+\item alo polisia
+\end{itemize}
+\end{frame}
+%------------------------------------------------
+\begin{frame}
+\frametitle{A Smart Home Application: OpenHAB}
+\begin{itemize}
+  \setlength\itemsep{1.5em}
+\item alo polisia
+\end{itemize}
+\end{frame}
+%------------------------------------------------
+\begin{frame}
+\frametitle{Problem Statement}
+\begin{itemize}
+  \setlength\itemsep{1.5em}
+\item alo polisia
+\end{itemize}
+\end{frame}
+%------------------------------------------------
+\begin{frame}
+\frametitle{Motivation}
+\begin{itemize}
+  \setlength\itemsep{1.5em}
+\item alo polisia
+\end{itemize}
+\end{frame}
+%------------------------------------------------
+\begin{frame}
+\frametitle{Objectives} % contributions?
+\begin{itemize}
+  \setlength\itemsep{1.5em}
+\item alo polisia
+\end{itemize}
+\end{frame}
+%------------------------------------------------
+\section{Security Challenges in OpenHAB}
+\begin{frame}
+\frametitle{Intranet of Things}
+\begin{itemize}
+  \setlength\itemsep{1.5em}
+\item alo polisia
+\end{itemize}
+\end{frame}
+%------------------------------------------------
+\begin{frame}
+\frametitle{Security of Bindings}
+\begin{itemize}
+  \setlength\itemsep{1.5em}
+\item alo polisia
+\end{itemize}
+\end{frame}
+%------------------------------------------------
+\begin{frame}
+\frametitle{Community Discussion and Remarks}
+\begin{itemize}
+  \setlength\itemsep{1.5em}
+\item alo polisia
+\end{itemize}
+\end{frame}
+%------------------------------------------------
+\begin{frame}
+\frametitle{Misuse Cases}
+\begin{itemize}
+  \setlength\itemsep{1.5em}
+\item alo polisia
+\end{itemize}
+\end{frame}
+%------------------------------------------------
+\section{Proposed Security Mechanisms}
+\begin{frame}
+\frametitle{Token-based Authentication Procedure}
+\begin{itemize}
+  \setlength\itemsep{1.5em}
+\item alo polisia
+\end{itemize}
+\end{frame}
+%------------------------------------------------
+\begin{frame}
+\frametitle{Implementation of Authenticators}
+\begin{itemize}
+  \setlength\itemsep{1.5em}
+\item alo polisia
+\end{itemize}
+\end{frame}
+%------------------------------------------------
+\begin{frame}
+\frametitle{Evaluation}
+\begin{itemize}
+  \setlength\itemsep{1.5em}
+\item alo polisia
+\end{itemize}
+\end{frame}
+%------------------------------------------------
+\begin{frame}
+\frametitle{Proposed Authorization Model}
+\begin{itemize}
+  \setlength\itemsep{1.5em}
+\item alo polisia
+\end{itemize}
+\end{frame}
+%------------------------------------------------
+\section{Conclusion and Future Research Directions}
+\begin{frame}
+\frametitle{Contributions}
+\begin{itemize}
+  \setlength\itemsep{1.5em}
+\item alo polisia
+\end{itemize}
+\end{frame}
+%------------------------------------------------
+\begin{frame}
+\frametitle{Future Research Directions}
+\begin{itemize}
+  \setlength\itemsep{1.5em}
+\item alo polisia
+\end{itemize}
+\end{frame}
+%------------------------------------------------
+% REFERENCES?
+\end{document}
