@@ -90,7 +90,7 @@
 \institute[UT]{
   UNIVERSITY OF TARTU\\[3mm]
   Institute of Computer Science\\
-  Security and Mobile Computing Curriculum\\[3mm]  
+  Computer Science Curriculum\\[3mm]  
   \includegraphics[height=3cm]{UT_logo}
 }
 
@@ -127,7 +127,7 @@
 %------------------------------------------------
 \begin{frame}
 \frametitle{A Smart Home Application: OpenHAB}
-\textbf{``a vendor and technology agnostic open source automation software for your home''}~\cite{oh_01}
+\textbf{``a vendor and technology agnostic open source automation software for your home''} (openHAB Community, 2010)
 \begin{itemize}
   \setlength\itemsep{1.5em}
 \item May be deployed on very modest devices (e.g., Raspberry Pi)
@@ -159,12 +159,12 @@
 \end{frame}
 %------------------------------------------------
 \begin{frame}
-\frametitle{Contributions} % objectives?
+\frametitle{Objectives} % objectives?
 \begin{enumerate}
   \setlength\itemsep{1.5em}
-\item Analysis of the security mechanisms in use for the openHAB automation software.
-\item Implementation of a client authenticator based on the JSON Web Token for Eclipse Smarthome.
-\item Proposal of a fine-grained, yet usable authorization model for openHAB to manage usage permissions.
+\item To analyze the security mechanisms in use for the openHAB automation software.
+\item To implement a client authenticator based on the JSON Web Token for Eclipse Smarthome.
+\item To propose a fine-grained, yet usable authorization model for openHAB to manage usage permissions.
 \end{enumerate}
 \end{frame}
 %------------------------------------------------
@@ -249,6 +249,16 @@
 \end{frame}
 %------------------------------------------------
 \begin{frame}
+\frametitle{JSON Web Token Structure}
+\begin{enumerate}
+  \setlength\itemsep{1.5em}  
+\item Header: type of token (JWT), hashing algorithm (e.g., HMAC SHA256, RSA).
+\item Payload: claims about the user (e.g., username, roles).
+\item Signature: Using a secret key creates a signature of the previous parts.
+\end{enumerate}
+\end{frame}
+%------------------------------------------------
+\begin{frame}
 \frametitle{Architectural Implications}
 \begin{figure} [ht] 
 \begin{center}
@@ -261,9 +271,16 @@
 %------------------------------------------------
 \begin{frame}
 \frametitle{Implementation of Authenticators}
+Some remarks:
 \begin{itemize}
   \setlength\itemsep{1.5em}
-\item Custom http context....
+\item Prepared to work for a \emph{shared} authentication context.
+\item \emph{JWT} authentication when token is provided in request (cookie or HTTP header).
+\item Nimbus used as JWT library. 
+\item RSA key pair is created during runtime and stored in memory. 
+\item \emph{Basic} authentication (username:password) as fallback authentication mechanism.
+\item Implements the \texttt{handleSecurity} method present in the \texttt{HttpContext} interface for servlets.
+\item Registration to OSGi 4.2 runtime is done through \texttt{Http Service} and \texttt{Service Tracker}.
 \end{itemize}
 \end{frame}
 %------------------------------------------------
@@ -271,33 +288,78 @@
 \frametitle{Proposed Authorization Model}
 \begin{itemize}
   \setlength\itemsep{1.5em}
-\item alo polisia
+\item As a smart home application, an authorization model should be fine grained and usable.
+\item Tasks that may be done on openHAB are grouped as \emph{capability sets}.
+\item Registered users are assigned one or more capability sets to reflect their privilege in the system.
+\item Permissions range from: REST endpoints, sitemaps, traditional servlets, automation rules, third-party add-ons, system settings, etc.
 \end{itemize}
+\end{frame}
+%------------------------------------------------
+\begin{frame}
+\frametitle{User-Assigned Capability Sets}
+\begin{table}[h]
+  \centering
+  \caption{Sample relation of user and capability sets}
+  \begin{tabular}{|l|l|}
+    \hline
+    \multicolumn{1}{|c|}{\textbf{User}} & \multicolumn{1}{c|}{\textbf{Capability Sets}}            \\ \hline
+    Marian                              & (speakers-quiet, lights-on, doors-close, sitemaps-paper) \\ \hline
+    Erika                               & (speakers-playback, lights-all, doors-all, sitemaps-all) \\ \hline
+  \end{tabular}
+  \label{tbl:autho_cap}
+\end{table}
+
+\begin{table}[h]
+  \centering
+  \caption{Sample listings of operations involved for each capability set}  
+  \begin{tabular}{ll}
+    \hline
+    \multicolumn{1}{|c|}{\textbf{Capability Set}} & \multicolumn{1}{c|}{\textbf{Involved Operations}}                                                                                                                                                                                      \\ \hline
+    \multicolumn{1}{|l|}{speakers-playback}   & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}yamahareceiver.internal.state.\\NavigationControlState.getCurrentItemName()\\ ZoneControlState.volume\end{tabular}} \\ \hline
+    \multicolumn{1}{|l|}{things-all}          & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}rest.core.internal.thing.ThingResource.getAll()\\ rest.core.internal.thing.ThingResource.create()\end{tabular}}                       \\ \hline
+    &
+  \end{tabular}
+  \label{tbl:autho_op}
+\end{table}
+
 \end{frame}
 %------------------------------------------------
 \begin{frame}
 \frametitle{Evaluation}
-\begin{itemize}
+Authenticator was evaluated in two OSGi runtimes: Karaf (Apache Felix), and Eclipse SmartHome (Eclipse Equinox).
+\begin{enumerate}
   \setlength\itemsep{1.5em}
-\item alo polisia
-\end{itemize}
+\item Karaf deployment supported OSGi R6. Servlet and context registration was made through Whiteboard pattern. Successfully restricts access to servlet resource if credentials are not given.
+\item ESH deployment supported up to OSGi R4.2. Servlet and context registration was made through \texttt{Http Service} and \texttt{Http Tracker}. Class-loading problems initially prevented the use of the Nimbus library. Problems were fixed and resulting solution shows the same behavior as the Karaf deployment. 
+\end{enumerate}
 \end{frame}
 %------------------------------------------------
 \section{Conclusion and Future Research Directions}
 \begin{frame}
-\frametitle{Contributions}
+\frametitle{Conclusion}
+Contributions:
 \begin{itemize}
   \setlength\itemsep{1.5em}
-\item alo polisia
+\item Analysis of the security mechanisms in use for the openHAB automation software.
+\item Implementation of a client authenticator based on the JSON Web Token for Eclipse Smarthome.
+\item Proposal of a fine-grained, yet usable authorization model for openHAB to manage usage permissions.
 \end{itemize}
 \end{frame}
 %------------------------------------------------
 \begin{frame}
 \frametitle{Future Research Directions}
 \begin{itemize}
-  \setlength\itemsep{1.5em}
-\item alo polisia
+  \setlength\itemsep{0.9em}
+\item Incorporation of form-based authentication in the OSGi architecture.
+\item Expiration and renewal of JWT issued by Eclipse SmartHome.
+\item Encryption of JWT.
+\item Unique generation and storage RSA key pair.
+\item Local storage of user credentials (e.g., LDAP).
+\item Integration with external authentication providers (e.g., OAuth).
+\item Design access for first-time users.
+\item Implementation of the proposed authorization model.
 \end{itemize}
+
 \end{frame}
 %------------------------------------------------
 % REFERENCES?
