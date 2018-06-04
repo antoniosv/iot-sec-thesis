@@ -120,7 +120,7 @@
 \begin{itemize}
 \setlength\itemsep{1.5em}
 \item Devices: smartphones, smart watches, smoke alarm, security camera, heartbeat and temperature monitor, etc.
-\item Applications: Smart home, smart transportation, smart healthcare, intelligent transportation, etc.
+\item Applications: Smart home, smart city, smart healthcare, intelligent transportation, etc.
 \item Challenges: interoperability, architecture, device naming, usability, security and privacy.  
 \end{itemize}
 \end{frame}
@@ -139,13 +139,13 @@
 \end{frame}
 %------------------------------------------------
 \begin{frame}
-\frametitle{Problem Statement}
-\begin{itemize}
+\frametitle{Objectives} % objectives?
+\begin{enumerate}
   \setlength\itemsep{1.5em}
-\item To review the existing security mechanisms of the openHAB smart home automation software.
-\item To study and implement a JSON Web Token-based authenticator for Eclipse SmartHome, the core of openHAB, as a base for access control mechanisms.
-\item To propose a usable authorization model to manage access permissions to things and resources in openHAB. 
-\end{itemize}
+\item To analyze the security mechanisms in use for the openHAB automation software.
+\item To implement an authenticator based on the JSON Web Token for Eclipse Smarthome.
+\item To propose a fine-grained, yet usable authorization model for openHAB to manage usage permissions.
+\end{enumerate}
 \end{frame}
 %------------------------------------------------
 \begin{frame}
@@ -156,16 +156,6 @@
 \item Consequences in smart home range from mere user discomfort to identity theft, or worse.
 \item Lack of security deters adoption of IoT applications, halts progress. 
 \end{itemize}
-\end{frame}
-%------------------------------------------------
-\begin{frame}
-\frametitle{Objectives} % objectives?
-\begin{enumerate}
-  \setlength\itemsep{1.5em}
-\item To analyze the security mechanisms in use for the openHAB automation software.
-\item To implement a client authenticator based on the JSON Web Token for Eclipse Smarthome.
-\item To propose a fine-grained, yet usable authorization model for openHAB to manage usage permissions.
-\end{enumerate}
 \end{frame}
 %------------------------------------------------
 \section{Security Challenges in OpenHAB}
@@ -185,8 +175,8 @@
   \setlength\itemsep{1.5em}
 \item Aims to contain private data locally.
 \item Puts a limitation on use cases.
-\item Assumes security of the private network.
 \item Secure remote access: a challenge.
+\item Assumes security of the private network.
 \end{itemize}
 \end{frame}
 %------------------------------------------------
@@ -206,11 +196,9 @@
 \begin{itemize}
   \setlength\itemsep{1.5em}
 \item Whoever gains access to private network gains access to smart home management.
-\item Long-discussed topic in the openHAB community.
 \item Not trivial: previous attempts have failed.
-\item Preferably to be implemented inside the core framework: Eclipse SmartHome.
+\item To be implemented inside the core framework: Eclipse SmartHome.
 \item Main challenge: single \emph{authentication context} recognizable in all end points (servlets).
-\item Community discussion led to a requirements document.
 \end{itemize}
 \end{frame}
 %------------------------------------------------
@@ -238,6 +226,16 @@
 \end{frame}
 %------------------------------------------------
 \begin{frame}
+\frametitle{JSON Web Token Structure}
+\begin{enumerate}
+  \setlength\itemsep{1.5em}  
+\item Header: type of token (JWT), hashing algorithm (e.g., HMAC SHA256, RSA).
+\item Payload: claims about the user (e.g., username, roles).
+\item Signature: Using a secret key creates a signature of the previous parts.
+\end{enumerate}
+\end{frame}
+%------------------------------------------------
+\begin{frame}
 \frametitle{Token-based Authentication Procedure}
 \begin{figure} [ht] 
 \begin{center}
@@ -246,16 +244,6 @@
 \label{fig:esh_arch_authenticator}
 \end{center}
 \end{figure}
-\end{frame}
-%------------------------------------------------
-\begin{frame}
-\frametitle{JSON Web Token Structure}
-\begin{enumerate}
-  \setlength\itemsep{1.5em}  
-\item Header: type of token (JWT), hashing algorithm (e.g., HMAC SHA256, RSA).
-\item Payload: claims about the user (e.g., username, roles).
-\item Signature: Using a secret key creates a signature of the previous parts.
-\end{enumerate}
 \end{frame}
 %------------------------------------------------
 \begin{frame}
@@ -279,8 +267,7 @@ Some remarks:
 \item Nimbus used as JWT library. 
 \item RSA key pair is created during runtime and stored in memory. 
 \item \emph{Basic} authentication (username:password) as fallback authentication mechanism.
-\item Implements the \texttt{handleSecurity} method present in the \texttt{HttpContext} interface for servlets.
-\item Registration to OSGi 4.2 runtime is done through \texttt{Http Service} and \texttt{Service Tracker}.
+\item Registration to OSGi 4.2 runtime is done differently than in OSGi 6 runtime. 
 \end{itemize}
 \end{frame}
 %------------------------------------------------
@@ -329,8 +316,8 @@ Some remarks:
 Authenticator was evaluated in two OSGi runtimes: Karaf (Apache Felix), and Eclipse SmartHome (Eclipse Equinox).
 \begin{enumerate}
   \setlength\itemsep{1.5em}
-\item Karaf deployment supported OSGi R6. Servlet and context registration was made through Whiteboard pattern. Successfully restricts access to servlet resource if credentials are not given.
-\item ESH deployment supported up to OSGi R4.2. Servlet and context registration was made through \texttt{Http Service} and \texttt{Http Tracker}. Class-loading problems initially prevented the use of the Nimbus library. Problems were fixed and resulting solution shows the same behavior as the Karaf deployment. 
+\item Karaf deployment supported OSGi R6. \\ Servlet and context registration was made through Whiteboard pattern. 
+\item ESH deployment supported up to OSGi R4.2. \\ Servlet and context registration was made through \texttt{Http Service} and \texttt{Http Tracker}. 
 \end{enumerate}
 \end{frame}
 %------------------------------------------------
@@ -362,5 +349,5 @@ Contributions:
 
 \end{frame}
 %------------------------------------------------
-% REFERENCES?
+% REFERENCES? no~
 \end{document}
